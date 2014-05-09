@@ -1,0 +1,43 @@
+<div class="row">
+	<div class="col-xs-5">Name:</div>
+	<div class="col-xs-7" data-bind="text: Summary.Title"></div>
+</div>
+<div class="row">
+	<div class="col-xs-5">Region:</div>
+	<div class="col-xs-7" data-bind="text: Summary.Region"></div>
+</div>
+<div class="row">
+	<div class="col-xs-5">Population:</div>
+	<div class="col-xs-7" data-bind="text: $root.formatSI(Summary.TotalPeople,1)"></div>
+</div>
+<div class="row">
+	<div class="col-xs-5">Total Years:</div>
+	<div class="col-xs-7" data-bind="text: $root.formatSI(Summary.TotalObserved,1)"></div>
+</div>
+<div class="row">
+	<div class="col-xs-5">Date Range:</div>
+	<div class="col-xs-7" data-bind="text: Summary.ObservedRange.Start + ' - ' + Summary.ObservedRange.End"></div>
+</div>
+<div class="row" style="padding-top:10px">
+	<div class="col-xs-12" style="text-align: center; border: solid 1px black">Patient Dwell Statistics</div>
+</div>
+<div class="row">
+	<div class="col-xs-5">Median:</div>
+	<div class="col-xs-7" data-bind="text: $root.formatSI(ObservationBoxplot.median,2) + ' Years'"></div>
+</div>
+<div class="row">
+	<div class="col-xs-5">1st/3rd Quartile:</div>
+	<div class="col-xs-7" data-bind="text: $root.formatSI(ObservationBoxplot.q1,2) + ' - ' + $root.formatSI(ObservationBoxplot.q3,2) + ' Years'"></div>
+</div>
+<div class="row">
+	<div class="col-xs-5">1+ Years:</div>
+	<div class="col-xs-7" data-bind="text: $root.formatSI(ObservationSummary.OneOrMore, 2) + ' Patients'"></div>
+</div>
+<div class="row">
+	<div class="col-xs-5">3+ Years:</div>
+	<div class="col-xs-7" data-bind="text: $root.formatSI(ObservationSummary.ThreeOrMore, 2) + ' Patients'"></div>
+</div>
+<div class="row">
+	<div class="col-xs-5">5+ Years:</div>
+	<div class="col-xs-7" data-bind="text: $root.formatSI(ObservationSummary.FiveOrMore, 2) + ' Patients'"></div>
+</div>

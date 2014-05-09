@@ -2,6 +2,7 @@ curl = {
 	baseUrl: "js",
 	paths: {
 		"jquery": "jquery-1.10.2",
+		"bootstrap": "bootstrap",
 		"d3": "d3.min",
     "knockout": "knockout-3.1.0",
     "knockout-amd-helpers": "knockout-amd-helpers.min",

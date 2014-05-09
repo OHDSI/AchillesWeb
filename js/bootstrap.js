@@ -4,7 +4,28 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 
-if (typeof jQuery === 'undefined') { throw new Error('Bootstrap\'s JavaScript requires jQuery') }
+(function (factory)
+{
+	if (typeof define === 'function' && define.amd)
+	{
+		// AMD
+		define(['jquery'], factory);
+	}
+	else if (typeof exports === 'object')
+	{
+		// CommonJS
+		factory(require('jquery'));
+	}
+	else
+	{
+		// Browser globals
+		if (typeof jQuery === 'undefined') 
+		{ throw new Error('Bootstrap\'s JavaScript requires jQuery') }
+		else
+			factory(jQuery);
+	}
+}(function ($)
+{
 
 /* ========================================================================
  * Bootstrap: transition.js v3.1.1
@@ -1949,3 +1970,4 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap\'s JavaScript re
   })
 
 }(jQuery);
+}));
