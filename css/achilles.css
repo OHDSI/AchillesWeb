@@ -4,6 +4,10 @@
 
 body {
 	padding-top: 50px;
+	margin-right: 15px;
+	margin-left: 15px;
+	margin-top: 5px;
+	margin-bottom: 5px
 }
 @media(min-width:768px) {
 	body {
@@ -270,9 +274,6 @@ table.dataTable thead .sorting:after {
 	padding-left: 40px;
 	line-height: 45px;
 	vertical-align: middle;
-}
-.row {
-	padding: 7px;
 }
 .fa {
 	margin-right: 7px;
