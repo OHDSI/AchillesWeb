@@ -1,17 +1,13 @@
-(function ()
-{
+(function () {
 	var chart = {
 		version: "0.0.1"
 	};
 	var $;
 	var d3;
 
-	chart.util = chart.util ||
-	{};
-	chart.util.wrap = function (text, width)
-	{
-		text.each(function ()
-		{
+	chart.util = chart.util || {};
+	chart.util.wrap = function (text, width) {
+		text.each(function () {
 			var text = d3.select(this),
 				words = text.text().split(/\s+/).reverse(),
 				word,
@@ -21,12 +17,10 @@
 				y = text.attr("y"),
 				dy = parseFloat(text.attr("dy")),
 				tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-			while (word = words.pop())
-			{
+			while (word = words.pop()) {
 				line.push(word);
 				tspan.text(line.join(" "));
-				if (tspan.node().getComputedTextLength() > width)
-				{
+				if (tspan.node().getComputedTextLength() > width) {
 					line.pop();
 					tspan.text(line.join(" "));
 					line = [word];
@@ -36,16 +30,13 @@
 		});
 	}
 
-	chart.donut = function ()
-	{
+	chart.donut = function () {
 
-		this.render = function (data, target, w, h, options)
-		{
+		this.render = function (data, target, w, h, options) {
 
 			var defaults = {
 				colors: d3.scale.category10(),
-				margin:
-				{
+				margin: {
 					top: 5,
 					right: 75,
 					bottom: 5,
@@ -83,8 +74,7 @@
 				.outerRadius(or);
 
 			var pie = d3.layout.pie() //this will create arc data for us given a list of values
-				.value(function (d)
-				{
+				.value(function (d) {
 					return d.value > 0 ? Math.max(d.value, total * .015) : 0; // we want slices to appear if they have data, so we return a minimum of 1.5% of the overall total if the datapoint has a value > 0.
 				}); //we must tell it out to access the value of each element in our data array
 
@@ -345,17 +335,14 @@
 		}
 	}
 
-	chart.boxplot = function ()
-	{
-		this.render = function (data, target, w, h, options)
-		{
+	chart.boxplot = function () {
+		this.render = function (data, target, w, h, options) {
 			var defaults = {
 				rotate: 0,
 				colors: d3.scale.category10(),
 				textAnchor: 'middle',
 				showLabels: false,
-				margin:
-				{
+				margin: {
 					top: 10,
 					right: 10,
 					bottom: 20,
@@ -363,40 +350,34 @@
 				},
 			};
 
-			var options = $.extend(
-			{}, defaults, options);
+			var options = $.extend({}, defaults, options);
 
 			var width = w - options.margin.left - options.margin.right;
 			var height = h - options.margin.top - options.margin.bottom;
 
 			var x = d3.scale.ordinal()
 				.rangeRoundBands([0, width], (1.0 / data.length))
-				.domain(data.map(function (d)
-				{
+				.domain(data.map(function (d) {
 					return d.Category;
 				}));
 
 			var y = d3.scale.linear()
 				.range([height, 0])
-				.domain([0, options.yMax || d3.max(data, function (d)
-				{
+				.domain([0, options.yMax || d3.max(data, function (d) {
 					return d.max;
 				})]);
 
-			var whiskerWidth = x.rangeBand()/2
+			var whiskerWidth = x.rangeBand() / 2
 			var whiskerOffset = whiskerWidth / 2;
 
 			// draw main box and whisker plots
 			var svg;
-			if (!$(target + " svg")[0])
-			{
+			if (!$(target + " svg")[0]) {
 				svg = d3.select(target).append("svg")
 					.attr("width", w)
 					.attr("height", h)
 					.attr("viewBox", "0 0 " + w + " " + h);
-			}
-			else
-			{
+			} else {
 				svg = d3.select(target + " svg");
 			}
 
@@ -407,14 +388,12 @@
 				.data(data)
 				.enter().append("g")
 				.attr("class", "boxplot")
-				.attr("transform", function (d)
-				{
+				.attr("transform", function (d) {
 					return "translate(" + x(d.Category) + ",0)";
 				});
 
 			// for each g element (containing the boxplot render surface), draw the whiskers, bars and rects
-			boxplots.each(function (d, i)
-			{
+			boxplots.each(function (d, i) {
 				var boxplot = d3.select(this);
 				if (d.LIF != d.q1) // draw whisker
 				{
@@ -486,14 +465,12 @@
 				.call(yAxis);
 
 
-			$(window).on("resize",
-				{
+			$(window).on("resize", {
 					container: $(target),
 					chart: $(target + " svg"),
 					aspect: w / h
 				},
-				function (event)
-				{
+				function (event) {
 					var targetWidth = event.data.container.width();
 					event.data.chart.attr("width", targetWidth);
 					event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
@@ -502,10 +479,8 @@
 		}
 	}
 
-	chart.barchart = function ()
-	{
-		this.render = function (data, target, w, h, options)
-		{
+	chart.barchart = function () {
+		this.render = function (data, target, w, h, options) {
 			var defaults = {
 				label: 'label',
 				value: 'value',
@@ -644,8 +619,7 @@
 	chart.areachart = function () {
 		this.render = function (data, target, w, h, options) {
 			var defaults = {
-				margin:
-				{
+				margin: {
 					top: 20,
 					right: 30,
 					bottom: 20,
@@ -660,15 +634,13 @@
 				height = h - options.margin.top - options.margin.bottom;
 
 			var x = d3.scale.linear()
-				.domain(d3.extent(data, function (d)
-				{
+				.domain(d3.extent(data, function (d) {
 					return d.x;
 				}))
 				.range([0, width]);
 
 			var y = d3.scale.linear()
-				.domain([0, d3.max(data, function (d)
-				{
+				.domain([0, d3.max(data, function (d) {
 					return d.y;
 				})])
 				.range([height, 0]);
@@ -686,13 +658,11 @@
 				.orient("left");
 
 			var area = d3.svg.area()
-				.x(function (d)
-				{
+				.x(function (d) {
 					return x(d.x);
 				})
 				.y0(height)
-				.y1(function (d)
-				{
+				.y1(function (d) {
 					return y(d.y);
 				});
 
@@ -720,8 +690,7 @@
 				.attr("class", "y axis")
 				.call(yAxis)
 
-			$(window).on("resize",
-				{
+			$(window).on("resize", {
 					container: $(target),
 					chart: $(target + " svg"),
 					aspect: w / h
@@ -777,15 +746,20 @@
 
 			this.assignColor(data, 0, 1);
 
+			var tip = d3.tip()
+				.attr('class', 'd3-tip')
+				.offset([-10, 0])
+				.html(function (d) {
+					return options.gettitle(d);
+				})
+			svg.call(tip);
+
 			var cell = svg.selectAll("g")
 				.data(nodes)
 				.enter().append("svg:g")
 				.attr("class", "cell")
 				.attr("transform", function (d) {
 					return "translate(" + d.x + "," + d.y + ")";
-				})
-				.on("click", function (d) {
-					self.zoom(d);
 				});
 
 			cell.append("svg:rect")
@@ -798,9 +772,15 @@
 				.attr("title", function (d) {
 					return options.gettitle(d);
 				})
+				.attr("id", function (d) {
+					return d.id;
+				})
 				.style("fill", function (d) {
 					return self.hueToColor(d.hue, d.depth);
-				});
+				})
+				.on('mouseover', tip.show)
+				.on('mouseout', tip.hide)
+				.on('click', function(d) { alert(d.id); });
 		}
 
 		this.zoom = function (d) {
@@ -901,7 +881,7 @@
 	}
 
 	if (typeof define === "function" && define.amd) {
-		define(["jquery", "d3"], function (j, d) {
+		define(["jquery", "d3", "d3/tip"], function (j, d) {
 			$ = j;
 			$.version = "x";
 			d3 = d;

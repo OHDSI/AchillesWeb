@@ -1,0 +1,188 @@
+<html>
+
+<head>
+	<style>
+		body {
+			font-family: Arial;
+			font-size: 12px;
+		}
+		table {
+			font-size: 12px;
+		}
+		.faded {
+			fill: #dddddd !important;
+		}
+		.highlighted {
+			fill: #dddd00 !important;
+		}
+		.pathleaf {
+			font-size: 12px;
+			color: #444;
+			font-weight: bold;
+		}
+		.pathstep {
+			font-size: 8px;
+			color: #ccc;
+		}
+		#tableBody tr {
+			cursor: pointer;
+		}
+		rect {
+			cursor: pointer;
+		}
+		th {
+			white-space: nowrap;
+		}
+	</style>
+	<script src="/js/curl.config.js"></script>
+	<script src="/js/curl.js"></script>
+	<link href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css" rel="stylesheet" />
+
+	<script>
+		(function () {
+			define("sample", ["jquery", "d3", "jnj/chart", "datatables"], function ($, d3, jnj_chart) {
+				var sample = {};
+
+				// bind to all matching events upon creation
+				$(document).on('click', '#tableBody tr', function () {
+					id = $(this).children(':first').text();
+					alert(id);
+				});
+
+				/*
+				$(document).on('mouseover', '#tableBody tr', function () {
+					id = $(this).children(':first').text();
+					$('rect').attr('class', 'faded');
+					$('#' + id).attr('class', 'highlighted');
+				});
+
+				$(document).on('mouseout', '#tableBody', function () {
+					$('rect').attr('class', '');
+					$('rect').attr('class', '');
+				});
+				*/
+
+				sample.initialize = function () {
+					$.ajax({
+						type: "GET",
+						url: '/data/sample/treemap_path.json',
+						contentType: "application/json; charset=utf-8",
+						success: function (data) {
+							loadTable(data);
+							$('#example').dataTable({
+								"lengthChange": false
+							});
+
+							tree = buildHierarchyFromJSON(data);
+							var treemap = new jnj_chart.treemap();
+							treemap.render(tree, '#treemap_container', 1000, 500, {
+								gettitle: function (node) {
+									title = '';
+									steps = node.path.split('-');
+									for (i = steps.length - 1; i >= 0; i--) {
+										if (i == steps.length - 1) {
+											title += '<div class="pathleaf">' + steps[i] + '</div>';
+										} else {
+											title += '<div class="pathstep">' + steps[i] + '</div>';
+										}
+									}
+									return title;
+								}
+							});
+						}
+
+					});
+				}
+
+				function loadTable(data) {
+					for (var i = 0; i < data.ConceptPath.length; i++) {
+						conceptDetails = data.ConceptPath[i].split('-');
+						$('#tableBody').append('<tr><td>' + data.concept_id[i] + '</td><td>' + conceptDetails[0] + '</td><td>' + conceptDetails[1] + '</td><td>' + conceptDetails[2] + '</td><td>' + conceptDetails[3] + '</td><td>' + conceptDetails[4] + '</td><td>' + data.num_persons[i] + '</td></tr>');
+					}
+				}
+
+				function buildHierarchyFromJSON(data) {
+					var root = {
+						"name": "root",
+						"children": []
+					};
+					for (var i = 0; i < data.ConceptPath.length; i++) {
+						var sequence = data.ConceptPath[i];
+						var size = data.num_persons[i]; // change from num_persons
+						var id = data.concept_id[i];
+						if (isNaN(size)) { // e.g. if this is a header row
+							continue;
+						}
+						var parts = sequence.split("-");
+						var currentNode = root;
+						for (var j = 0; j < parts.length; j++) {
+							var children = currentNode["children"];
+							var nodeName = parts[j];
+							var childNode;
+							if (j + 1 < parts.length) {
+								// Not yet at the end of the sequence; move down the tree.
+								var foundChild = false;
+								for (var k = 0; k < children.length; k++) {
+									if (children[k]["name"] == nodeName) {
+										childNode = children[k];
+										foundChild = true;
+										break;
+									}
+								}
+								// If we don't already have a child node for this branch, create it.
+								if (!foundChild) {
+									childNode = {
+										"name": nodeName,
+										"children": []
+									};
+									children.push(childNode);
+								}
+								currentNode = childNode;
+							} else {
+								// Reached the end of the sequence; create a leaf node.
+								childNode = {
+									"name": nodeName,
+									"size": size,
+									"id": id,
+									"path": sequence
+								};
+								children.push(childNode);
+							}
+						}
+					}
+					return root;
+				};
+				return sample;
+			});
+
+
+			curl("sample", function (s) {
+				$(document).ready(function () {
+					s.initialize();
+				});
+			});
+		})();
+	</script>
+</head>
+
+<body>
+	<table id="example" class="display" cellspacing="0" width="100%">
+		<thead>
+			<tr>
+				<th>Concept Id</th>
+				<th>SOC</th>
+				<th>HLGT</th>
+				<th>HLT</th>
+				<th>PT</th>
+				<th>SNOMED</th>
+				<th>Person Count</th>
+			</tr>
+		</thead>
+
+		<tbody id="tableBody">
+		</tbody>
+	</table>
+	<div id="treemap_container"></div>
+</body>
+
+</html>

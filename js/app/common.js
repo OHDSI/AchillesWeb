@@ -61,7 +61,12 @@ define(function ()
 		}
 		else // the dataset is a single value result, so the properties are not arrays.
 		{
-			result = [{id : data.ConceptId, label: data.ConceptName, value: data.Members}];	
+			result = [
+			{
+				id: data.ConceptId,
+				label: data.ConceptName,
+				value: data.Members
+			}];
 		}
 		return result;
 	}
@@ -84,7 +89,7 @@ define(function ()
 
 		return result;
 	}
-	
+
 	function mapBarToHistogram(barData, intervalSize)
 	{
 		// result is an array of arrays, each element in the array is another array containing information about each bar of the histogram.
