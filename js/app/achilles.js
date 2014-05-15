@@ -8,7 +8,7 @@
 		{
 			var self = this;
 
-			self.data = ko.observable();
+			self.summaryData = ko.observable();
 			self.conditionsData = ko.observable();
 			self.personData = ko.observable();
 			self.observationPeriodsData = ko.observable();
@@ -32,7 +32,7 @@
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result)
 				{
-					self.data(result);
+					self.summaryData(result);
 				});
 			}
 
@@ -79,9 +79,9 @@
 		}
 
 		var viewModel = new summaryViewModel();
-		viewModel.data.subscribe(function (newData)
+		viewModel.summaryData.subscribe(function (newData)
 		{
-			update(newData);
+			updateSummary(newData);
 		});
 		viewModel.conditionsData.subscribe(function (newData)
 		{
@@ -155,7 +155,7 @@
 			return root;
 		};
 
-		function update(data)
+		function updateSummary(data)
 		{
 			var result = data;
 
@@ -193,22 +193,23 @@
 
 				d3.selectAll("#reportDashboard #agehist svg").remove();
 				var ageHistogram = new jnj_chart.histogram();
-				ageHistogram.render(common.mapHistogram(result.AgeIndexHistogram), "#reportDashboard #agehist", 400, 200);
-
-				d3.selectAll("#reportDashboard #ageboxplot svg").remove();
-				var ageIndexBoxplot = new jnj_chart.horizontalBoxplot();
-				ageIndexBoxplot.render(result.AgeIndexBoxplot, "#reportDashboard #ageboxplot", 400, 10);
+				ageHistogram.render(common.mapHistogram(result.AgeIndexHistogram), "#reportDashboard #agehist", 400, 200,
+				{
+					xLabel: "Age",
+					yLabel: "People",
+					boxplot: result.AgeIndexBoxplot
+				});
 
 				d3.selectAll("#reportDashboard #yearhist svg").remove();
 				var yearHistogram = new jnj_chart.histogram();
 				yearHistogram.render(common.mapHistogram(result.YearIndexHistogram), "#reportDashboard #yearhist", 400, 200,
 				{
-					xformat: 'd'
+					xFormat: 'd',
+					xLabel: "Year",
+					yLabel: "People",
+					boxplot: result.YearIndexBoxplot
 				});
 
-				d3.selectAll("#reportDashboard #yearboxplot svg").remove();
-				var yearIndexBoxplot = new jnj_chart.horizontalBoxplot();
-				yearIndexBoxplot.render(result.YearIndexBoxplot, "#reportDashboard #yearboxplot", 400, 10);
 			});
 		}
 
@@ -235,20 +236,28 @@
 						};
 						return item;
 					}, result.AgeByGender);
-				agegenderboxplot.render(agData, "#reportObservationPeriods #agebygender", 280, 235);
+				agegenderboxplot.render(agData, "#reportObservationPeriods #agebygender", 280, 235,
+				{
+					xLabel: "Gender",
+					yLabel: "Days"
+				});
 
 				d3.selectAll("#reportObservationPeriods #ageatfirstobservation svg").remove();
 				var ageAtFirstObservationHistogram = new jnj_chart.histogram();
-				ageAtFirstObservationHistogram.render(common.mapHistogram(result.AgeAtFirstObservationHistogram), "#ageatfirstobservation", 425, 150,
+				ageAtFirstObservationHistogram.render(common.mapHistogram(result.AgeAtFirstObservationHistogram), "#ageatfirstobservation", 460, 195,
 				{
-					xFormat: 'd'
+					xFormat: 'd',
+					xLabel: 'Age',
+					yLabel: 'People'
 				});
 
 				d3.selectAll("#reportObservationPeriods #observationlength svg").remove();
 				var observationLengthHistogram = new jnj_chart.histogram();
-				observationLengthHistogram.render(common.mapHistogram(result.ObservationLengthHistogram), "#observationlength", 300, 100,
+				observationLengthHistogram.render(common.mapHistogram(result.ObservationLengthHistogram), "#observationlength", 460, 195,
 				{
-					xFormat: 's'
+					xFormat: 's',
+					xLabel: 'Days',
+					yLabel: 'People'
 				});
 
 				d3.selectAll("#reportObservationPeriods #cumulativeobservation svg").remove();
@@ -263,11 +272,13 @@
 						return item;
 					}, result.CumulativeDuration);
 
-				cumulativeObservationLine.render(cumulativeData, "#reportObservationPeriods #cumulativeobservation", 300, 100,
+				cumulativeObservationLine.render(cumulativeData, "#reportObservationPeriods #cumulativeobservation", 460, 195,
 				{
 					xFormat: "s",
 					yFormat: "0%",
-					interpolate: "step-before"
+					interpolate: "step-before",
+					xLabel: 'Days',
+					yLabel: 'Percent of Population'
 				});
 
 				d3.selectAll("#reportObservationPeriods #opbygender svg").remove();
@@ -287,7 +298,11 @@
 						};
 						return item;
 					}, result.ObservationPeriodLengthByGender);
-				opbygenderboxplot.render(opgData, "#reportObservationPeriods #opbygender", 280, 235);
+				opbygenderboxplot.render(opgData, "#reportObservationPeriods #opbygender", 280, 235,
+				{
+					xLabel: 'Gender',
+					yLabel: 'Days'
+				});
 
 				d3.selectAll("#reportObservationPeriods #opbyage svg").remove();
 				var opbyageboxplot = new jnj_chart.boxplot();
@@ -306,22 +321,28 @@
 						};
 						return item;
 					}, result.ObservationPeriodLengthByAge);
-				opbyageboxplot.render(opaData, "#reportObservationPeriods #opbyage", 280, 235);
+				opbyageboxplot.render(opaData, "#reportObservationPeriods #opbyage", 280, 235,
+				{
+					xLabel: 'Age Decile',
+					yLabel: 'Days'
+				});
 
 				d3.selectAll("#reportObservationPeriods #oppeoplebyyear svg").remove();
 				var observationLengthHistogram = new jnj_chart.histogram();
-				observationLengthHistogram.render(common.mapHistogram(result.ObservedByYearHistogram), "#reportObservationPeriods #oppeoplebyyear", 300, 100,
+				observationLengthHistogram.render(common.mapHistogram(result.ObservedByYearHistogram), "#reportObservationPeriods #oppeoplebyyear", 460, 195,
 				{
-					xFormat: 'd'
+					xFormat: 'd',
+					xLabel: 'Year',
+					yLabel: 'People'
 				});
-				
+
 				d3.selectAll("#reportObservationPeriods #oppeoplebymonth svg").remove();
 				var observationLengthHistogram = new jnj_chart.histogram();
-				observationLengthHistogram.render(common.mapHistogram(result.ObservedByYearHistogram), "#reportObservationPeriods #oppeoplebymonth", 300, 100,
+				observationLengthHistogram.render(common.mapHistogram(result.ObservedByYearHistogram), "#reportObservationPeriods #oppeoplebymonth", 460, 195,
 				{
 					xFormat: 'd'
 				});
-				
+
 				d3.selectAll("#reportObservationPeriods #opperperson svg").remove();
 				raceDonut = new jnj_chart.donut();
 				raceDonut.render(common.mapConceptData(result.PersonPeriodsData), "#reportObservationPeriods #opperperson", 250, 200,
@@ -333,8 +354,8 @@
 						right: 50,
 						left: 10
 					}
-				});				
-				
+				});
+
 
 			});
 		}
@@ -426,7 +447,9 @@
 				var yearHistogram = new jnj_chart.histogram();
 				yearHistogram.render(common.mapHistogram(result.BirthYearHistogram), "#reportPerson #birthyearhist", 800, 200,
 				{
-					xFormat: 'd'
+					xFormat: 'd',
+					xLabel: 'Year',
+					yLabel: 'People'
 				});
 			});
 		}
