@@ -142,8 +142,8 @@
 
 		this.render = function (data, target, w, h, options) {
 			var defaults = {
-				xformat: ',.0f',
-				yformat: 's'
+				xFormat: ',.0f',
+				yFormat: 's'
 			};
 
 			var options = $.extend({}, defaults, options);
@@ -159,7 +159,7 @@
 				height = h - margin.top - margin.bottom;
 
 			// this function asusmes data has been transfomred into a d3.layout.histogram structure
-			var formatCount = d3.format(options.xformat);
+			var formatCount = d3.format(options.xFormat);
 
 			var x = d3.scale.linear()
 				.domain([d3.min(data, function (d) {
@@ -179,13 +179,13 @@
 				.scale(x)
 				.orient("bottom")
 				.ticks(10)
-				.tickFormat(d3.format(options.xformat));
+				.tickFormat(d3.format(options.xFormat));
 
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.orient("left")
 				.ticks(4)
-				.tickFormat(d3.format(options.yformat));
+				.tickFormat(d3.format(options.yFormat));
 
 			var chart;
 			var isNew = false; // this is a flag to determine if chart has already been ploted on this target.
@@ -346,8 +346,9 @@
 					top: 10,
 					right: 10,
 					bottom: 20,
-					left: 20
+					left: 30
 				},
+				yFormat: 's'
 			};
 
 			var options = $.extend({}, defaults, options);
@@ -452,7 +453,8 @@
 
 			var yAxis = d3.svg.axis()
 				.scale(y)
-				.orient("left");
+				.orient("left")
+				.tickFormat(d3.format(options.yFormat));
 
 			chart.append("g")
 				.attr("class", "x axis")
@@ -625,8 +627,8 @@
 					bottom: 20,
 					left: 40
 				},
-				xformat: ',.0f',
-				yformat: 's'
+				xFormat: ',.0f',
+				yFormat: 's'
 			};
 			var options = $.extend({}, defaults, options);
 
@@ -647,13 +649,13 @@
 
 			var xAxis = d3.svg.axis()
 				.scale(x)
-				.tickFormat(d3.format(options.xformat))
+				.tickFormat(d3.format(options.xFormat))
 				.ticks(10)
 				.orient("bottom");
 
 			var yAxis = d3.svg.axis()
 				.scale(y)
-				.tickFormat(d3.format(options.yformat))
+				.tickFormat(d3.format(options.yFormat))
 				.ticks(4)
 				.orient("left");
 
@@ -703,7 +705,111 @@
 		}
 	}
 
-	chart.treemap = function () {
+	chart.line = function ()
+	{
+		this.render = function (data, target, w, h, options)
+		{
+			var defaults = {
+				margin:
+				{
+					top: 20,
+					right: 30,
+					bottom: 20,
+					left: 40
+				},
+				xFormat: ',.0f',
+				yFormat: 's',
+				interpolate: "linear",
+				xValue: "x",
+				yValue: "y",
+				cssClass: "lineplot",
+			};
+			var options = $.extend(
+			{}, defaults, options);
+
+			var width = w - options.margin.left - options.margin.right,
+				height = h - options.margin.top - options.margin.bottom;
+
+			var x = d3.scale.linear()
+				.domain(d3.extent(data, function (d)
+				{
+					return d["xValue"];
+				}))
+				.range([0, width]);
+
+			var y = d3.scale.linear()
+				.domain([0, d3.max(data, function (d)
+				{
+					return d["yValue"];
+				})])
+				.range([height, 0]);
+
+			var xAxis = d3.svg.axis()
+				.scale(x)
+				.tickFormat(d3.format(options.xFormat))
+				.ticks(10)
+				.orient("bottom");
+
+			var yAxis = d3.svg.axis()
+				.scale(y)
+				.tickFormat(d3.format(options.yFormat))
+				.ticks(4)
+				.orient("left");
+
+			// create a line function that can convert data[] into x and y points
+			var line = d3.svg.line()
+				.x(function (d)
+				{
+					return x(d["xValue"]);
+				})
+				.y(function (d)
+				{
+					return y(d["yValue"]);
+				})
+				.interpolate(options.interpolate);
+
+			var chart = d3.select(target)
+				.append("svg:svg")
+				.data(data)
+				.attr("width", w)
+				.attr("height", h)
+				.attr("viewBox", "0 0 " + w + " " + h);
+
+			var vis = chart.append("g")
+				.attr("class", options.cssClass)
+				.attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
+
+			vis.append("path")
+				.datum(data)
+				.attr("class", "line")
+				.attr("d", line);
+
+			vis.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis);
+
+			vis.append("g")
+				.attr("class", "y axis")
+				.call(yAxis)
+
+			$(window).on("resize",
+				{
+					container: $(target),
+					chart: $(target + " svg"),
+					aspect: w / h
+				},
+				function (event)
+				{
+					var targetWidth = event.data.container.width();
+					event.data.chart.attr("width", targetWidth);
+					event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
+				}).trigger("resize");
+		}
+	}
+
+	chart.treemap = function ()
+	{
 		var self = this;
 
 		var root,
@@ -886,16 +992,22 @@
 		}
 	}
 
-	if (typeof define === "function" && define.amd) {
-		define(["jquery", "d3", "d3/tip"], function (j, d) {
+	if (typeof define === "function" && define.amd)
+	{
+		define(["jquery", "d3"], function (j, d)
+		{
 			$ = j;
 			$.version = "x";
 			d3 = d;
 			return chart
 		});
-	} else if (typeof module === "object" && module.exports) {
+	}
+	else if (typeof module === "object" && module.exports)
+	{
 		module.exports = chart;
-	} else {
+	}
+	else
+	{
 		this.jnj_chart = chart;
 		$ = this.$;
 		d3 = this.d3;

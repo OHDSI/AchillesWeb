@@ -47,6 +47,13 @@ div.chartcontainer
 	stroke: #ccc;
 }
 
+.lineplot .line
+{
+	fill: none;
+	stroke:  rgb(68, 68, 136);
+	stroke-width: 1px;
+}
+
 .axis path,
 .axis line {
 	fill: none;

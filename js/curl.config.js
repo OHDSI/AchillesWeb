@@ -1,5 +1,5 @@
 curl = {
-	baseUrl: "/js",
+	baseUrl: "js",
 	paths:
 	{
 		"jquery": "jquery-1.10.2",
