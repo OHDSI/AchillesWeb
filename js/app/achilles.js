@@ -239,7 +239,7 @@
 				agegenderboxplot.render(agData, "#reportObservationPeriods #agebygender", 280, 235,
 				{
 					xLabel: "Gender",
-					yLabel: "Days"
+					yLabel: "Age"
 				});
 
 				d3.selectAll("#reportObservationPeriods #ageatfirstobservation svg").remove();
