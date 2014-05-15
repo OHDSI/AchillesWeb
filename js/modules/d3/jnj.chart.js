@@ -718,6 +718,10 @@
 			currentZoomNode;
 
 		this.render = function (data, target, w, h, options) {
+			var color = d3.scale.linear()
+				.domain([0, 1])
+				.range(["red", "white", "green"]);
+
 			root = data;
 
 			width = w;
@@ -741,7 +745,7 @@
 
 			nodes = treemap.nodes(data)
 				.filter(function (d) {
-					return !d.children;
+					return d.size;
 				});
 
 			this.assignColor(data, 0, 1);
@@ -776,11 +780,13 @@
 					return d.id;
 				})
 				.style("fill", function (d) {
-					return self.hueToColor(d.hue, d.depth);
+					return color(d.pct);	//self.hueToColor(d.hue, d.depth);
 				})
 				.on('mouseover', tip.show)
 				.on('mouseout', tip.hide)
-				.on('click', function(d) { alert(d.id); });
+				.on('click', function (d) {
+					options.onclick(d.id);
+				});
 		}
 
 		this.zoom = function (d) {
