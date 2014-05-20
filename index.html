@@ -53,8 +53,24 @@
 
 	<div id="reportObservationPeriods" class="report">
 		<div class="reportTitle">Observation Periods</div>
+
 		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-sm-8">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Age at First Observation
+					</div>
+					<!-- /.panel-heading -->
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-xs-12">
+								<div id="ageatfirstobservation" class="chartcontainer"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						Age by Gender
@@ -72,25 +88,7 @@
 		</div>
 
 		<div class="row">
-			<div class="col-sm-12">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						Age at First Observation
-					</div>
-					<!-- /.panel-heading -->
-					<div class="panel-body">
-						<div class="row">
-							<div class="col-xs-12">
-								<div id="ageatfirstobservation" class="chartcontainer"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-sm-8">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						Observation Length
@@ -105,10 +103,25 @@
 					</div>
 				</div>
 			</div>
+			<div class="col-sm-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Duration By Gender
+					</div>
+					<!-- /.panel-heading -->
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-xs-12">
+								<div id="opbygender" class="chartcontainer"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-sm-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						Cumulative Observation
@@ -123,31 +136,10 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-sm-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Observation Period Duration By Gender
-					</div>
-					<!-- /.panel-heading -->
-					<div class="panel-body">
-						<div class="row">
-							<div class="col-xs-12">
-								<div id="opbygender" class="chartcontainer"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-sm-12">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						Observation Period Duration By Age Decile
+						Duration By Age Decile
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
@@ -162,7 +154,7 @@
 		</div>
 
 		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-sm-8">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						Persons With Continuous Observation By Year
@@ -177,28 +169,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-sm-12">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						Persons With Continuous Observation By Month
-					</div>
-					<!-- /.panel-heading -->
-					<div class="panel-body">
-						<div class="row">
-							<div class="col-xs-12">
-								<div id="oppeoplebymonth" class="chartcontainer"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-sm-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						Observation Periods per Person
@@ -213,49 +184,102 @@
 					</div>
 				</div>
 			</div>
-		</div>		
-	</div>
 
-	<div id="reportPerson" class="report">
-		<div class="reportTitle">Person</div>
+		</div>
+
+<!--
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Person Summary
+						Persons With Continuous Observation By Month (Multi-Series)
 					</div>
 					<div class="panel-body">
-						<div class="col-sm-4 cdmsummary">
-							<div data-bind="template: {if: personData, name: 'attributeValueTable', data: function() { return personData().Summary}}"></div>
-						</div>
-						<div class="col-sm-8">
-							<div class="row">
-								<div class="col-xs-4">
-									<div>Gender</div>
-									<div id="genderPie" style="text-align:center"></div>
-								</div>
-								<div class="col-xs-4">
-									<div>Race</div>
-									<div id="raceTypePie" style="text-align: center; width: auto"></div>
-								</div>
-								<div class="col-xs-4">
-									<div>Ethnicity</div>
-									<div id="ethnicityTypePie" style="text-align: center; width: auto"></div>
-								</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<div id="oppeoplebymonth" class="chartcontainer"></div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+-->
+
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Year of Birth (barchart)
+						Persons With Continuous Observation By Month
+					</div>
+					<!-- /.panel-heading -->
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-xs-12">
+								<div id="oppeoplebymonthsingle" class="chartcontainer"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div id="reportPerson" class="report">
+		<div class="reportTitle">Person</div>
+		<div class="row">
+			<div class="col-sm-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Person Summary
+					</div>
+					<div class="panel-body">
+						<div class="col-sm-12 cdmsummary">
+							<div data-bind="template: {if: personData, name: 'attributeValueTable', data: function() { return personData().Summary}}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Year of Birth
 					</div>
 					<div class="panel-body">
 						<div id="birthyearhist" class="chartcontainer"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Gender
+					</div>
+					<div class="panel-body">
+						<div id="genderPie" style="text-align:center"></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Race
+					</div>
+					<div class="panel-body">
+						<div id="raceTypePie" style="text-align: center; width: auto"></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Ethnicity
+					</div>
+					<div class="panel-body">
+						<div id="ethnicityTypePie" style="text-align: center; width: auto"></div>
 					</div>
 				</div>
 			</div>

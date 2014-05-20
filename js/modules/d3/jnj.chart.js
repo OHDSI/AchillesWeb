@@ -234,9 +234,9 @@
 			var defaults = {
 				margin:
 				{
-					top: 5,
-					right: 5,
-					bottom: 5,
+					top: 10,
+					right: 10,
+					bottom: 10,
 					left: 40
 				},
 				xFormat: ',.0f',
@@ -556,7 +556,8 @@
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.orient("left")
-				.tickFormat(d3.format(options.yFormat));
+				.tickFormat(d3.format(options.yFormat))
+				.ticks(5);
 
 			chart.append("g")
 				.attr("class", "x axis")
@@ -859,9 +860,23 @@
 				xValue: "x",
 				yValue: "y",
 				cssClass: "lineplot",
+				tickPadding: 10,
+				showSeriesLabel: false,
+				colorScale: null
 			};
 			var options = $.extend(
 			{}, defaults, options);
+
+			// convert data to multi-series format if not already formatted
+			if (!data[0].hasOwnProperty("values"))
+			{
+				// assumes data is just an array of values (single series)
+				data = [
+				{
+					name: 'series',
+					values: data
+				}];
+			}
 
 			var chart = d3.select(target)
 				.append("svg:svg")
@@ -900,35 +915,66 @@
 				options.margin.left += bbox.width;
 			}
 
-			var width = w - options.margin.left - options.margin.right,
-				height = h - options.margin.top - options.margin.bottom;
+			var width = w - options.margin.left - options.margin.right;
+			var height = h - options.margin.top - options.margin.bottom - options.tickPadding;
 
-			var x = d3.scale.linear()
-				.domain(d3.extent(data, function (d)
+			var x = options.xScale || d3.scale.linear()
+				.domain([d3.min(data, function (d)
 				{
-					return d["xValue"];
-				}))
-				.range([0, width]);
-
-			var y = d3.scale.linear()
-				.domain([0, d3.max(data, function (d)
+					return d3.min(d.values, function (d)
+					{
+						return d["xValue"];
+					});
+				}), d3.max(data, function (d)
 				{
-					return d["yValue"];
-				})])
-				.range([height, 0]);
-
+					return d3.max(d.values, function (d)
+					{
+						return d["xValue"];
+					});
+				})]);
+			
 			var xAxis = d3.svg.axis()
 				.scale(x)
-				.tickFormat(d3.format(options.xFormat))
 				.ticks(10)
 				.orient("bottom");
+			
+			// check for custom tick formatter
+			if (options.tickFormat)
+			{
+					xAxis.tickFormat(options.tickFormat);
+			}
+			else // apply standard formatter
+			{
+				xAxis.tickFormat(d3.format(options.xFormat));
+			}
 
+			// if x scale is ordinal, then apply rangeRoundBands, else apply standard range.
+			if (typeof x.rangePoints === 'function')
+			{
+				x.rangePoints([0, width]);
+			}
+			else
+			{
+				x.range([0, width]);	
+				
+			}
+			
+			var y = options.yScale || d3.scale.linear()
+				.domain([0, d3.max(data, function (d)
+				{
+					return d3.max(d.values, function (d)
+					{
+						return d["yValue"];
+					});
+				})])
+				.range([height, 0]);
+			
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.tickFormat(d3.format(options.yFormat))
 				.ticks(4)
 				.orient("left");
-
+			
 			// create a line function that can convert data[] into x and y points
 			var line = d3.svg.line()
 				.x(function (d)
@@ -945,10 +991,48 @@
 				.attr("class", options.cssClass)
 				.attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
 
-			vis.append("path")
-				.datum(data)
+			var series = vis.selectAll(".series")
+				.data(data)
+				.enter()
+				.append("g")
+			
+			var seriesLines = series.append("path")
 				.attr("class", "line")
-				.attr("d", line);
+				.attr("d", function (d)
+				{
+					return line(d.values);
+				});
+			
+			if (options.colorScale)
+			{
+				seriesLines.style("stroke", function (d)
+				{
+					return options.colorScale(d.name);
+				})
+			}
+			
+			if (options.showSeriesLabel)
+			{
+			 series.append("text")
+			 	.datum(function (d)
+			 	{
+			 		return {
+			 			name: d.name,
+			 			value: d.values[d.values.length - 1]
+			 		};
+			 	})
+			 	.attr("transform", function (d)
+			 	{
+			 		return "translate(" + x(d.value["xValue"]) + "," + y(d.value["yValue"]) + ")";
+			 	})
+			 	.attr("x", 3)
+			 	.attr("dy", 2)
+			 	.style("font-size","8px")
+			 	.text(function (d)
+			 	{
+			 		return d.name;
+			 	});
+			}	
 
 			vis.append("g")
 				.attr("class", "x axis")

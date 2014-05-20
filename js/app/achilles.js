@@ -236,7 +236,7 @@
 						};
 						return item;
 					}, result.AgeByGender);
-				agegenderboxplot.render(agData, "#reportObservationPeriods #agebygender", 280, 235,
+				agegenderboxplot.render(agData, "#reportObservationPeriods #agebygender", 220, 210,
 				{
 					xLabel: "Gender",
 					yLabel: "Age"
@@ -272,13 +272,20 @@
 						return item;
 					}, result.CumulativeDuration);
 
-				cumulativeObservationLine.render(cumulativeData, "#reportObservationPeriods #cumulativeobservation", 460, 195,
+				cumulativeObservationLine.render(cumulativeData, "#reportObservationPeriods #cumulativeobservation", 360, 200,
 				{
 					xFormat: "s",
 					yFormat: "0%",
 					interpolate: "step-before",
 					xLabel: 'Days',
-					yLabel: 'Percent of Population'
+					yLabel: 'Percent of Population',
+					margin:
+					{
+						top: 10,
+						left: 40,
+						right: 40,
+						bottom: 10
+					}
 				});
 
 				d3.selectAll("#reportObservationPeriods #opbygender svg").remove();
@@ -298,7 +305,7 @@
 						};
 						return item;
 					}, result.ObservationPeriodLengthByGender);
-				opbygenderboxplot.render(opgData, "#reportObservationPeriods #opbygender", 280, 235,
+				opbygenderboxplot.render(opgData, "#reportObservationPeriods #opbygender", 220, 210,
 				{
 					xLabel: 'Gender',
 					yLabel: 'Days'
@@ -321,7 +328,7 @@
 						};
 						return item;
 					}, result.ObservationPeriodLengthByAge);
-				opbyageboxplot.render(opaData, "#reportObservationPeriods #opbyage", 280, 235,
+				opbyageboxplot.render(opaData, "#reportObservationPeriods #opbyage", 360, 200,
 				{
 					xLabel: 'Age Decile',
 					yLabel: 'Days'
@@ -336,16 +343,66 @@
 					yLabel: 'People'
 				});
 
+				/*
 				d3.selectAll("#reportObservationPeriods #oppeoplebymonth svg").remove();
-				var observationLengthHistogram = new jnj_chart.histogram();
-				observationLengthHistogram.render(common.mapHistogram(result.ObservedByYearHistogram), "#reportObservationPeriods #oppeoplebymonth", 460, 195,
+				var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+				var observationByMonth = new jnj_chart.line();
+				observationByMonth.render(common.mapMonthYearDataToSeriesByYear(result.ObservedByMonth,
 				{
-					xFormat: 'd'
+					dateField: 'MonthYear',
+					yValue: 'CountValue',
+					yPercent: 'PercentValue'
+				}), "#reportObservationPeriods #oppeoplebymonth", 460, 195,
+				{
+					xScale: d3.scale.ordinal().domain([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
+					tickPadding: 10,
+					tickFormat: function (d)
+					{
+						return monthNames[d - 1];
+					},
+					margin:
+					{
+						top: 5,
+						right: 25,
+						bottom: 5,
+						left: 40
+					},
+					showSeriesLabel: true,
+					colorScale: d3.scale.category10(),
+					xLabel: "Month",
+					yLabel: "People"
 				});
+				*/
+
+				var byMonthSeries = common.mapMonthYearDataToSeries(result.ObservedByMonth,
+				{
+					dateField: 'MonthYear',
+					yValue: 'CountValue',
+					yPercent: 'PercentValue'
+				});
+				
+				d3.selectAll("#reportObservationPeriods #oppeoplebymonthsingle svg").remove();
+				var observationByMonthSingle = new jnj_chart.line();
+				observationByMonthSingle.render(byMonthSeries, "#reportObservationPeriods #oppeoplebymonthsingle", 660, 195,
+				{
+					xScale: d3.time.scale().domain(d3.extent(byMonthSeries[0].values, function(d) { return d.xValue;})),
+					tickFormat: d3.time.format("%m/%Y"),
+					tickPadding: 10,
+					margin:
+					{
+						top: 5,
+						right: 25,
+						bottom: 5,
+						left: 40
+					},
+					xLabel: "Date",
+					yLabel: "People"
+				});
+				
 
 				d3.selectAll("#reportObservationPeriods #opperperson svg").remove();
 				raceDonut = new jnj_chart.donut();
-				raceDonut.render(common.mapConceptData(result.PersonPeriodsData), "#reportObservationPeriods #opperperson", 250, 200,
+				raceDonut.render(common.mapConceptData(result.PersonPeriodsData), "#reportObservationPeriods #opperperson", 285, 235,
 				{
 					margin:
 					{
@@ -355,8 +412,6 @@
 						left: 10
 					}
 				});
-
-
 			});
 		}
 
@@ -445,7 +500,7 @@
 
 				d3.selectAll("#reportPerson #birthyearhist svg").remove();
 				var yearHistogram = new jnj_chart.histogram();
-				yearHistogram.render(common.mapHistogram(result.BirthYearHistogram), "#reportPerson #birthyearhist", 800, 200,
+				yearHistogram.render(common.mapHistogram(result.BirthYearHistogram), "#reportPerson #birthyearhist", 460, 195,
 				{
 					xFormat: 'd',
 					xLabel: 'Year',

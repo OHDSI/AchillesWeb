@@ -1,6 +1,6 @@
 <div data-bind="foreach: AttributeName">
 	<div class="row">
-		<div class="col-xs-6" data-bind="text: $data"></div>
+		<div class="col-xs-6" data-bind="text: $data + ':' "></div>
 		<div class="col-xs-6" data-bind="text: $parent.AttributeValue[$index()]"></div>
 	</div>
 </div>
