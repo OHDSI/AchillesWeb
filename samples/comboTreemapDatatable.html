@@ -4,7 +4,7 @@
 	<link href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css" rel="stylesheet" />
 	<link href="../css/achilles.css" rel="stylesheet" />
 	<link href="../css/bootstrap.css" rel="stylesheet" />
-	<link href="../css/chart.css" rel="stylesheet"/>
+	<link href="../css/chart.css" rel="stylesheet" />
 	<style>
 		body {
 			font-family: Arial;
@@ -16,14 +16,6 @@
 		table.dataTable tbody td {
 			padding: 3px 3px;
 		}
-		/*
-		.faded {
-			fill: #dddddd !important;
-		}
-		.highlighted {
-			fill: #dddd00 !important;
-		}
-		*/
 		.pathleaf {
 			font-size: 12px;
 			color: #ddd;
@@ -57,30 +49,17 @@
 				var t = 0;
 				var threshold;
 
-				// bind to all matching events upon creation
+				// bind to all matching elements upon creation
 				$(document).on('click', '#tableBody tr', function () {
 					id = $(this).children(':first').text();
 					sample.drilldown(id);
 				});
 
-				/*
-				$(document).on('mouseover', '#tableBody tr', function () {
-					id = $(this).children(':first').text();
-					$('rect').attr('class', 'faded');
-					$('#' + id).attr('class', 'highlighted');
-				});
-
-				$(document).on('mouseout', '#tableBody', function () {
-					$('rect').attr('class', '');
-					$('rect').attr('class', '');
-				});
-				*/
-
 				sample.drilldown = function (concept_id) {
 					$('.drilldown svg').remove();
 					$.ajax({
 						type: "GET",
-						url: '/data/sample/conditions/condition_' + concept_id + '.json',
+						url: '../data/sample/conditions/condition_' + concept_id + '.json',
 						success: function (data) {
 
 							// age at first diagnosis visualization
@@ -110,7 +89,14 @@
 									value: data.ConditionsByType.CountValue[i]
 								})
 							}
-							donut.render(slices, "#conditionsByType", 400, 400, {margin: {top:5, left:5, right:200, bottom:5}});
+							donut.render(slices, "#conditionsByType", 400, 400, {
+								margin: {
+									top: 5,
+									left: 5,
+									right: 200,
+									bottom: 5
+								}
+							});
 						}
 					});
 				}
@@ -123,7 +109,7 @@
 
 					$.ajax({
 						type: "GET",
-						url: '/data/sample/treemap_path.json',
+						url: '../data/sample/treemap_path.json',
 						contentType: "application/json; charset=utf-8",
 						success: function (data) {
 
@@ -242,40 +228,42 @@
 </head>
 
 <body>
-	<ul class="nav nav-tabs" id="myTab">
-		<li class="active"><a href="#treemap-panel">Treemap</a>
-		</li>
-		<li><a href="#table-panel">Table</a>
-		</li>
-	</ul>
+	<div id="reportConditionOccurrences" class="report">
+		<ul class="nav nav-tabs" id="myTab">
+			<li class="active"><a href="#treemap-panel">Treemap</a>
+			</li>
+			<li><a href="#table-panel">Table</a>
+			</li>
+		</ul>
 
-	<div id='content' class="tab-content">
-		<div class="tab-pane active" id="treemap-panel">
-			<div id="treemap_container"></div>
-		</div>
-		<div class="tab-pane" id="table-panel">
-			<table id="example" class="display" style="display:none;">
-				<thead>
-					<tr>
-						<th>Concept Id</th>
-						<th>SOC</th>
-						<th>HLGT</th>
-						<th>HLT</th>
-						<th>PT</th>
-						<th>SNOMED</th>
-						<th>Person Count</th>
-						<th>Prevalence</th>
-					</tr>
-				</thead>
+		<div id='content' class="tab-content">
+			<div class="tab-pane active" id="treemap-panel">
+				<div id="treemap_container"></div>
+			</div>
+			<div class="tab-pane" id="table-panel">
+				<table id="example" class="display" style="display:none;">
+					<thead>
+						<tr>
+							<th>Concept Id</th>
+							<th>SOC</th>
+							<th>HLGT</th>
+							<th>HLT</th>
+							<th>PT</th>
+							<th>SNOMED</th>
+							<th>Person Count</th>
+							<th>Prevalence</th>
+						</tr>
+					</thead>
 
-				<tbody id="tableBody">
-				</tbody>
-			</table>
+					<tbody id="tableBody">
+					</tbody>
+				</table>
+			</div>
 		</div>
+
+		<div class="drilldown" id="conditionsByType"></div>
+		<div class="drilldown" id="ageAtFirstDiagnosis"></div>
 	</div>
-
-	<div class="drilldown" id="conditionsByType"></div>
-	<div class="drilldown" id="ageAtFirstDiagnosis"></div>
 </body>
 
 </html>
