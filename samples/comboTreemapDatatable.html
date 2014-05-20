@@ -4,6 +4,7 @@
 	<link href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css" rel="stylesheet" />
 	<link href="../css/achilles.css" rel="stylesheet" />
 	<link href="../css/bootstrap.css" rel="stylesheet" />
+	<link href="../css/chart.css" rel="stylesheet"/>
 	<style>
 		body {
 			font-family: Arial;
@@ -60,7 +61,6 @@
 				$(document).on('click', '#tableBody tr', function () {
 					id = $(this).children(':first').text();
 					sample.drilldown(id);
-					alert(id);
 				});
 
 				/*
@@ -76,10 +76,42 @@
 				});
 				*/
 
-				sample.drilldown = function(concept_id) {
+				sample.drilldown = function (concept_id) {
+					$('.drilldown svg').remove();
 					$.ajax({
 						type: "GET",
 						url: '/data/sample/conditions/condition_' + concept_id + '.json',
+						success: function (data) {
+
+							// age at first diagnosis visualization
+							var boxplot = new jnj_chart.boxplot();
+							bpseries = [];
+							bpdata = data.AgeAtFirstDiagnosis;
+							for (i = 0; i < bpdata.Category.length; i++) {
+								bpseries.push({
+									Category: bpdata.Category[i],
+									max: bpdata.MaxValue[i],
+									median: bpdata.MedianValue[i],
+									LIF: bpdata.P10Value[i],
+									q1: bpdata.P25Value[i],
+									q3: bpdata.P75Value[i],
+									UIF: bpdata.P90Value[i]
+								});
+							}
+							boxplot.render(bpseries, "#ageAtFirstDiagnosis", 300, 300);
+
+							// condition type visualization
+							var donut = new jnj_chart.donut();
+							slices = [];
+							for (i = 0; i < data.ConditionsByType.ConceptName.length; i++) {
+								slices.push({
+									id: data.ConditionsByType.ConceptName[i],
+									label: data.ConditionsByType.ConceptName[i],
+									value: data.ConditionsByType.CountValue[i]
+								})
+							}
+							donut.render(slices, "#conditionsByType", 400, 400, {margin: {top:5, left:5, right:200, bottom:5}});
+						}
 					});
 				}
 
@@ -97,15 +129,16 @@
 
 							loadTable(data);
 							$('#example').dataTable({
-								"lengthChange": false,
-								"deferRender": true
+								'lengthChange': false,
+								'deferRender': true,
+								'dom': '<"clear"p><"clear"f>ti'
 							});
 							$('#example').show();
 
 							tree = buildHierarchyFromJSON(data, threshold);
 							var treemap = new jnj_chart.treemap();
 							treemap.render(tree, '#treemap_container', width, height, {
-								onclick: function(concept_id) {
+								onclick: function (concept_id) {
 									sample.drilldown(concept_id)
 								},
 								gettitle: function (node) {
@@ -210,9 +243,9 @@
 
 <body>
 	<ul class="nav nav-tabs" id="myTab">
-		<li class="active"><a href="#treemap-panel">Home</a>
+		<li class="active"><a href="#treemap-panel">Treemap</a>
 		</li>
-		<li><a href="#table-panel">Profile</a>
+		<li><a href="#table-panel">Table</a>
 		</li>
 	</ul>
 
@@ -240,6 +273,9 @@
 			</table>
 		</div>
 	</div>
+
+	<div class="drilldown" id="conditionsByType"></div>
+	<div class="drilldown" id="ageAtFirstDiagnosis"></div>
 </body>
 
 </html>
