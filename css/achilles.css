@@ -3,21 +3,12 @@
 /* ------------------------------- */
 
 body {
-	padding-top: 50px;
 	margin-right: 15px;
 	margin-left: 15px;
 	margin-top: 5px;
 	margin-bottom: 5px;
 	font-family: Arial;
 }
-@media(min-width:768px) {
-	body {
-		padding-top: 50px;
-	}
-}
-/* Wrappers */
-
-/* ------------------------------- */
 
 #wrapper {
 	width: 99%;
@@ -156,15 +147,6 @@ body {
 	color: #fff;
 }
 /* Bootstrap Overrides */
-
-.navbar-brand {
-	padding: 5px 5px;
-	background: url(../images/ohdsi_logo.png) no-repeat;
-	padding-left: 45px;
-	line-height: 45px;
-	vertical-align: middle;
-	font-size: 14px;
-}
 .fa {
 	margin-right: 7px;
 }
@@ -211,6 +193,9 @@ div.cdmsummary .row div {
 }
 .report {
 	display: none;
+	width:96%;
+	margin-left:auto;
+	margin-right:auto;
 }
 /* D3 Tip Styles */
 
@@ -269,4 +254,10 @@ div.cdmsummary .row div {
 	margin: -4px 0 0 -1px;
 	top: 50%;
 	left: 100%;
+}
+.tab-pane {
+	padding: 7px 7px 7px 7px;
+}
+.clear {
+	clear: both;
 }

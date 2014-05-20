@@ -3,7 +3,7 @@
 	if (typeof define === 'function' && define.amd)
 	{
 		// AMD. Register as an anonymous module with d3 as a dependency.
-		define(["jquery", "d3"], factory)
+		define(["jquery", "d3", "d3/tip"], factory)
 	}
 	else
 	{
