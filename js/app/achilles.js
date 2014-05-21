@@ -243,20 +243,31 @@
 				});
 
 				d3.selectAll("#reportObservationPeriods #ageatfirstobservation svg").remove();
+				var ageAtFirstObservationData = common.mapHistogram(result.AgeAtFirstObservationHistogram)
 				var ageAtFirstObservationHistogram = new jnj_chart.histogram();
-				ageAtFirstObservationHistogram.render(common.mapHistogram(result.AgeAtFirstObservationHistogram), "#ageatfirstobservation", 460, 195,
+				ageAtFirstObservationHistogram.render(ageAtFirstObservationData, "#ageatfirstobservation", 460, 195,
 				{
-					xFormat: 'd',
+					xFormat: d3.format('d'),
 					xLabel: 'Age',
 					yLabel: 'People'
 				});
 
 				d3.selectAll("#reportObservationPeriods #observationlength svg").remove();
-				var observationLengthHistogram = new jnj_chart.histogram();
-				observationLengthHistogram.render(common.mapHistogram(result.ObservationLengthHistogram), "#observationlength", 460, 195,
+				var observationLengthData = common.mapHistogram(result.ObservationLengthHistogram)
+				var observationLengthXLabel = 'Days';
+				if (observationLengthData[observationLengthData.length - 1].x - observationLengthData[0].x > 1000)
 				{
-					xFormat: 's',
-					xLabel: 'Days',
+					observationLengthData.forEach(function (d)
+					{
+						d.x = d.x / 365.25;
+						d.dx = d.dx / 365.25;
+					});
+					observationLengthXLabel = 'Years';
+				}
+				var observationLengthHistogram = new jnj_chart.histogram();
+				observationLengthHistogram.render(observationLengthData, "#observationlength", 460, 195,
+				{
+					xLabel: observationLengthXLabel,
 					yLabel: 'People'
 				});
 
@@ -272,12 +283,23 @@
 						return item;
 					}, result.CumulativeDuration);
 
+				var cumulativeObservationXLabel = 'Days';
+				if (cumulativeData.slice(-1)[0].xValue - cumulativeData[0].xValue > 1000)
+				{
+					// convert x data to years
+					cumulativeData.forEach(function (d)
+					{
+						d.xValue = d.xValue / 365.25;
+					});
+					cumulativeObservationXLabel = 'Years';
+				}
+
 				cumulativeObservationLine.render(cumulativeData, "#reportObservationPeriods #cumulativeobservation", 360, 200,
 				{
-					xFormat: "s",
-					yFormat: "0%",
+					xFormat: d3.format('s'),
+					yFormat: d3.format('0%'),
 					interpolate: "step-before",
-					xLabel: 'Days',
+					xLabel: cumulativeObservationXLabel,
 					yLabel: 'Percent of Population',
 					margin:
 					{
@@ -305,10 +327,35 @@
 						};
 						return item;
 					}, result.ObservationPeriodLengthByGender);
+
+				var opgDataYlabel = 'Days';
+				var opgDataMinY = d3.min(opgData, function (d)
+				{
+					return d.min;
+				});
+				var opgDataMaxY = d3.max(opgData, function (d)
+				{
+					return d.max;
+				});
+				if ((opgDataMaxY - opgDataMinY) > 1000)
+				{
+					opgData.forEach(function (d)
+					{
+						d.min = d.min / 365.25;
+						d.LIF = d.LIF / 365.25;
+						d.q1 = d.q1 / 365.25;
+						d.median = d.median / 365.25;
+						d.q3 = d.q3 / 365.25;
+						d.UIF = d.UIF / 365.25;
+						d.max = d.max / 365.25;
+					});
+					opgDataYlabel = 'Years';
+				}
+				
 				opbygenderboxplot.render(opgData, "#reportObservationPeriods #opbygender", 220, 210,
 				{
 					xLabel: 'Gender',
-					yLabel: 'Days'
+					yLabel: opgDataYlabel
 				});
 
 				d3.selectAll("#reportObservationPeriods #opbyage svg").remove();
@@ -328,17 +375,42 @@
 						};
 						return item;
 					}, result.ObservationPeriodLengthByAge);
+				
+				var opaDataYlabel = 'Days';
+				var opaDataMinY = d3.min(opaData, function (d)
+				{
+					return d.min;
+				});
+				var opaDataMaxY = d3.max(opaData, function (d)
+				{
+					return d.max;
+				});
+				if ((opaDataMaxY - opaDataMinY) > 1000)
+				{
+					opaData.forEach(function (d)
+					{
+						d.min = d.min / 365.25;
+						d.LIF = d.LIF / 365.25;
+						d.q1 = d.q1 / 365.25;
+						d.median = d.median / 365.25;
+						d.q3 = d.q3 / 365.25;
+						d.UIF = d.UIF / 365.25;
+						d.max = d.max / 365.25;
+					});
+					opaDataYlabel = 'Years';
+				}
+				
 				opbyageboxplot.render(opaData, "#reportObservationPeriods #opbyage", 360, 200,
 				{
 					xLabel: 'Age Decile',
-					yLabel: 'Days'
+					yLabel: opaDataYlabel
 				});
 
 				d3.selectAll("#reportObservationPeriods #oppeoplebyyear svg").remove();
 				var observationLengthHistogram = new jnj_chart.histogram();
 				observationLengthHistogram.render(common.mapHistogram(result.ObservedByYearHistogram), "#reportObservationPeriods #oppeoplebyyear", 460, 195,
 				{
-					xFormat: 'd',
+					xFormat: d3.format('d'),
 					xLabel: 'Year',
 					yLabel: 'People'
 				});
@@ -380,13 +452,16 @@
 					yValue: 'CountValue',
 					yPercent: 'PercentValue'
 				});
-				
+
 				d3.selectAll("#reportObservationPeriods #oppeoplebymonthsingle svg").remove();
 				var observationByMonthSingle = new jnj_chart.line();
 				observationByMonthSingle.render(byMonthSeries, "#reportObservationPeriods #oppeoplebymonthsingle", 660, 195,
 				{
-					xScale: d3.time.scale().domain(d3.extent(byMonthSeries[0].values, function(d) { return d.xValue;})),
-					tickFormat: d3.time.format("%m/%Y"),
+					xScale: d3.time.scale().domain(d3.extent(byMonthSeries[0].values, function (d)
+					{
+						return d.xValue;
+					})),
+					tickFormat: d3.time.format("%Y"),
 					tickPadding: 10,
 					margin:
 					{
@@ -398,7 +473,7 @@
 					xLabel: "Date",
 					yLabel: "People"
 				});
-				
+
 
 				d3.selectAll("#reportObservationPeriods #opperperson svg").remove();
 				raceDonut = new jnj_chart.donut();
@@ -502,7 +577,7 @@
 				var yearHistogram = new jnj_chart.histogram();
 				yearHistogram.render(common.mapHistogram(result.BirthYearHistogram), "#reportPerson #birthyearhist", 460, 195,
 				{
-					xFormat: 'd',
+					xFormat: d3.format('d'),
 					xLabel: 'Year',
 					yLabel: 'People'
 				});
