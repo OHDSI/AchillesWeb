@@ -7,6 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<title>Achilles</title>
+	<link href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css" rel="stylesheet" />
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/achilles.css" rel="stylesheet">
 	<link href="css/chart.css" rel="stylesheet">
@@ -196,7 +197,7 @@
 
 		</div>
 
-<!--
+		<!--
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="panel panel-default">
@@ -318,7 +319,7 @@
 									<div id="treemap_container"></div>
 								</div>
 								<div class="tab-pane" id="table-panel">
-									<table id="example" class="display" style="display:none;">
+									<table id="example" class="display">
 										<thead>
 											<tr>
 												<th>Concept Id</th>
@@ -342,8 +343,29 @@
 				</div>
 			</div>
 		</div>
-		<div class="drilldown" id="conditionsByType"></div>
-		<div class="drilldown" id="ageAtFirstDiagnosis"></div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Conditions by Type
+					</div>
+					<div class="panel-body">
+						<div class="drilldown" id="conditionsByType"></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Age at First Diagnosis
+					</div>
+					<div class="panel-body">
+						<div class="drilldown" id="ageAtFirstDiagnosis"></div>
+					</div>
+				</div>
+			</div>
+
+		</div>
 	</div>
 
 	<div id="reportDashboard" class="report">

@@ -2,7 +2,7 @@
 {
 	var datasource_folder = 'sample';
 
-	curl(["jquery", "d3", "knockout", "bootstrap", "d3/tip"], function ($, d3, ko)
+	curl(["jquery", "d3", "knockout", "app/reports/condition_occurrence", "bootstrap", "d3/tip"], function ($, d3, ko, reportConditionOccurrence)
 	{
 		function summaryViewModel()
 		{
@@ -95,65 +95,6 @@
 		{
 			updateObservationPeriods(newData);
 		});
-
-		function buildHierarchyFromJSON(data)
-		{
-			var root = {
-				"name": "root",
-				"children": []
-			};
-			for (var i = 0; i < data.ConceptPath.length; i++)
-			{
-				var sequence = data.ConceptPath[i];
-				var size = data.num_persons[i]; // change from num_persons
-				if (isNaN(size))
-				{ // e.g. if this is a header row
-					continue;
-				}
-				var parts = sequence.split("-");
-				var currentNode = root;
-				for (var j = 0; j < parts.length; j++)
-				{
-					var children = currentNode["children"];
-					var nodeName = parts[j];
-					var childNode;
-					if (j + 1 < parts.length)
-					{
-						// Not yet at the end of the sequence; move down the tree.
-						var foundChild = false;
-						for (var k = 0; k < children.length; k++)
-						{
-							if (children[k]["name"] == nodeName)
-							{
-								childNode = children[k];
-								foundChild = true;
-								break;
-							}
-						}
-						// If we don't already have a child node for this branch, create it.
-						if (!foundChild)
-						{
-							childNode = {
-								"name": nodeName,
-								"children": []
-							};
-							children.push(childNode);
-						}
-						currentNode = childNode;
-					}
-					else
-					{
-						// Reached the end of the sequence; create a leaf node.
-						childNode = {
-							"name": nodeName,
-							"size": size
-						};
-						children.push(childNode);
-					}
-				}
-			}
-			return root;
-		};
 
 		function updateSummary(data)
 		{
@@ -613,7 +554,7 @@
 				{
 					$('.report').hide();
 
-					viewModel.loadConditions(this.params['folder']);
+					reportConditionOccurrence.render(this.params['folder']);
 
 					$('#reportConditions').show();
 				});

@@ -9,7 +9,6 @@ body {
 	margin-bottom: 5px;
 	font-family: Arial;
 }
-
 #wrapper {
 	width: 99%;
 }
@@ -147,6 +146,7 @@ body {
 	color: #fff;
 }
 /* Bootstrap Overrides */
+
 .fa {
 	margin-right: 7px;
 }
@@ -157,19 +157,63 @@ body {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
-
-.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
-  position: relative;
-  min-height: 1px;
-  padding-right: 5px;
-  padding-left: 5px;
+.col-xs-1,
+.col-sm-1,
+.col-md-1,
+.col-lg-1,
+.col-xs-2,
+.col-sm-2,
+.col-md-2,
+.col-lg-2,
+.col-xs-3,
+.col-sm-3,
+.col-md-3,
+.col-lg-3,
+.col-xs-4,
+.col-sm-4,
+.col-md-4,
+.col-lg-4,
+.col-xs-5,
+.col-sm-5,
+.col-md-5,
+.col-lg-5,
+.col-xs-6,
+.col-sm-6,
+.col-md-6,
+.col-lg-6,
+.col-xs-7,
+.col-sm-7,
+.col-md-7,
+.col-lg-7,
+.col-xs-8,
+.col-sm-8,
+.col-md-8,
+.col-lg-8,
+.col-xs-9,
+.col-sm-9,
+.col-md-9,
+.col-lg-9,
+.col-xs-10,
+.col-sm-10,
+.col-md-10,
+.col-lg-10,
+.col-xs-11,
+.col-sm-11,
+.col-md-11,
+.col-lg-11,
+.col-xs-12,
+.col-sm-12,
+.col-md-12,
+.col-lg-12 {
+	position: relative;
+	min-height: 1px;
+	padding-right: 5px;
+	padding-left: 5px;
 }
-
 .row {
-  margin-right: -5px;
-  margin-left: -5px;
+	margin-right: -5px;
+	margin-left: -5px;
 }
-
 /* Report Styles */
 
 .reportTitle {
@@ -193,9 +237,9 @@ div.cdmsummary .row div {
 }
 .report {
 	display: none;
-	width:96%;
-	margin-left:auto;
-	margin-right:auto;
+	width: 96%;
+	margin-left: auto;
+	margin-right: auto;
 }
 /* D3 Tip Styles */
 
@@ -260,4 +304,25 @@ div.cdmsummary .row div {
 }
 .clear {
 	clear: both;
+}
+/* Condition Occurrence Report */
+
+.pathleaf {
+	font-size: 12px;
+	color: #ddd;
+	font-weight: bold;
+	margin-bottom: 3px;
+}
+.pathstep {
+	font-size: 10px;
+	color: #aaa;
+}
+#tableBody tr {
+	cursor: pointer;
+}
+rect {
+	cursor: pointer;
+}
+th {
+	white-space: nowrap;
 }
