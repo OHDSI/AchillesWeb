@@ -2,56 +2,70 @@
 <html>
 
 <head>
-
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<title>Achilles</title>
 	<link href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css" rel="stylesheet" />
+	<link href="//cdn.datatables.net/colvis/1.1.0/css/dataTables.colVis.css" rel="stylesheet" />
+
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/achilles.css" rel="stylesheet">
 	<link href="css/chart.css" rel="stylesheet">
 
+	<script>
+		// todo - place in module
+		var datasource_folder = 'cdm4_sim';
+		var report = 'dashboard';
+
+		function updateReport(value) {
+			report = value;
+			updateRoute();
+		}
+		function updateDataSourceFolder(value) {
+			datasource_folder = value;
+			updateRoute();
+		}
+		function updateRoute() {
+			document.location = '#/' + datasource_folder + '/' + report;
+		}
+	</script>
+
 	<script src="js/curl.config.js"></script>
 	<script src="js/curl.js"></script>
 	<script src="js/app/achilles.js"></script>
-
 </head>
 
 <body>
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="container-fluid">
-			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse-menu">
 					<span class="sr-only">Toggle navigation</span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a href class="navbar-brand">Achilles</a>
+				<a href class="navbar-brand">
+					<img src="images/ohdsi_logo.png" alt="OHDSI">Achilles</a>
 			</div>
 
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<div class="collapse navbar-collapse" id="collapse-menu">
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Data Sources <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="#/sample/dashboard">CDM 4 Simulated Data Set</a>
-							</li>
+							<li onclick="updateDataSourceFolder('cdm4_sim');">CDM 4 Simulated Data Set</li>
+							<li onclick="updateDataSourceFolder('truven_ccae');">Truven CCAE</li>
 						</ul>
 					</li>
 					<li>
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="#/sample/dashboard">Dashboard</a>
-							</li>
-							<li><a href="#/sample/person">Person</a>
-							</li>
-							<li><a href="#/sample/conditions">Conditions</a>
-							</li>
-							<li><a href="#/sample/observationperiods">Observation Periods</a>
-							</li>
+							<li onclick="updateReport('dashboard');">Dashboard</li>
+							<li onclick="updateReport('person');">Person</li>
+							<li onclick="updateReport('conditions');">Conditions</li>
+							<li onclick="updateReport('observationperiods');">Observation Periods</li>
 						</ul>
 					</li>
 					<li><a href="about">About</a>
@@ -301,25 +315,23 @@
 			<div class="col-sm-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Condition Occurrence
+						Condition Prevalence
 					</div>
 					<div class="panel-body">
 						<div class="col-sm-12">
-
-
 							<ul class="nav nav-tabs" id="myTab">
 								<li class="active"><a href="#treemap-panel">Treemap</a>
 								</li>
 								<li><a href="#table-panel">Table</a>
 								</li>
 							</ul>
-
 							<div id='content' class="tab-content">
 								<div class="tab-pane active" id="treemap-panel">
 									<div id="treemap_container"></div>
+									<div id="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Red = Low to High)</div>
 								</div>
 								<div class="tab-pane" id="table-panel">
-									<table id="example" class="display">
+									<table id="condition_table" class="display">
 										<thead>
 											<tr>
 												<th>Concept Id</th>
@@ -330,11 +342,9 @@
 												<th>SNOMED</th>
 												<th>Person Count</th>
 												<th>Prevalence</th>
+												<th>Records per Person</th>
 											</tr>
 										</thead>
-
-										<tbody id="tableBody">
-										</tbody>
 									</table>
 								</div>
 							</div>
@@ -343,9 +353,10 @@
 				</div>
 			</div>
 		</div>
+		<div id="conditionDrilldownTitle" class="reportTitle">Conditions</div>
 		<div class="row">
 			<div class="col-sm-6">
-				<div class="panel panel-default">
+				<div id="panelConditionsByType" class="hidden panel panel-default">
 					<div class="panel-heading">
 						Conditions by Type
 					</div>
@@ -355,7 +366,7 @@
 				</div>
 			</div>
 			<div class="col-sm-6">
-				<div class="panel panel-default">
+				<div id="panelAgeAtFirstDiagnosis" class="hidden panel panel-default">
 					<div class="panel-heading">
 						Age at First Diagnosis
 					</div>

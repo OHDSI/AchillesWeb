@@ -1,6 +1,7 @@
 (function ()
 {
-	var datasource_folder = 'sample';
+	var current_folder;
+	var current_report;
 
 	curl(["jquery", "d3", "knockout", "app/reports/condition_occurrence", "bootstrap", "d3/tip"], function ($, d3, ko, reportConditionOccurrence)
 	{
@@ -538,9 +539,12 @@
 				this.get('#/:folder/dashboard', function (context)
 				{
 					$('.report').hide();
-					// change this json file to dashboard.json
+					// todo: change this json file to dashboard.json
 					viewModel.load(this.params['folder'] + '/cdm4_sim.json');
 					$('#reportDashboard').show();
+
+					datasource_folder = this.params['folder'];
+					report = 'dashboard';
 				});
 
 				this.get('#/:folder/person', function (context)
@@ -548,24 +552,29 @@
 					$('.report').hide();
 					viewModel.loadPerson(this.params['folder']);
 					$('#reportPerson').show();
+
+					datasource_folder = this.params['folder'];
+					report = 'person';
 				});
 
 				this.get('#/:folder/conditions', function (context)
 				{
 					$('.report').hide();
-
 					reportConditionOccurrence.render(this.params['folder']);
-
 					$('#reportConditions').show();
+
+					datasource_folder = this.params['folder'];
+					report = 'conditions';
 				});
 
 				this.get('#/:folder/observationperiods', function (context)
 				{
 					$('.report').hide();
-
 					viewModel.loadObservationPeriods(this.params['folder']);
-
 					$('#reportObservationPeriods').show();
+
+					datasource_folder = this.params['folder'];
+					report = 'observationperiods';
 				});
 
 			});
