@@ -74,3 +74,13 @@ table.data td {
 	padding-right: 3px;
 	white-space: nowrap;
 }
+
+.g-overlay {
+  fill: none;
+  pointer-events: all;
+}
+.g-label-value,
+.g-label-year
+{
+	font-size: 10px;
+}

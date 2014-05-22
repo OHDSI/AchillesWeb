@@ -191,7 +191,7 @@
 					.attr("y1", (height / 2) - (whiskerHeight / 2))
 					.attr("x2", x(data.LIF))
 					.attr("y2", (height / 2) + (whiskerHeight / 2));
-				
+
 				boxplot.append("line")
 					.attr("class", "whisker")
 					.attr("x1", x(data.LIF))
@@ -221,7 +221,7 @@
 					.attr("y1", (height / 2) - (whiskerHeight / 2))
 					.attr("x2", x(data.UIF))
 					.attr("y2", (height / 2) + (whiskerHeight / 2));
-				
+
 				boxplot.append("line")
 					.attr("class", "whisker")
 					.attr("x1", x(data.q3))
@@ -480,9 +480,9 @@
 				})]);
 
 			var boxWidth = 10;
-			var boxOffset = (x.rangeBand()/2) - (boxWidth / 2);
+			var boxOffset = (x.rangeBand() / 2) - (boxWidth / 2);
 			var whiskerWidth = boxWidth / 2;
-			var whiskerOffset = (x.rangeBand()/2) - (whiskerWidth / 2);
+			var whiskerOffset = (x.rangeBand() / 2) - (whiskerWidth / 2);
 
 			var chart = svg.append("g")
 				.attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
@@ -521,7 +521,7 @@
 					.attr("class", "box")
 					.attr("x", boxOffset)
 					.attr("y", y(d.q3))
-					.attr("width",  boxWidth)
+					.attr("width", boxWidth)
 					.attr("height", y(d.q1) - y(d.q3));
 
 				boxplot.append("line")
@@ -935,16 +935,16 @@
 						return d["xValue"];
 					});
 				})]);
-			
+
 			var xAxis = d3.svg.axis()
 				.scale(x)
 				.ticks(10)
 				.orient("bottom");
-			
+
 			// check for custom tick formatter
 			if (options.tickFormat)
 			{
-					xAxis.tickFormat(options.tickFormat);
+				xAxis.tickFormat(options.tickFormat);
 			}
 			else // apply standard formatter
 			{
@@ -958,10 +958,10 @@
 			}
 			else
 			{
-				x.range([0, width]);	
-				
+				x.range([0, width]);
+
 			}
-			
+
 			var y = options.yScale || d3.scale.linear()
 				.domain([0, d3.max(data, function (d)
 				{
@@ -971,13 +971,13 @@
 					});
 				})])
 				.range([height, 0]);
-			
+
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.tickFormat(options.yFormat)
 				.ticks(4)
 				.orient("left");
-			
+
 			// create a line function that can convert data[] into x and y points
 			var line = d3.svg.line()
 				.x(function (d)
@@ -998,14 +998,14 @@
 				.data(data)
 				.enter()
 				.append("g")
-			
+
 			var seriesLines = series.append("path")
 				.attr("class", "line")
 				.attr("d", function (d)
 				{
 					return line(d.values);
 				});
-			
+
 			if (options.colorScale)
 			{
 				seriesLines.style("stroke", function (d)
@@ -1013,29 +1013,29 @@
 					return options.colorScale(d.name);
 				})
 			}
-			
+
 			if (options.showSeriesLabel)
 			{
-			 series.append("text")
-			 	.datum(function (d)
-			 	{
-			 		return {
-			 			name: d.name,
-			 			value: d.values[d.values.length - 1]
-			 		};
-			 	})
-			 	.attr("transform", function (d)
-			 	{
-			 		return "translate(" + x(d.value["xValue"]) + "," + y(d.value["yValue"]) + ")";
-			 	})
-			 	.attr("x", 3)
-			 	.attr("dy", 2)
-			 	.style("font-size","8px")
-			 	.text(function (d)
-			 	{
-			 		return d.name;
-			 	});
-			}	
+				series.append("text")
+					.datum(function (d)
+					{
+						return {
+							name: d.name,
+							value: d.values[d.values.length - 1]
+						};
+					})
+					.attr("transform", function (d)
+					{
+						return "translate(" + x(d.value["xValue"]) + "," + y(d.value["yValue"]) + ")";
+					})
+					.attr("x", 3)
+					.attr("dy", 2)
+					.style("font-size", "8px")
+					.text(function (d)
+					{
+						return d.name;
+					});
+			}
 
 			vis.append("g")
 				.attr("class", "x axis")
@@ -1058,6 +1058,280 @@
 					event.data.chart.attr("width", targetWidth);
 					event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
 				}).trigger("resize");
+		}
+	}
+
+	chart.trellisline = function ()
+	{
+		var self = this;
+
+		self.render = function (dataByTrellis, target, w, h, options)
+		{
+			var defaults = {
+				margin:
+				{
+					top: 50,
+					right: 5,
+					bottom: 30,
+					left: 5
+
+				},
+				trellisSet: d3.keys(dataByTrellis),
+				xFormat: d3.format('d'),
+				yFormat: d3.format('d'),
+				interpolate: "linear",
+				tickPadding: 10,
+				colors: d3.scale.category10()
+			};
+
+			var options = $.extend(
+			{}, defaults, options);
+
+			var bisect = d3.bisector(function (d)
+			{
+				return d.date;
+			}).left
+			var minDate = d3.min(dataByTrellis, function (trellis)
+				{
+					return d3.min(trellis.values, function (series)
+					{
+						return d3.min(series.values, function (d)
+						{
+							return d.date;
+						});
+					});
+				}),
+				maxDate = d3.max(dataByTrellis, function (trellis)
+				{
+					return d3.max(trellis.values, function (series)
+					{
+						return d3.max(series.values, function (d)
+						{
+							return d.date;
+						});
+					});
+				});
+
+			var minY = d3.min(dataByTrellis, function (trellis)
+				{
+					return d3.min(trellis.values, function (series)
+					{
+						return d3.min(series.values, function (d)
+						{
+							return d.YPrevalence1000PP;
+						});
+					});
+				}),
+				maxY = d3.max(dataByTrellis, function (trellis)
+				{
+					return d3.max(trellis.values, function (series)
+					{
+						return d3.max(series.values, function (d)
+						{
+							return d.YPrevalence1000PP;
+						});
+					});
+				});
+
+			var margin = options.margin,
+				width = w - margin.left - margin.right,
+				height = h - margin.bottom - margin.top;
+
+			var trellisScale = d3.scale.ordinal()
+				.domain(options.trellisSet)
+				.rangeBands([0, width], .1, 0);
+
+			var seriesScale = d3.time.scale()
+				.domain([minDate, maxDate])
+				.range([0, trellisScale.rangeBand()]);
+
+			var yScale = d3.scale.linear()
+				.domain([minY, maxY])
+				.range([height, 0]);
+
+			var seriesLine = d3.svg.line()
+				.x(function (d)
+				{
+					return seriesScale(d.date);
+				})
+				.y(function (d)
+				{
+					return yScale(d.YPrevalence1000PP);
+				})
+				.interpolate(options.interpolate);
+
+
+			var chart = d3.select(target)
+				.append("svg:svg")
+				.attr("width", w)
+				.attr("height", h)
+				.attr("viewBox", "0 0 " + w + " " + h)
+				.append("g")
+				.attr("transform", function (d)
+				{
+					return "translate(" + margin.left + "," + margin.top +")";
+				});
+
+			var gTrellis = chart.selectAll(".g-trellis")
+				.data(trellisScale.domain())
+				.enter()
+				.append("g")
+				.attr("class", "g-trellis")
+				.attr("transform", function (d)
+				{
+					return "translate(" + trellisScale(d) + ",0)";
+				});
+
+			gSeries = gTrellis.selectAll(".g-series")
+				.data(function (trellis)
+				{
+					var seriesData = dataByTrellis.filter(function (e)
+					{
+						return e.key == trellis;
+					});
+					if (seriesData.length > 0)
+						return seriesData[0].values;
+					else
+						return [];
+				})
+				.enter()
+				.append("g")
+				.attr("class", "g-series lineplot");
+
+			gSeries.append("path")
+				.attr("class", "line")
+				.attr("d", function (d)
+				{
+					return seriesLine(d.values);
+				})
+				.style("stroke", function (d)
+				{
+					return options.colors(d.key)
+				});
+
+			gSeries.append("circle")
+				.attr("class", "g-value")
+				.attr("transform", function (d)
+				{
+					var v = d.values;
+					return "translate(" + seriesScale(v[v.length - 1].date) + "," + yScale(v[v.length - 1].YPrevalence1000PP) + ")";
+				})
+				.attr("r", 2.5)
+				.style("display", "none");
+
+			gSeries.append("text")
+				.attr("class", "g-label-value g-start")
+				.call(valueLabel, minDate);
+
+			gSeries.append("text")
+				.attr("class", "g-label-value g-end")
+				.call(valueLabel, maxDate);
+
+			gTrellis.append("text")
+				.attr("class", "g-label-year g-start")
+				.attr("dy", ".71em")
+				.call(yearLabel, minDate);
+
+			gTrellis.append("text")
+				.attr("class", "g-label-year g-end")
+				.attr("dy", ".71em")
+				.call(yearLabel, maxDate);
+
+			gTrellis.append("g")
+				.attr("class", "x axis")
+				.append("line")
+				.attr("x2", trellisScale.rangeBand())
+				.attr("y1", yScale(0))
+				.attr("y2", yScale(0));
+
+
+			gTrellis.append("rect")
+				.attr("class", "g-overlay")
+				.attr("x", -4)
+				.attr("width", trellisScale.rangeBand() + 8)
+				.attr("height", height + 18)
+				.on("mouseover", mouseover)
+				.on("mousemove", mousemove)
+				.on("mouseout", mouseout);
+
+			$(window).on("resize",
+				{
+					container: $(target),
+					chart: $(target + " svg"),
+					aspect: w / h
+				},
+				function (event)
+				{
+					var targetWidth = event.data.container.width();
+					event.data.chart.attr("width", targetWidth);
+					event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
+				}).trigger("resize");
+			
+			function mouseover()
+			{
+				gTrellis.selectAll(".g-end").style("display", "none");
+				gTrellis.selectAll(".g-value").style("display", null);
+				mousemove.call(this);
+			}
+
+			function mousemove()
+			{
+				var date = seriesScale.invert(d3.mouse(this)[0]);
+				gTrellis.selectAll(".g-label-value.g-start").call(valueLabel, date);
+				gTrellis.selectAll(".g-label-year.g-start").call(yearLabel, date, true);
+				gTrellis.selectAll(".g-value").attr("transform", function (d)
+				{
+					var s = d.values,
+						v = s[bisect(s, date, 0, s.length - 1)]
+					return "translate(" + seriesScale(v.date) + "," + yScale(v.YPrevalence1000PP) + ")";
+				});
+			}
+
+			function mouseout()
+			{
+				gTrellis.selectAll(".g-end").style("display", null);
+				gTrellis.selectAll(".g-label-value.g-start").call(valueLabel, minDate);
+				gTrellis.selectAll(".g-label-year.g-start").call(yearLabel, minDate, true);
+				gTrellis.selectAll(".g-label-year.g-end").call(yearLabel, maxDate, true);
+				gTrellis.selectAll(".g-value").style("display", "none");
+			}
+
+			function valueLabel(text, date)
+			{
+				var offsetScale = d3.scale.linear().domain(seriesScale.range());
+
+				text.each(function (d)
+				{
+					var text = d3.select(this),
+						s = d.values,
+						i = bisect(s, date, 0, s.length - 1),
+						j = Math.round(i / (s.length - 1) * (s.length - 12)),
+						v = s[i],
+						x = seriesScale(v.date);
+
+					text.attr("dy", null).attr("y", -4);
+
+					text.text(options.yFormat(v.YPrevalence1000PP))
+						.attr("transform", "translate(" + offsetScale.range([0, trellisScale.rangeBand() - this.getComputedTextLength()])(x) + "," + (yScale(d3.max(s.slice(j, j + 12), function (d)
+						{
+							return d.YPrevalence1000PP;
+						}))) + ")");
+				});
+			}
+
+			function yearLabel(text, date, hover)
+			{
+				var offsetScale = d3.scale.linear().domain(seriesScale.range());
+				x = seriesScale(date);
+
+				text.each(function (d)
+				{
+					d3.select(this)
+						.text(date.getFullYear())
+						.attr("transform", "translate(" + offsetScale.range([0, trellisScale.rangeBand() - this.getComputedTextLength()])(x) + "," + (height + 6) + ")")
+						.style("display", hover ? null : "none");
+				});
+			}
 		}
 	}
 
