@@ -162,7 +162,8 @@
 					.attr("x1", x(data.LIF))
 					.attr("y1", (height / 2) - (whiskerHeight / 2))
 					.attr("x2", x(data.LIF))
-					.attr("y2", (height / 2) + (whiskerHeight / 2))
+					.attr("y2", (height / 2) + (whiskerHeight / 2));
+				
 				boxplot.append("line")
 					.attr("class", "whisker")
 					.attr("x1", x(data.LIF))
@@ -191,7 +192,8 @@
 					.attr("x1", x(data.UIF))
 					.attr("y1", (height / 2) - (whiskerHeight / 2))
 					.attr("x2", x(data.UIF))
-					.attr("y2", (height / 2) + (whiskerHeight / 2))
+					.attr("y2", (height / 2) + (whiskerHeight / 2));
+				
 				boxplot.append("line")
 					.attr("class", "whisker")
 					.attr("x1", x(data.q3))
@@ -209,8 +211,8 @@
 					bottom: 10,
 					left: 40
 				},
-				xFormat: ',.0f',
-				yFormat: 's',
+				xFormat: d3.format(',.0f'),
+				yFormat: d3.format('s'),
 				tickPadding: 10
 			};
 
@@ -284,7 +286,6 @@
 			var height = h - options.margin.top - options.margin.bottom - options.tickPadding;
 
 			// this function asusmes data has been transfomred into a d3.layout.histogram structure
-			var formatCount = d3.format(options.xFormat);
 
 			var y = d3.scale.linear()
 				.domain([0, d3.max(data, function (d) {
@@ -296,13 +297,13 @@
 				.scale(x)
 				.orient("bottom")
 				.ticks(10)
-				.tickFormat(d3.format(options.xFormat));
+				.tickFormat(options.xFormat);
 
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.orient("left")
 				.ticks(4)
-				.tickFormat(d3.format(options.yFormat));
+				.tickFormat(options.yFormat);
 
 			var hist = chart.append("g")
 				.attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
@@ -359,7 +360,7 @@
 					bottom: 10,
 					left: 10
 				},
-				yFormat: 's',
+				yFormat: d3.format('s'),
 				tickPadding: 15
 			};
 
@@ -421,8 +422,10 @@
 					return d.max;
 				})]);
 
-			var whiskerWidth = x.rangeBand() / 2
-			var whiskerOffset = whiskerWidth / 2;
+			var boxWidth = 10;
+			var boxOffset = (x.rangeBand()/2) - (boxWidth / 2);
+			var whiskerWidth = boxWidth / 2;
+			var whiskerOffset = (x.rangeBand()/2) - (whiskerWidth / 2);
 
 			var chart = svg.append("g")
 				.attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
@@ -445,7 +448,7 @@
 						.attr("class", "bar")
 						.attr("x1", whiskerOffset)
 						.attr("y1", y(d.LIF))
-						.attr("x2", x.rangeBand() - whiskerOffset)
+						.attr("x2", whiskerOffset + whiskerWidth)
 						.attr("y2", y(d.LIF))
 					boxplot.append("line")
 						.attr("class", "whisker")
@@ -457,16 +460,16 @@
 
 				boxplot.append("rect")
 					.attr("class", "box")
-					.attr("x", 0)
+					.attr("x", boxOffset)
 					.attr("y", y(d.q3))
-					.attr("width", x.rangeBand())
+					.attr("width",  boxWidth)
 					.attr("height", y(d.q1) - y(d.q3));
 
 				boxplot.append("line")
 					.attr("class", "median")
-					.attr("x1", 0)
+					.attr("x1", boxOffset)
 					.attr("y1", y(d.median))
-					.attr("x2", x.rangeBand())
+					.attr("x2", boxOffset + boxWidth)
 					.attr("y2", y(d.median));
 
 				if (d.UIF != d.q3) // draw whisker
@@ -497,7 +500,7 @@
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.orient("left")
-				.tickFormat(d3.format(options.yFormat))
+				.tickFormat(options.yFormat)
 				.ticks(5);
 
 			chart.append("g")
@@ -671,8 +674,8 @@
 					bottom: 20,
 					left: 40
 				},
-				xFormat: ',.0f',
-				yFormat: 's'
+				xFormat: d3.format(',.0f'),
+				yFormat: d3.format('s')
 			};
 			var options = $.extend({}, defaults, options);
 
@@ -693,13 +696,13 @@
 
 			var xAxis = d3.svg.axis()
 				.scale(x)
-				.tickFormat(d3.format(options.xFormat))
+				.tickFormat(options.xFormat)
 				.ticks(10)
 				.orient("bottom");
 
 			var yAxis = d3.svg.axis()
 				.scale(y)
-				.tickFormat(d3.format(options.yFormat))
+				.tickFormat(options.yFormat)
 				.ticks(4)
 				.orient("left");
 
@@ -758,8 +761,8 @@
 					bottom: 5,
 					left: 40
 				},
-				xFormat: ',.0f',
-				yFormat: 's',
+				xFormat: d3.format(',.0f'),
+				yFormat: d3.format('s'),
 				interpolate: "linear",
 				xValue: "x",
 				yValue: "y",
@@ -839,7 +842,7 @@
 				xAxis.tickFormat(options.tickFormat);
 			} else // apply standard formatter
 			{
-				xAxis.tickFormat(d3.format(options.xFormat));
+				xAxis.tickFormat(options.xFormat);
 			}
 
 			// if x scale is ordinal, then apply rangeRoundBands, else apply standard range.
@@ -860,7 +863,7 @@
 
 			var yAxis = d3.svg.axis()
 				.scale(y)
-				.tickFormat(d3.format(options.yFormat))
+				.tickFormat(options.yFormat)
 				.ticks(4)
 				.orient("left");
 
