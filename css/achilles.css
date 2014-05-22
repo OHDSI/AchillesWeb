@@ -77,45 +77,13 @@ body {
 	right: 0;
 	left: auto;
 }
-/* Sidebar Menu Styles */
-
-.sidebar-search {
-	padding: 15px;
+.navbar-brand {
+	white-space: nowrap;
 }
-.arrow {
-	float: right;
+.navbar-brand img {
+	margin-top: -5px;
+	margin-right: 5px;
 }
-.fa.arrow:before {
-	content: "\f104";
-}
-.active > a > .fa.arrow:before {
-	content: "\f107";
-}
-.nav-second-level li,
-.nav-third-level li {
-	border-bottom: none !important;
-}
-.nav-second-level li a {
-	padding-left: 37px;
-}
-.nav-third-level li a {
-	padding-left: 52px;
-}
-@media(min-width:768px) {
-	.navbar-static-side {
-		z-index: 1;
-		position: absolute;
-		width: 250px;
-		margin-top: 51px;
-	}
-	.navbar-top-links .dropdown-messages,
-	.navbar-top-links .dropdown-tasks,
-	.navbar-top-links .dropdown-alerts {
-		margin-left: auto;
-	}
-}
-/* Buttons */
-
 /* ------------------------------- */
 
 .btn-outline {
@@ -308,16 +276,27 @@ div.cdmsummary .row div {
 /* Condition Occurrence Report */
 
 .pathleaf {
-	font-size: 12px;
-	color: #ddd;
+	font-size: 14px;
+	color: #fff;
 	font-weight: bold;
 	margin-bottom: 3px;
 }
-.pathstep {
-	font-size: 10px;
-	color: #aaa;
+.pathleafstat {
+	font-size: 12px;
+	color: #ddd;
+	font-family: "Courier New";
+	margin-bottom: 2px;
 }
-#tableBody tr {
+.pathstep {
+	font-size: 12px;
+	color: #aaa;
+	margin-bottom: 1px;
+}
+hr.path {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+#condition_table tr {
 	cursor: pointer;
 }
 rect {
@@ -325,4 +304,27 @@ rect {
 }
 th {
 	white-space: nowrap;
+}
+.dropdown-menu li {
+	display: block;
+	padding: 3px 20px;
+	clear: both;
+	font-weight: normal;
+	line-height: 1.42857143;
+	color: #333;
+	white-space: nowrap;
+	cursor: pointer;
+}
+.dropdown-menu li:hover {
+	background-color: #eee;
+}
+.numeric {
+	text-align: right;
+}
+.hidden {
+	display: none;
+}
+table.dataTable tbody td {
+	padding: 2px 4px;
+	vertical-align: top;
 }
