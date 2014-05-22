@@ -65,9 +65,9 @@
 				}
 
 				condition_occurrence.render = function (folder) {
-					format_pct = d3.format('.2 % ');
-					format_fixed = d3.format('.2f ');
-					format_comma = d3.format(', ');
+					format_pct = d3.format('.2%');
+					format_fixed = d3.format('.2f');
+					format_comma = d3.format(',');
 
 					$('#reportConditionOccurrences svg').remove();
 
