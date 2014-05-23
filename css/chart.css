@@ -7,7 +7,7 @@ div.chartcontainer
 
 .legend {
 	padding: 5px;
-	font: 10px sans-serif;
+	font: 10px arial;
 }
 /* general bar styles */
 
@@ -21,13 +21,13 @@ div.chartcontainer
 /* Barchart styles */
 
 .barlabel {
-	font-family: sans-serif;
+	font-family: arial;
 	font-size: 8px;
 }
 /* Boxplot styles */
 
 .boxplot {
-	font: 10px sans-serif;
+	font: 10px arial;
 }
 
 .boxplot line,
@@ -61,8 +61,14 @@ div.chartcontainer
 }
 
 .axis text {
-	font-family: sans-serif;
+	font-family: arial;
 	font-size: 8px;
+}
+
+.axislabel
+{
+	font-family: arial;
+	font-weight: bold;
 }
 
 table.data td:first-child {
