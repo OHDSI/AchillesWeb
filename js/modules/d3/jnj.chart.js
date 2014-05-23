@@ -1005,16 +1005,13 @@
 					return line(d.values);
 				});
 
-			if (options.colorScale)
-			{
-				seriesLines.style("stroke", function (d)
-				{
+			if (options.colorScale) {
+				seriesLines.style("stroke", function (d) {
 					return options.colorScale(d.name);
 				})
 			}
 
-			if (options.showSeriesLabel)
-			{
+			if (options.showSeriesLabel) {
 				series.append("text")
 					.datum(function (d)
 					{
@@ -1030,8 +1027,7 @@
 					.attr("x", 3)
 					.attr("dy", 2)
 					.style("font-size", "8px")
-					.text(function (d)
-					{
+					.text(function (d) {
 						return d.name;
 					});
 			}
@@ -1060,15 +1056,12 @@
 		}
 	}
 
-	chart.trellisline = function ()
-	{
+	chart.trellisline = function () {
 		var self = this;
 
-		self.render = function (dataByTrellis, target, w, h, options)
-		{
+		self.render = function (dataByTrellis, target, w, h, options) {
 			var defaults = {
-				margin:
-				{
+				margin: {
 					top: 25,
 					right: 5,
 					bottom: 30,
@@ -1083,50 +1076,36 @@
 				colors: d3.scale.category10()
 			};
 
-			var options = $.extend(
-			{}, defaults, options);
+			var options = $.extend({}, defaults, options);
 
-			var bisect = d3.bisector(function (d)
-			{
+			var bisect = d3.bisector(function (d) {
 				return d.date;
 			}).left
-			var minDate = d3.min(dataByTrellis, function (trellis)
-				{
-					return d3.min(trellis.values, function (series)
-					{
-						return d3.min(series.values, function (d)
-						{
+			var minDate = d3.min(dataByTrellis, function (trellis) {
+					return d3.min(trellis.values, function (series) {
+						return d3.min(series.values, function (d) {
 							return d.date;
 						});
 					});
 				}),
-				maxDate = d3.max(dataByTrellis, function (trellis)
-				{
-					return d3.max(trellis.values, function (series)
-					{
-						return d3.max(series.values, function (d)
-						{
+				maxDate = d3.max(dataByTrellis, function (trellis) {
+					return d3.max(trellis.values, function (series) {
+						return d3.max(series.values, function (d) {
 							return d.date;
 						});
 					});
 				});
 
-			var minY = d3.min(dataByTrellis, function (trellis)
-				{
-					return d3.min(trellis.values, function (series)
-					{
-						return d3.min(series.values, function (d)
-						{
+			var minY = d3.min(dataByTrellis, function (trellis) {
+					return d3.min(trellis.values, function (series) {
+						return d3.min(series.values, function (d) {
 							return d.YPrevalence1000PP;
 						});
 					});
 				}),
-				maxY = d3.max(dataByTrellis, function (trellis)
-				{
-					return d3.max(trellis.values, function (series)
-					{
-						return d3.max(series.values, function (d)
-						{
+				maxY = d3.max(dataByTrellis, function (trellis) {
+					return d3.max(trellis.values, function (series) {
+						return d3.max(series.values, function (d) {
 							return d.YPrevalence1000PP;
 						});
 					});
@@ -1199,33 +1178,26 @@
 				.range([height, 0]);
 
 			var seriesLine = d3.svg.line()
-				.x(function (d)
-				{
+				.x(function (d) {
 					return seriesScale(d.date);
 				})
-				.y(function (d)
-				{
+				.y(function (d) {
 					return yScale(d.YPrevalence1000PP);
 				})
 				.interpolate(options.interpolate);
-
-
 
 			var gTrellis = chart.selectAll(".g-trellis")
 				.data(trellisScale.domain())
 				.enter()
 				.append("g")
 				.attr("class", "g-trellis")
-				.attr("transform", function (d)
-				{
+				.attr("transform", function (d) {
 					return "translate(" + trellisScale(d) + ",0)";
 				});
 
 			gSeries = gTrellis.selectAll(".g-series")
-				.data(function (trellis)
-				{
-					var seriesData = dataByTrellis.filter(function (e)
-					{
+				.data(function (trellis) {
+					var seriesData = dataByTrellis.filter(function (e) {
 						return e.key == trellis;
 					});
 					if (seriesData.length > 0)
@@ -1239,19 +1211,16 @@
 
 			gSeries.append("path")
 				.attr("class", "line")
-				.attr("d", function (d)
-				{
+				.attr("d", function (d) {
 					return seriesLine(d.values);
 				})
-				.style("stroke", function (d)
-				{
+				.style("stroke", function (d) {
 					return options.colors(d.key)
 				});
 
 			gSeries.append("circle")
 				.attr("class", "g-value")
-				.attr("transform", function (d)
-				{
+				.attr("transform", function (d) {
 					var v = d.values;
 					return "translate(" + seriesScale(v[v.length - 1].date) + "," + yScale(v[v.length - 1].YPrevalence1000PP) + ")";
 				})
@@ -1313,8 +1282,7 @@
 					chart: $(target + " svg"),
 					aspect: w / h
 				},
-				function (event)
-				{
+				function (event) {
 					var targetWidth = event.data.container.width();
 					event.data.chart.attr("width", targetWidth);
 					event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
@@ -1327,21 +1295,18 @@
 				mousemove.call(this);
 			}
 
-			function mousemove()
-			{
+			function mousemove() {
 				var date = seriesScale.invert(d3.mouse(this)[0]);
 				gTrellis.selectAll(".g-label-value.g-start").call(valueLabel, date);
 				gTrellis.selectAll(".g-label-year.g-start").call(yearLabel, date);
-				gTrellis.selectAll(".g-value").attr("transform", function (d)
-				{
+				gTrellis.selectAll(".g-value").attr("transform", function (d) {
 					var s = d.values,
 						v = s[bisect(s, date, 0, s.length - 1)]
 					return "translate(" + seriesScale(v.date) + "," + yScale(v.YPrevalence1000PP) + ")";
 				});
 			}
 
-			function mouseout()
-			{
+			function mouseout() {
 				gTrellis.selectAll(".g-end").style("display", null);
 				gTrellis.selectAll(".g-label-value.g-start").call(valueLabel, minDate);
 				gTrellis.selectAll(".g-label-year.g-start").call(yearLabel, minDate);
@@ -1349,12 +1314,10 @@
 				gTrellis.selectAll(".g-value").style("display", "none");
 			}
 
-			function valueLabel(text, date)
-			{
+			function valueLabel(text, date) {
 				var offsetScale = d3.scale.linear().domain(seriesScale.range());
 
-				text.each(function (d)
-				{
+				text.each(function (d) {
 					var text = d3.select(this),
 						s = d.values,
 						i = bisect(s, date, 0, s.length - 1),
@@ -1365,8 +1328,7 @@
 					text.attr("dy", null).attr("y", -4);
 
 					text.text(options.yFormat(v.YPrevalence1000PP))
-						.attr("transform", "translate(" + offsetScale.range([0, trellisScale.rangeBand() - this.getComputedTextLength()])(x) + "," + (yScale(d3.max(s.slice(j, j + 12), function (d)
-						{
+						.attr("transform", "translate(" + offsetScale.range([0, trellisScale.rangeBand() - this.getComputedTextLength()])(x) + "," + (yScale(d3.max(s.slice(j, j + 12), function (d) {
 							return d.YPrevalence1000PP;
 						}))) + ")");
 				});
@@ -1377,8 +1339,7 @@
 				var offsetScale = d3.scale.linear().domain(seriesScale.range());
 				x = seriesScale(date);
 
-				text.each(function (d)
-				{
+				text.each(function (d) {
 					d3.select(this)
 						.text(date.getFullYear())
 						.attr("transform", "translate(" + offsetScale.range([0, trellisScale.rangeBand() - this.getComputedTextLength()])(x) + "," + (height + 6) + ")")
@@ -1388,8 +1349,7 @@
 		}
 	}
 
-	chart.treemap = function ()
-	{
+	chart.treemap = function () {
 		var self = this;
 
 		var root,
@@ -1420,6 +1380,7 @@
 				.append("svg:svg")
 				.attr("width", width)
 				.attr("height", height)
+				.attr("viewBox", "0 0 " + width + " " + height)
 				.append("svg:g");
 
 			nodes = treemap.nodes(data)
@@ -1482,6 +1443,17 @@
 				{
 					options.onclick(d);
 				});
+
+			$(window).on("resize", {
+					container: $(target),
+					chart: $(target + " svg"),
+					aspect: width / height
+				},
+				function (event) {
+					var targetWidth = event.data.container.width();
+					event.data.chart.attr("width", targetWidth);
+					event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
+				}).trigger("resize");
 		}
 	}
 

@@ -7,25 +7,25 @@
 
 	<title>Achilles</title>
 	<link href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css" rel="stylesheet" />
-	<link href="//cdn.datatables.net/colvis/1.1.0/css/dataTables.colVis.css" rel="stylesheet" />
-
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/achilles.css" rel="stylesheet">
 	<link href="css/chart.css" rel="stylesheet">
 
 	<script>
 		// todo - place in module
-		var datasource_folder = 'cdm4_sim';
+		var datasource_folder;
 		var report = 'dashboard';
 
 		function updateReport(value) {
 			report = value;
 			updateRoute();
 		}
+
 		function updateDataSourceFolder(value) {
 			datasource_folder = value;
 			updateRoute();
 		}
+
 		function updateRoute() {
 			document.location = '#/' + datasource_folder + '/' + report;
 		}
@@ -37,7 +37,7 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-default" role="navigation">
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse-menu">
@@ -54,9 +54,7 @@
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Data Sources <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li onclick="updateDataSourceFolder('cdm4_sim');">CDM 4 Simulated Data Set</li>
-							<li onclick="updateDataSourceFolder('truven_ccae');">Truven CCAE</li>
+						<ul id="dropdown-datasources" class="dropdown-menu">
 						</ul>
 					</li>
 					<li>
@@ -211,25 +209,6 @@
 
 		</div>
 
-		<!--
-		<div class="row">
-			<div class="col-sm-12">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						Persons With Continuous Observation By Month (Multi-Series)
-					</div>
-					<div class="panel-body">
-						<div class="row">
-							<div class="col-xs-12">
-								<div id="oppeoplebymonth" class="chartcontainer"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
--->
-
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="panel panel-default">
@@ -353,29 +332,43 @@
 				</div>
 			</div>
 		</div>
-		<div id="conditionDrilldownTitle" class="reportTitle">Conditions</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<div id="panelConditionsByType" class="hidden panel panel-default">
-					<div class="panel-heading">
-						Conditions by Type
-					</div>
-					<div class="panel-body">
-						<div class="drilldown" id="conditionsByType"></div>
-					</div>
-				</div>
-			</div>
-			<div class="col-sm-6">
-				<div id="panelAgeAtFirstDiagnosis" class="hidden panel panel-default">
-					<div class="panel-heading">
-						Age at First Diagnosis
-					</div>
-					<div class="panel-body">
-						<div class="drilldown" id="ageAtFirstDiagnosis"></div>
+		<div id="conditionDrilldownTitle" class="reportTitle"></div>
+		<div id="reportConditionOccurrencesDrilldown" class="hidden reportDrilldown">
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="panelConditionPrevalence" class="panel panel-default">
+						<div class="panel-heading">
+							Condition Prevalence
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="trellisLinePlot"></div>
+						</div>
 					</div>
 				</div>
 			</div>
 
+			<div class="row">
+				<div class="col-sm-6">
+					<div id="panelConditionsByType" class="panel panel-default">
+						<div class="panel-heading">
+							Conditions by Type
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="conditionsByType"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div id="panelAgeAtFirstDiagnosis" class="panel panel-default">
+						<div class="panel-heading">
+							Age at First Diagnosis
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="ageAtFirstDiagnosis"></div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
