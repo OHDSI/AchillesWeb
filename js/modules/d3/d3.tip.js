@@ -58,6 +58,7 @@
 			nodel.html(content)
 				.style(
 				{
+					display: 'block',
 					opacity: 1,
 					'pointer-events': 'all'
 				})
@@ -81,6 +82,7 @@
 			nodel = d3.select(node)
 			nodel.style(
 			{
+				display:'none',
 				opacity: 0,
 				'pointer-events': 'none'
 			})

@@ -18,8 +18,7 @@
 				condition_occurrence.drilldown = function (concept_id, concept_name) {
 					$('.drilldown svg').remove();
 					$('#conditionDrilldownTitle').text(concept_name);
-					$('#panelConditionsByType').removeClass('hidden');
-					$('#panelAgeAtFirstDiagnosis').removeClass('hidden ');
+					$('#reportConditionOccurrencesDrilldown').removeClass('hidden');
 
 					$.ajax({
 						type: "GET",
@@ -40,11 +39,15 @@
 									UIF: bpdata.P90Value[i]
 								});
 							}
-							boxplot.render(bpseries, "#ageAtFirstDiagnosis", 300, 300);
+							boxplot.render(bpseries, "#ageAtFirstDiagnosis", 500, 500, {
+								xLabel: 'Gender',
+								yLabel: 'Age at First Diagnosis'
+							});
 
 							// condition type visualization
 							var donut = new jnj_chart.donut();
 							slices = [];
+
 							for (i = 0; i < data.ConditionsByType.ConceptName.length; i++) {
 								slices.push({
 									id: data.ConditionsByType.ConceptName[i],
@@ -52,6 +55,17 @@
 									value: data.ConditionsByType.CountValue[i]
 								})
 							}
+
+							slices.sort(function (a, b) {
+								var nameA = a.label.toLowerCase(),
+									nameB = b.label.toLowerCase()
+								if (nameA < nameB) //sort string ascending
+									return -1
+								if (nameA > nameB)
+									return 1
+								return 0 //default return value (no sorting)
+							});
+
 							donut.render(slices, "#conditionsByType", 400, 400, {
 								margin: {
 									top: 5,
@@ -59,6 +73,68 @@
 									right: 200,
 									bottom: 5
 								}
+							});
+
+							// render trellis
+							trellisData = data.PrevalenceByGenderAgeYear;
+
+							var allDeciles = ["00-09", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80-89", "90-99"];
+							var allSeries = ["MALE", "FEMALE"];
+							var minYear = d3.min(trellisData.XCalendarYear),
+								maxYear = d3.max(trellisData.XCalendarYear);
+
+							var seriesInitializer = function (tName, sName, x, y) {
+								return {
+									TrellisName: tName,
+									SeriesName: sName,
+									XCalendarYear: x,
+									YPrevalence1000PP: y
+								};
+							}
+
+							var nestByDecile = d3.nest()
+								.key(function (d) {
+									return d.TrellisName;
+								})
+								.key(function (d) {
+									return d.SeriesName;
+								})
+								.sortValues(function (a, b) {
+									return a.XCalendarYear - b.XCalendarYear;
+								});
+
+							// map data into chartable form
+							var normalizedSeries = trellisData.TrellisName.map(function (d, i) {
+								var item = {};
+								var container = this;
+								d3.keys(container).forEach(function (p) {
+									item[p] = container[p][i];
+								});
+								return item;
+							}, trellisData);
+
+							var dataByDecile = nestByDecile.entries(normalizedSeries);
+							// fill in gaps
+							var yearRange = d3.range(minYear, maxYear, 1);
+
+							dataByDecile.forEach(function (trellis) {
+								trellis.values.forEach(function (series) {
+									series.values = yearRange.map(function (year) {
+										yearData = series.values.filter(function (f) {
+											return f.XCalendarYear == year;
+										})[0] || seriesInitializer(trellis.key, series.key, year, 0);
+										yearData.date = new Date(year, 0, 1);
+										return yearData;
+									})
+								})
+							});
+
+							// create svg with range bands based on the trellis names
+							var chart = new jnj_chart.trellisline();
+							chart.render(dataByDecile, "#trellisLinePlot", 1000, 300, {
+								trellisSet: allDeciles,
+								xFormat: d3.time.format("%Y"),
+								yFormat: d3.format("0.3f")
 							});
 						}
 					});
@@ -98,7 +174,6 @@
 
 							$('#condition_table').dataTable({
 								data: table_data,
-								dom: 'C<"clear">lfrtip',
 								columns: [
 									{
 										data: 'concept_id'
