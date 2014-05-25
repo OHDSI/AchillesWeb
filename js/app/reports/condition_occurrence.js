@@ -39,7 +39,7 @@
 									UIF: bpdata.P90Value[i]
 								});
 							}
-							boxplot.render(bpseries, "#ageAtFirstDiagnosis", 500, 500, {
+							boxplot.render(bpseries, "#ageAtFirstDiagnosis", 400, 400, {
 								xLabel: 'Gender',
 								yLabel: 'Age at First Diagnosis'
 							});
