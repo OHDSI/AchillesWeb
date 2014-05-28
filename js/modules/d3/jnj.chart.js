@@ -1,29 +1,21 @@
-(function (root, factory)
-{
-	if (typeof define === 'function' && define.amd)
-	{
+(function (root, factory) {
+	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module with d3 as a dependency.
 		define(["jquery", "d3", "d3/tip"], factory)
-	}
-	else
-	{
+	} else {
 		// Browser global.
 		root.jnj_chart = factory(root.$, root.d3)
 	}
-}(this, function (jQuery, d3)
-{
+}(this, function (jQuery, d3) {
 	var chart = {
 		version: "0.0.1"
 	};
 	var $ = jQuery;
 	var d3 = d3;
 
-	chart.util = chart.util ||
-	{};
-	chart.util.wrap = function (text, width)
-	{
-		text.each(function ()
-		{
+	chart.util = chart.util || {};
+	chart.util.wrap = function (text, width) {
+		text.each(function () {
 			var text = d3.select(this),
 				words = text.text().split(/\s+/).reverse(),
 				word,
@@ -33,12 +25,10 @@
 				y = text.attr("y"),
 				dy = parseFloat(text.attr("dy")),
 				tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-			while (word = words.pop())
-			{
+			while (word = words.pop()) {
 				line.push(word);
 				tspan.text(line.join(" "));
-				if (tspan.node().getComputedTextLength() > width)
-				{
+				if (tspan.node().getComputedTextLength() > width) {
 					line.pop();
 					tspan.text(line.join(" "));
 					line = [word];
@@ -48,16 +38,13 @@
 		});
 	}
 
-	chart.donut = function ()
-	{
+	chart.donut = function () {
 
-		this.render = function (data, target, w, h, options)
-		{
+		this.render = function (data, target, w, h, options) {
 
 			var defaults = {
 				colors: d3.scale.category10(),
-				margin:
-				{
+				margin: {
 					top: 5,
 					right: 75,
 					bottom: 5,
@@ -65,16 +52,14 @@
 				}
 			};
 
-			var options = $.extend(
-			{}, defaults, options);
+			var options = $.extend({}, defaults, options);
 
 			var width = w - options.margin.left - options.margin.right,
 				or = width / 2,
 				ir = width / 6;
 
 			var total = 0;
-			data.forEach(function (d)
-			{
+			data.forEach(function (d) {
 				total += +d.value;
 			});
 
@@ -97,8 +82,7 @@
 				.outerRadius(or);
 
 			var pie = d3.layout.pie() //this will create arc data for us given a list of values
-				.value(function (d)
-				{
+				.value(function (d) {
 					return d.value > 0 ? Math.max(d.value, total * .015) : 0; // we want slices to appear if they have data, so we return a minimum of 1.5% of the overall total if the datapoint has a value > 0.
 				}); //we must tell it out to access the value of each element in our data array
 
@@ -109,62 +93,52 @@
 				.attr("class", "slice"); //allow us to style things in the slices (like text)
 
 			arcs.append("svg:path")
-				.attr("fill", function (d)
-				{
+				.attr("fill", function (d) {
 					return options.colors(d.data.id);
 				}) //set the color for each slice to be chosen from the color function defined above
 			.attr("stroke", "#fff")
 				.attr("stroke-width", 2)
-				.attr("title", function (d)
-				{
+				.attr("title", function (d) {
 					return d.label;
 				})
 				.attr("d", arc); //this creates the actual SVG path using the associated data (pie) with the arc drawing function
 
 			legend.selectAll('rect')
-				.data(function (d)
-				{
+				.data(function (d) {
 					return d;
 				})
 				.enter()
 				.append("rect")
 				.attr("x", 0)
-				.attr("y", function (d, i)
-				{
+				.attr("y", function (d, i) {
 					return i * 15;
 				})
 				.attr("width", 10)
 				.attr("height", 10)
-				.style("fill", function (d)
-				{
+				.style("fill", function (d) {
 					return options.colors(d.id);
 				});
 
 			legend.selectAll('text')
-				.data(function (d)
-				{
+				.data(function (d) {
 					return d;
 				})
 				.enter()
 				.append("text")
 				.attr("x", 12)
-				.attr("y", function (d, i)
-				{
+				.attr("y", function (d, i) {
 					return (i * 15) + 9;
 				})
-				.text(function (d)
-				{
+				.text(function (d) {
 					return d.label;
 				});
 
-			$(window).on("resize",
-				{
+			$(window).on("resize", {
 					container: $(target),
 					chart: $(target + " svg"),
 					aspect: w / h
 				},
-				function (event)
-				{
+				function (event) {
 					var targetWidth = event.data.container.width();
 					event.data.chart.attr("width", targetWidth);
 					event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
@@ -172,13 +146,11 @@
 		}
 	}
 
-	chart.histogram = function ()
-	{
+	chart.histogram = function () {
 		var self = this;
 		self.xScale = {}; // shared xScale for histogram and boxplot
 
-		self.drawBoxplot = function (g, data, width, height)
-		{
+		self.drawBoxplot = function (g, data, width, height) {
 			var boxplot = g,
 				x = self.xScale,
 				whiskerHeight = height / 2;
@@ -231,11 +203,9 @@
 			}
 		}
 
-		self.render = function (data, target, w, h, options)
-		{
+		self.render = function (data, target, w, h, options) {
 			var defaults = {
-				margin:
-				{
+				margin: {
 					top: 10,
 					right: 10,
 					bottom: 10,
@@ -246,28 +216,23 @@
 				tickPadding: 10
 			};
 
-			var options = $.extend(
-			{}, defaults, options);
+			var options = $.extend({}, defaults, options);
 
 			// alocate the SVG container, only creating it if it doesn't exist using the selector
 			var chart;
 			var isNew = false; // this is a flag to determine if chart has already been ploted on this target.
-			if (!$(target + " svg")[0])
-			{
+			if (!$(target + " svg")[0]) {
 				chart = d3.select(target).append("svg")
 					.attr("width", w)
 					.attr("height", h)
 					.attr("viewBox", "0 0 " + w + " " + h);
 				isNew = true;
-			}
-			else
-			{
+			} else {
 				chart = d3.select(target + " svg");
 			}
 
 			// apply labels (if specified) and offset margins accordingly
-			if (options.xLabel)
-			{
+			if (options.xLabel) {
 				var xAxisLabel = chart.append("g")
 					.attr("transform", "translate(" + w / 2 + "," + (h - options.margin.bottom) + ")")
 
@@ -279,8 +244,7 @@
 				options.margin.bottom += bbox.height + 10;
 			}
 
-			if (options.yLabel)
-			{
+			if (options.yLabel) {
 				var yAxisLabel = chart.append("g")
 					.attr("transform", "translate(0," + (((h - options.margin.bottom - options.margin.top) / 2) + options.margin.top) + ")");
 				yAxisLabel.append("text")
@@ -302,17 +266,14 @@
 
 
 			var x = self.xScale = d3.scale.linear()
-				.domain([d3.min(data, function (d)
-				{
+				.domain([d3.min(data, function (d) {
 					return d.x;
-				}), d3.max(data, function (d)
-				{
+				}), d3.max(data, function (d) {
 					return d.x + d.dx;
 				})])
 				.range([0, width]);
 
-			if (options.boxplot)
-			{
+			if (options.boxplot) {
 				var boxplotG = chart.append("g")
 					.attr("class", "boxplot")
 					.attr("transform", "translate(" + options.margin.left + "," + (h - options.margin.bottom) + ")");
@@ -327,8 +288,7 @@
 			// this function asusmes data has been transfomred into a d3.layout.histogram structure
 
 			var y = d3.scale.linear()
-				.domain([0, d3.max(data, function (d)
-				{
+				.domain([0, d3.max(data, function (d) {
 					return d.y;
 				})])
 				.range([height, 0]);
@@ -352,24 +312,20 @@
 				.data(data)
 				.enter().append("g")
 				.attr("class", "bar")
-				.attr("transform", function (d)
-				{
+				.attr("transform", function (d) {
 					return "translate(" + x(d.x) + "," + y(d.y) + ")";
 				});
 
 			bar.append("rect")
 				.attr("x", 1)
-				.attr("width", function (d)
-				{
+				.attr("width", function (d) {
 					return x(d.x + d.dx) - x(d.x) - 1;
 				})
-				.attr("height", function (d)
-				{
+				.attr("height", function (d) {
 					return height - y(d.y);
 				});
 
-			if (isNew)
-			{
+			if (isNew) {
 				hist.append("g")
 					.attr("class", "x axis")
 					.attr("transform", "translate(0," + height + ")")
@@ -380,14 +336,12 @@
 					.attr("transform", "translate(0," + 0 + ")")
 					.call(yAxis);
 
-				$(window).on("resize",
-					{
+				$(window).on("resize", {
 						container: $(target),
 						chart: $(target + " svg"),
 						aspect: w / h
 					},
-					function (event)
-					{
+					function (event) {
 						var targetWidth = event.data.container.width();
 						event.data.chart.attr("width", targetWidth);
 						event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
@@ -397,13 +351,10 @@
 	}
 
 
-	chart.boxplot = function ()
-	{
-		this.render = function (data, target, w, h, options)
-		{
+	chart.boxplot = function () {
+		this.render = function (data, target, w, h, options) {
 			var defaults = {
-				margin:
-				{
+				margin: {
 					top: 10,
 					right: 10,
 					bottom: 10,
@@ -413,25 +364,20 @@
 				tickPadding: 15
 			};
 
-			var options = $.extend(
-			{}, defaults, options);
+			var options = $.extend({}, defaults, options);
 
 			var svg;
-			if (!$(target + " svg")[0])
-			{
+			if (!$(target + " svg")[0]) {
 				svg = d3.select(target).append("svg")
 					.attr("width", w)
 					.attr("height", h)
 					.attr("viewBox", "0 0 " + w + " " + h);
-			}
-			else
-			{
+			} else {
 				svg = d3.select(target + " svg");
 			}
 
 			// apply labels (if specified) and offset margins accordingly
-			if (options.xLabel)
-			{
+			if (options.xLabel) {
 				var xAxisLabel = svg.append("g")
 					.attr("transform", "translate(" + w / 2 + "," + (h - 5) + ")")
 
@@ -443,8 +389,7 @@
 				options.margin.bottom += bbox.height + 5;
 			}
 
-			if (options.yLabel)
-			{
+			if (options.yLabel) {
 				var yAxisLabel = svg.append("g")
 					.attr("transform", "translate(0," + (((h - options.margin.bottom - options.margin.top) / 2) + options.margin.top) + ")");
 				yAxisLabel.append("text")
@@ -467,15 +412,13 @@
 
 			var x = d3.scale.ordinal()
 				.rangeRoundBands([0, width], (1.0 / data.length))
-				.domain(data.map(function (d)
-				{
+				.domain(data.map(function (d) {
 					return d.Category;
 				}));
 
 			var y = d3.scale.linear()
 				.range([height, 0])
-				.domain([0, options.yMax || d3.max(data, function (d)
-				{
+				.domain([0, options.yMax || d3.max(data, function (d) {
 					return d.max;
 				})]);
 
@@ -492,14 +435,12 @@
 				.data(data)
 				.enter().append("g")
 				.attr("class", "boxplot")
-				.attr("transform", function (d)
-				{
+				.attr("transform", function (d) {
 					return "translate(" + x(d.Category) + ",0)";
 				});
 
 			// for each g element (containing the boxplot render surface), draw the whiskers, bars and rects
-			boxplots.each(function (d, i)
-			{
+			boxplots.each(function (d, i) {
 				var boxplot = d3.select(this);
 				if (d.LIF != d.q1) // draw whisker
 				{
@@ -573,14 +514,12 @@
 				.call(yAxis);
 
 
-			$(window).on("resize",
-				{
+			$(window).on("resize", {
 					container: $(target),
 					chart: $(target + " svg"),
 					aspect: w / h
 				},
-				function (event)
-				{
+				function (event) {
 					var targetWidth = event.data.container.width();
 					event.data.chart.attr("width", targetWidth);
 					event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
@@ -589,10 +528,8 @@
 		}
 	}
 
-	chart.barchart = function ()
-	{
-		this.render = function (data, target, w, h, options)
-		{
+	chart.barchart = function () {
+		this.render = function (data, target, w, h, options) {
 			var defaults = {
 				label: 'label',
 				value: 'value',
@@ -602,16 +539,14 @@
 				showLabels: false
 			};
 
-			var options = $.extend(
-			{}, defaults, options);
+			var options = $.extend({}, defaults, options);
 
 			var label = options.label;
 			var value = options.value;
 
 
 			var total = 0;
-			for (d = 0; d < data.length; d++)
-			{
+			for (d = 0; d < data.length; d++) {
 				total = total + data[d][value];
 			}
 
@@ -650,12 +585,10 @@
 				.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 				.attr("class", "barchart");
 
-			x.domain(data.map(function (d)
-			{
+			x.domain(data.map(function (d) {
 				return d[label];
 			}));
-			y.domain([0, options.yMax || d3.max(data, function (d)
-			{
+			y.domain([0, options.yMax || d3.max(data, function (d) {
 				return d[value];
 			})]);
 
@@ -665,13 +598,11 @@
 				.call(xAxis)
 				.selectAll(".tick text")
 				.style("text-anchor", options.textAnchor)
-				.attr("transform", function (d)
-				{
+				.attr("transform", function (d) {
 					return "rotate(" + options.rotate + ")"
 				});
 
-			if (options.wrap)
-			{
+			if (options.wrap) {
 				svg.selectAll(".tick text")
 					.call(chart.util.wrap, x.rangeBand());
 			}
@@ -680,67 +611,53 @@
 				.data(data)
 				.enter().append("rect")
 				.attr("class", "bar")
-				.attr("x", function (d)
-				{
+				.attr("x", function (d) {
 					return x(d[label]);
 				})
 				.attr("width", x.rangeBand())
-				.attr("y", function (d)
-				{
+				.attr("y", function (d) {
 					return y(d[value]);
 				})
-				.attr("height", function (d)
-				{
+				.attr("height", function (d) {
 					return height - y(d[value]);
 				})
-				.attr("title", function (d)
-				{
+				.attr("title", function (d) {
 					temp_title = d[label] + ": " + commaseparated(d[value], ",")
-					if (total > 0)
-					{
+					if (total > 0) {
 						temp_title = temp_title + ' (' + formatpercent(d[value] / total) + ')';
-					}
-					else
-					{
+					} else {
 						temp_title = temp_title + ' (' + formatpercent(0) + ')';
 					}
 					return temp_title;
 				})
-				.style("fill", function (d)
-				{
+				.style("fill", function (d) {
 					return options.colors(d[label]);
 				});
 
-			if (options.showLabels)
-			{
+			if (options.showLabels) {
 				svg.selectAll(".barlabel")
 					.data(data)
 					.enter()
 					.append("text")
 					.attr("class", "barlabel")
-					.text(function (d)
-					{
+					.text(function (d) {
 						return formatpercent(d[value] / total);
 					})
-					.attr("x", function (d)
-					{
+					.attr("x", function (d) {
 						return x(d[label]) + x.rangeBand() / 2;
 					})
-					.attr("y", function (d)
-					{
+					.attr("y", function (d) {
 						return y(d[value]) - 3;
 					})
 					.attr("text-anchor", "middle");
 			}
 
-			$(window).on("resize",
-				{
+			$(window).on("resize", {
 					container: $(target),
 					chart: $(target + " svg"),
 					aspect: w / h
 				},
-				function (event)
-				{
+				function (event) {
 					var targetWidth = event.data.container.width();
 					event.data.chart.attr("width", targetWidth);
 					event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
@@ -748,13 +665,10 @@
 		}
 	}
 
-	chart.areachart = function ()
-	{
-		this.render = function (data, target, w, h, options)
-		{
+	chart.areachart = function () {
+		this.render = function (data, target, w, h, options) {
 			var defaults = {
-				margin:
-				{
+				margin: {
 					top: 20,
 					right: 30,
 					bottom: 20,
@@ -763,22 +677,19 @@
 				xFormat: d3.format(',.0f'),
 				yFormat: d3.format('s')
 			};
-			var options = $.extend(
-			{}, defaults, options);
+			var options = $.extend({}, defaults, options);
 
 			var width = w - options.margin.left - options.margin.right,
 				height = h - options.margin.top - options.margin.bottom;
 
 			var x = d3.scale.linear()
-				.domain(d3.extent(data, function (d)
-				{
+				.domain(d3.extent(data, function (d) {
 					return d.x;
 				}))
 				.range([0, width]);
 
 			var y = d3.scale.linear()
-				.domain([0, d3.max(data, function (d)
-				{
+				.domain([0, d3.max(data, function (d) {
 					return d.y;
 				})])
 				.range([height, 0]);
@@ -796,13 +707,11 @@
 				.orient("left");
 
 			var area = d3.svg.area()
-				.x(function (d)
-				{
+				.x(function (d) {
 					return x(d.x);
 				})
 				.y0(height)
-				.y1(function (d)
-				{
+				.y1(function (d) {
 					return y(d.y);
 				});
 
@@ -830,14 +739,12 @@
 				.attr("class", "y axis")
 				.call(yAxis)
 
-			$(window).on("resize",
-				{
+			$(window).on("resize", {
 					container: $(target),
 					chart: $(target + " svg"),
 					aspect: w / h
 				},
-				function (event)
-				{
+				function (event) {
 					var targetWidth = event.data.container.width();
 					event.data.chart.attr("width", targetWidth);
 					event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
@@ -845,13 +752,10 @@
 		}
 	}
 
-	chart.line = function ()
-	{
-		this.render = function (data, target, w, h, options)
-		{
+	chart.line = function () {
+		this.render = function (data, target, w, h, options) {
 			var defaults = {
-				margin:
-				{
+				margin: {
 					top: 5,
 					right: 5,
 					bottom: 5,
@@ -867,17 +771,15 @@
 				showSeriesLabel: false,
 				colorScale: null
 			};
-			var options = $.extend(
-			{}, defaults, options);
+			var options = $.extend({}, defaults, options);
 
 			// convert data to multi-series format if not already formatted
-			if (!data[0].hasOwnProperty("values"))
-			{
+			if (!data[0].hasOwnProperty("values")) {
 				// assumes data is just an array of values (single series)
 				data = [
-				{
-					name: 'series',
-					values: data
+					{
+						name: 'series',
+						values: data
 				}];
 			}
 
@@ -889,8 +791,7 @@
 				.attr("viewBox", "0 0 " + w + " " + h);
 
 			// apply labels (if specified) and offset margins accordingly
-			if (options.xLabel)
-			{
+			if (options.xLabel) {
 				var xAxisLabel = chart.append("g")
 					.attr("transform", "translate(" + w / 2 + "," + (h - options.margin.bottom) + ")")
 
@@ -902,8 +803,7 @@
 				options.margin.bottom += bbox.height + 10;
 			}
 
-			if (options.yLabel)
-			{
+			if (options.yLabel) {
 				var yAxisLabel = chart.append("g")
 					.attr("transform", "translate(0," + (((h - options.margin.bottom - options.margin.top) / 2) + options.margin.top) + ")");
 				yAxisLabel.append("text")
@@ -922,16 +822,12 @@
 			var height = h - options.margin.top - options.margin.bottom - options.tickPadding;
 
 			var x = options.xScale || d3.scale.linear()
-				.domain([d3.min(data, function (d)
-				{
-					return d3.min(d.values, function (d)
-					{
+				.domain([d3.min(data, function (d) {
+					return d3.min(d.values, function (d) {
 						return d["xValue"];
 					});
-				}), d3.max(data, function (d)
-				{
-					return d3.max(d.values, function (d)
-					{
+				}), d3.max(data, function (d) {
+					return d3.max(d.values, function (d) {
 						return d["xValue"];
 					});
 				})]);
@@ -942,30 +838,23 @@
 				.orient("bottom");
 
 			// check for custom tick formatter
-			if (options.tickFormat)
-			{
+			if (options.tickFormat) {
 				xAxis.tickFormat(options.tickFormat);
-			}
-			else // apply standard formatter
+			} else // apply standard formatter
 			{
 				xAxis.tickFormat(options.xFormat);
 			}
 
 			// if x scale is ordinal, then apply rangeRoundBands, else apply standard range.
-			if (typeof x.rangePoints === 'function')
-			{
+			if (typeof x.rangePoints === 'function') {
 				x.rangePoints([0, width]);
-			}
-			else
-			{
+			} else {
 				x.range([0, width]);
 			}
 
 			var y = options.yScale || d3.scale.linear()
-				.domain([0, d3.max(data, function (d)
-				{
-					return d3.max(d.values, function (d)
-					{
+				.domain([0, d3.max(data, function (d) {
+					return d3.max(d.values, function (d) {
 						return d["yValue"];
 					});
 				})])
@@ -979,12 +868,10 @@
 
 			// create a line function that can convert data[] into x and y points
 			var line = d3.svg.line()
-				.x(function (d)
-				{
+				.x(function (d) {
 					return x(d["xValue"]);
 				})
-				.y(function (d)
-				{
+				.y(function (d) {
 					return y(d["yValue"]);
 				})
 				.interpolate(options.interpolate);
@@ -1000,8 +887,7 @@
 
 			var seriesLines = series.append("path")
 				.attr("class", "line")
-				.attr("d", function (d)
-				{
+				.attr("d", function (d) {
 					return line(d.values);
 				});
 
@@ -1013,15 +899,13 @@
 
 			if (options.showSeriesLabel) {
 				series.append("text")
-					.datum(function (d)
-					{
+					.datum(function (d) {
 						return {
 							name: d.name,
 							value: d.values[d.values.length - 1]
 						};
 					})
-					.attr("transform", function (d)
-					{
+					.attr("transform", function (d) {
 						return "translate(" + x(d.value["xValue"]) + "," + y(d.value["yValue"]) + ")";
 					})
 					.attr("x", 3)
@@ -1041,14 +925,12 @@
 				.attr("class", "y axis")
 				.call(yAxis)
 
-			$(window).on("resize",
-				{
+			$(window).on("resize", {
 					container: $(target),
 					chart: $(target + " svg"),
 					aspect: w / h
 				},
-				function (event)
-				{
+				function (event) {
 					var targetWidth = event.data.container.width();
 					event.data.chart.attr("width", targetWidth);
 					event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
@@ -1119,51 +1001,46 @@
 				.attr("height", h)
 				.attr("viewBox", "0 0 " + w + " " + h)
 				.append("g")
-				.attr("transform", function (d)
-				{
+				.attr("transform", function (d) {
 					return "translate(" + margin.left + "," + margin.top + ")";
 				});
 
 			var xAxisLabel;
 			var xAxisLabelOffset = margin.bottom;
-			if (options.xLabel)
-			{
+			if (options.xLabel) {
 				xAxisLabel = chart.append("g");
 				xAxisLabel.append("text")
 					.attr("class", "axislabel")
 					.style("text-anchor", "middle")
 					.text(options.xLabel);
-				
-				margin.bottom +=  xAxisLabel.node().getBBox().height + 3;				
+
+				margin.bottom += xAxisLabel.node().getBBox().height + 3;
 			}
 
 			var yAxisLabel;
 			var yAxisLabelOffset = margin.left;
-			if (options.yLabel)
-			{
+			if (options.yLabel) {
 				yAxisLabel = chart.append("g");
 				yAxisLabel.append("text")
 					.attr("class", "axislabel")
 					.style("text-anchor", "middle")
 					.text(options.yLabel);
-				margin.left +=  yAxisLabel.node().getBBox().height + 3;				
+				margin.left += yAxisLabel.node().getBBox().height + 3;
 			}
-			
+
 			var width = w - margin.left - margin.right,
 				height = h - margin.bottom - margin.top;
 
-			if (options.xLabel)
-			{
-				xAxisLabel.attr("transform", "translate(" + ((width/2) + margin.left) + "," + (h - xAxisLabelOffset) + ")");
+			if (options.xLabel) {
+				xAxisLabel.attr("transform", "translate(" + ((width / 2) + margin.left) + "," + (h - xAxisLabelOffset) + ")");
 			}
-			
-			if (options.yLabel)
-			{
-				yAxisLabel.attr("transform", "translate(" + yAxisLabelOffset + "," + (margin.top + (height/2)) + ")");
+
+			if (options.yLabel) {
+				yAxisLabel.attr("transform", "translate(" + yAxisLabelOffset + "," + (margin.top + (height / 2)) + ")");
 				yAxisLabel.select("text")
 					.attr("transform", "rotate(-90)");
 			}
-			
+
 
 			var trellisScale = d3.scale.ordinal()
 				.domain(options.trellisSet)
@@ -1254,15 +1131,13 @@
 
 			gTrellis.append("g")
 				.attr("class", "g-label-trellis")
-				.attr("transform", function (d)
-				{
+				.attr("transform", function (d) {
 					return "translate(" + (trellisScale.rangeBand() / 2) + "," + (height + 20) + ")"
 				})
 				.append("text")
 				.attr("dy", ".71em")
 				.style("text-anchor", "middle")
-				.text(function (d)
-				{
+				.text(function (d) {
 					return d;
 				});
 
@@ -1276,8 +1151,7 @@
 				.on("mouseout", mouseout);
 
 
-			$(window).on("resize",
-				{
+			$(window).on("resize", {
 					container: $(target),
 					chart: $(target + " svg"),
 					aspect: w / h
@@ -1288,8 +1162,7 @@
 					event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
 				}).trigger("resize");
 
-			function mouseover()
-			{
+			function mouseover() {
 				gTrellis.selectAll(".g-end").style("display", "none");
 				gTrellis.selectAll(".g-value").style("display", null);
 				mousemove.call(this);
@@ -1334,14 +1207,17 @@
 				});
 			}
 
-			function yearLabel(text, date)
-			{
+			function yearLabel(text, date) {
 				var offsetScale = d3.scale.linear().domain(seriesScale.range());
-				x = seriesScale(date);
+				// derive the x vale by using the first trellis/series set of values.  
+				// All series are assumed to contain the same domain of X values.
+				var s = dataByTrellis[0].values[0].values,   
+					v = s[bisect(s, date, 0, s.length - 1)],
+					x = seriesScale(v.date);
 
 				text.each(function (d) {
 					d3.select(this)
-						.text(date.getFullYear())
+						.text(v.date.getFullYear())
 						.attr("transform", "translate(" + offsetScale.range([0, trellisScale.rangeBand() - this.getComputedTextLength()])(x) + "," + (height + 6) + ")")
 						.style("display", null);
 				});
@@ -1361,8 +1237,7 @@
 			y,
 			currentZoomNode;
 
-		this.render = function (data, target, width, height, options)
-		{
+		this.render = function (data, target, width, height, options) {
 			root = data;
 			x = d3.scale.linear().range([0, width]);
 			y = d3.scale.linear().range([0, height]);
@@ -1371,8 +1246,7 @@
 				.round(false)
 				.size([width, height])
 				.sticky(true)
-				.value(function (d)
-				{
+				.value(function (d) {
 					return options.getsizevalue(d);
 				});
 
@@ -1384,13 +1258,11 @@
 				.append("svg:g");
 
 			nodes = treemap.nodes(data)
-				.filter(function (d)
-				{
+				.filter(function (d) {
 					return options.getsizevalue(d);
 				});
 
-			color_range = d3.extent(nodes, function (d)
-			{
+			color_range = d3.extent(nodes, function (d) {
 				return options.getcolorvalue(d);
 			});
 
@@ -1401,8 +1273,7 @@
 			var tip = d3.tip()
 				.attr('class', 'd3-tip')
 				.offset([-10, 0])
-				.html(function (d)
-				{
+				.html(function (d) {
 					return options.gettitle(d);
 				})
 			svg.call(tip);
@@ -1411,36 +1282,29 @@
 				.data(nodes)
 				.enter().append("svg:g")
 				.attr("class", "cell")
-				.attr("transform", function (d)
-				{
+				.attr("transform", function (d) {
 					return "translate(" + d.x + "," + d.y + ")";
 				});
 
 			cell.append("svg:rect")
-				.attr("width", function (d)
-				{
+				.attr("width", function (d) {
 					return Math.max(0, d.dx - 1);
 				})
-				.attr("height", function (d)
-				{
+				.attr("height", function (d) {
 					return Math.max(0, d.dy - 1);
 				})
-				.attr("title", function (d)
-				{
+				.attr("title", function (d) {
 					return options.gettitle(d);
 				})
-				.attr("id", function (d)
-				{
+				.attr("id", function (d) {
 					return d.id;
 				})
-				.style("fill", function (d)
-				{
+				.style("fill", function (d) {
 					return color(d.records_per_person);
 				})
 				.on('mouseover', tip.show)
 				.on('mouseout', tip.hide)
-				.on('click', function (d)
-				{
+				.on('click', function (d) {
 					options.onclick(d);
 				});
 
