@@ -137,7 +137,9 @@
 								xLabel: "Age Decile",
 								yLabel: "Prevalence Per 1000 People",							
 								xFormat: d3.time.format("%Y"),
-								yFormat: d3.format("0.3f")
+								yFormat: d3.format("0.2f"),
+								tickPadding: 20
+								
 							});
 						}
 					});

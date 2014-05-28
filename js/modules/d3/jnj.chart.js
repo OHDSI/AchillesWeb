@@ -955,6 +955,7 @@
 				yFormat: d3.format('d'),
 				interpolate: "linear",
 				tickPadding: 10,
+				trellisLabelPadding: 30,
 				colors: d3.scale.category10()
 			};
 
@@ -1028,6 +1029,14 @@
 				margin.left += yAxisLabel.node().getBBox().height + 3;
 			}
 
+			margin.left += options.tickPadding;
+			margin.bottom += options.trellisLabelPadding;
+			
+			var vis = chart.append("g")
+			.attr("transform", function (d) {
+					return "translate(" + margin.left + "," + margin.top + ")";
+			});
+			
 			var width = w - margin.left - margin.right,
 				height = h - margin.bottom - margin.top;
 
@@ -1063,7 +1072,7 @@
 				})
 				.interpolate(options.interpolate);
 
-			var gTrellis = chart.selectAll(".g-trellis")
+			var gTrellis = vis.selectAll(".g-trellis")
 				.data(trellisScale.domain())
 				.enter()
 				.append("g")
@@ -1151,6 +1160,17 @@
 				.on("mouseout", mouseout);
 
 
+			var yAxis = d3.svg.axis()
+				.scale(yScale)
+				.tickFormat(options.yFormat)
+				.ticks(4)
+				.orient("left");
+
+			d3.select(gTrellis[0][0]).append("g")
+				.attr("class", "y axis")
+				.call(yAxis)
+
+
 			$(window).on("resize", {
 					container: $(target),
 					chart: $(target + " svg"),
@@ -1211,7 +1231,7 @@
 				var offsetScale = d3.scale.linear().domain(seriesScale.range());
 				// derive the x vale by using the first trellis/series set of values.  
 				// All series are assumed to contain the same domain of X values.
-				var s = dataByTrellis[0].values[0].values,   
+				var s = dataByTrellis[0].values[0].values,
 					v = s[bisect(s, date, 0, s.length - 1)],
 					x = seriesScale(v.date);
 
