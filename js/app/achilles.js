@@ -10,6 +10,8 @@
 			self.conditionsData = ko.observable();
 			self.personData = ko.observable();
 			self.observationPeriodsData = ko.observable();
+			self.datasource = ko.observable({name:'loading...'});
+			self.datasources = [];
 
 			self.formatSI = function (d, p) {
 				if (d < 1) {
@@ -63,6 +65,8 @@
 		}
 
 		var viewModel = new summaryViewModel();
+		page_vm = viewModel;
+
 		viewModel.summaryData.subscribe(function (newData) {
 			updateSummary(newData);
 		});
@@ -132,27 +136,27 @@
 			curl(["jnj/chart", "common"], function (jnj_chart, common) {
 				d3.selectAll("#reportObservationPeriods #agebygender svg").remove();
 				var agegenderboxplot = new jnj_chart.boxplot();
-				var agData = result.AgeByGender.Category
+				var agData = result.AGE_BY_GENDER.CATEGORY
 					.map(function (d, i) {
 						var item = {
-							Category: this.Category[i],
-							min: this.MinValue[i],
-							LIF: this.P10Value[i],
-							q1: this.P25Value[i],
-							median: this.MedianValue[i],
-							q3: this.P75Value[i],
-							UIF: this.P90Value[i],
-							max: this.MaxValue[i]
+							Category: this.CATEGORY[i],
+							min: this.MIN_VALUE[i],
+							LIF: this.P10_VALUE[i],
+							q1: this.P25_VALUE[i],
+							median: this.MEDIAN_VALUE[i],
+							q3: this.P75_VALUE[i],
+							UIF: this.P90_VALUE[i],
+							max: this.MAX_VALUE[i]
 						};
 						return item;
-					}, result.AgeByGender);
+					}, result.AGE_BY_GENDER);
 				agegenderboxplot.render(agData, "#reportObservationPeriods #agebygender", 220, 210, {
 					xLabel: "Gender",
 					yLabel: "Age"
 				});
 
 				d3.selectAll("#reportObservationPeriods #ageatfirstobservation svg").remove();
-				var ageAtFirstObservationData = common.mapHistogram(result.AgeAtFirstObservationHistogram)
+				var ageAtFirstObservationData = common.mapHistogram(result.AGE_AT_FIRST_OBSERVATION_HISTOGRAM)
 				var ageAtFirstObservationHistogram = new jnj_chart.histogram();
 				ageAtFirstObservationHistogram.render(ageAtFirstObservationData, "#ageatfirstobservation", 460, 195, {
 					xFormat: d3.format('d'),
@@ -161,7 +165,7 @@
 				});
 
 				d3.selectAll("#reportObservationPeriods #observationlength svg").remove();
-				var observationLengthData = common.mapHistogram(result.ObservationLengthHistogram)
+				var observationLengthData = common.mapHistogram(result.OBSERVATION_LENGTH_HISTOGRAM)
 				var observationLengthXLabel = 'Days';
 				if (observationLengthData[observationLengthData.length - 1].x - observationLengthData[0].x > 1000) {
 					observationLengthData.forEach(function (d) {
@@ -178,14 +182,14 @@
 
 				d3.selectAll("#reportObservationPeriods #cumulativeobservation svg").remove();
 				var cumulativeObservationLine = new jnj_chart.line();
-				var cumulativeData = result.CumulativeDuration.XLengthOfObservation
+				var cumulativeData = result.CUMULATIVE_DURATION.X_LENGTH_OF_OBSERVATION
 					.map(function (d, i) {
 						var item = {
-							xValue: this.XLengthOfObservation[i],
-							yValue: this.YPercentPersons[i]
+							xValue: this.X_LENGTH_OF_OBSERVATION[i],
+							yValue: this.Y_PERCENT_PERSONS[i]
 						};
 						return item;
-					}, result.CumulativeDuration);
+					}, result.CUMULATIVE_DURATION);
 
 				var cumulativeObservationXLabel = 'Days';
 				if (cumulativeData.slice(-1)[0].xValue - cumulativeData[0].xValue > 1000) {
@@ -212,20 +216,20 @@
 
 				d3.selectAll("#reportObservationPeriods #opbygender svg").remove();
 				var opbygenderboxplot = new jnj_chart.boxplot();
-				var opgData = result.ObservationPeriodLengthByGender.Category
+				var opgData = result.OBSERVATION_PERIOD_LENGTH_BY_GENDER.CATEGORY
 					.map(function (d, i) {
 						var item = {
-							Category: this.Category[i],
-							min: this.MinValue[i],
-							LIF: this.P10Value[i],
-							q1: this.P25Value[i],
-							median: this.MedianValue[i],
-							q3: this.P75Value[i],
-							UIF: this.P90Value[i],
-							max: this.MaxValue[i]
+							Category: this.CATEGORY[i],
+							min: this.MIN_VALUE[i],
+							LIF: this.P10_VALUE[i],
+							q1: this.P25_VALUE[i],
+							median: this.MEDIAN_VALUE[i],
+							q3: this.P75_VALUE[i],
+							UIF: this.P90_VALUE[i],
+							max: this.MAX_VALUE[i]
 						};
 						return item;
-					}, result.ObservationPeriodLengthByGender);
+					}, result.OBSERVATION_PERIOD_LENGTH_BY_GENDER);
 
 				var opgDataYlabel = 'Days';
 				var opgDataMinY = d3.min(opgData, function (d) {
@@ -254,20 +258,20 @@
 
 				d3.selectAll("#reportObservationPeriods #opbyage svg").remove();
 				var opbyageboxplot = new jnj_chart.boxplot();
-				var opaData = result.ObservationPeriodLengthByAge.Category
+				var opaData = result.OBSERVATION_PERIOD_LENGTH_BY_AGE.CATEGORY
 					.map(function (d, i) {
 						var item = {
-							Category: this.Category[i],
-							min: this.MinValue[i],
-							LIF: this.P10Value[i],
-							q1: this.P25Value[i],
-							median: this.MedianValue[i],
-							q3: this.P75Value[i],
-							UIF: this.P90Value[i],
-							max: this.MaxValue[i]
+							Category: this.CATEGORY[i],
+							min: this.MIN_VALUE[i],
+							LIF: this.P10_VALUE[i],
+							q1: this.P25_VALUE[i],
+							median: this.MEDIAN_VALUE[i],
+							q3: this.P75_VALUE[i],
+							UIF: this.P90_VALUE[i],
+							max: this.MAX_VALUE[i]
 						};
 						return item;
-					}, result.ObservationPeriodLengthByAge);
+					}, result.OBSERVATION_PERIOD_LENGTH_BY_AGE);
 
 				var opaDataYlabel = 'Days';
 				var opaDataMinY = d3.min(opaData, function (d) {
@@ -296,47 +300,16 @@
 
 				d3.selectAll("#reportObservationPeriods #oppeoplebyyear svg").remove();
 				var observationLengthHistogram = new jnj_chart.histogram();
-				observationLengthHistogram.render(common.mapHistogram(result.ObservedByYearHistogram), "#reportObservationPeriods #oppeoplebyyear", 460, 195, {
+				observationLengthHistogram.render(common.mapHistogram(result.OBSERVED_BY_YEAR_HISTOGRAM), "#reportObservationPeriods #oppeoplebyyear", 460, 195, {
 					xFormat: d3.format('d'),
 					xLabel: 'Year',
 					yLabel: 'People'
 				});
 
-				/*
-				d3.selectAll("#reportObservationPeriods #oppeoplebymonth svg").remove();
-				var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
-				var observationByMonth = new jnj_chart.line();
-				observationByMonth.render(common.mapMonthYearDataToSeriesByYear(result.ObservedByMonth,
-				{
-					dateField: 'MonthYear',
-					yValue: 'CountValue',
-					yPercent: 'PercentValue'
-				}), "#reportObservationPeriods #oppeoplebymonth", 460, 195,
-				{
-					xScale: d3.scale.ordinal().domain([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
-					tickPadding: 10,
-					tickFormat: function (d)
-					{
-						return monthNames[d - 1];
-					},
-					margin:
-					{
-						top: 5,
-						right: 25,
-						bottom: 5,
-						left: 40
-					},
-					showSeriesLabel: true,
-					colorScale: d3.scale.category10(),
-					xLabel: "Month",
-					yLabel: "People"
-				});
-				*/
-
-				var byMonthSeries = common.mapMonthYearDataToSeries(result.ObservedByMonth, {
-					dateField: 'MonthYear',
-					yValue: 'CountValue',
-					yPercent: 'PercentValue'
+				var byMonthSeries = common.mapMonthYearDataToSeries(result.OBSERVED_BY_MONTH, {
+					dateField: 'MONTH_YEAR',
+					yValue: 'COUNT_VALUE',
+					yPercent: 'PERCENT_VALUE'
 				});
 
 				d3.selectAll("#reportObservationPeriods #oppeoplebymonthsingle svg").remove();
@@ -357,10 +330,9 @@
 					yLabel: "People"
 				});
 
-
 				d3.selectAll("#reportObservationPeriods #opperperson svg").remove();
 				raceDonut = new jnj_chart.donut();
-				raceDonut.render(common.mapConceptData(result.PersonPeriodsData), "#reportObservationPeriods #opperperson", 285, 235, {
+				raceDonut.render(common.mapConceptData(result.PERSON_PERIODS_DATA), "#reportObservationPeriods #opperperson", 285, 235, {
 					margin: {
 						top: 5,
 						bottom: 10,
@@ -404,10 +376,10 @@
 			curl(["jnj/chart", "common"], function (jnj_chart, common) {
 				d3.selectAll("#reportPerson #genderPie svg").remove();
 				genderDonut = new jnj_chart.donut();
-				genderDonut.render(common.mapConceptData(result.GenderData), "#reportPerson #genderPie", 260, 130, {
+				genderDonut.render(common.mapConceptData(result.GENDER_DATA), "#reportPerson #genderPie", 260, 130, {
 					colors: d3.scale.ordinal()
-						.domain([8532, 8551, 8507])
-						.range(['#884444', '#ccc', '#444488']),
+						.domain([8532, 8507])
+						.range(['#884444', '#444488']),
 					margin: {
 						top: 5,
 						bottom: 10,
@@ -419,7 +391,7 @@
 
 				d3.selectAll("#reportPerson #raceTypePie svg").remove();
 				raceDonut = new jnj_chart.donut();
-				raceDonut.render(common.mapConceptData(result.RaceData), "#reportPerson #raceTypePie", 260, 130, {
+				raceDonut.render(common.mapConceptData(result.RACE_DATA), "#reportPerson #raceTypePie", 260, 130, {
 					margin: {
 						top: 5,
 						bottom: 10,
@@ -430,7 +402,7 @@
 
 				d3.selectAll("#reportPerson #ethnicityTypePie svg").remove();
 				raceDonut = new jnj_chart.donut();
-				raceDonut.render(common.mapConceptData(result.EthnicityData), "#reportPerson #ethnicityTypePie", 260, 130, {
+				raceDonut.render(common.mapConceptData(result.ETHNICITY_DATA), "#reportPerson #ethnicityTypePie", 260, 130, {
 					margin: {
 						top: 5,
 						bottom: 10,
@@ -441,7 +413,7 @@
 
 				d3.selectAll("#reportPerson #birthyearhist svg").remove();
 				var yearHistogram = new jnj_chart.histogram();
-				yearHistogram.render(common.mapHistogram(result.BirthYearHistogram), "#reportPerson #birthyearhist", 460, 195, {
+				yearHistogram.render(common.mapHistogram(result.BIRTH_YEAR_HISTOGRAM), "#reportPerson #birthyearhist", 460, 195, {
 					xFormat: d3.format('d'),
 					xLabel: 'Year',
 					yLabel: 'People'
@@ -500,16 +472,16 @@
 					type: "GET",
 					url: 'data/datasources.json',
 					contentType: "application/json; charset=utf-8"
-				}).done(function(root) {
-						for (i = 0; i < root.datasources.length; i++) {
-							$('#dropdown-datasources').append('<li onclick="updateDataSourceFolder(\'' + root.datasources[i].folder +'\');">' + root.datasources[i].name +'</li>');
-						}
-						datasource_folder = root.datasources[0].folder;
-						app.run('#/' + datasource_folder + '/dashboard');
+				}).done(function (root) {
+					viewModel.datasources = root.datasources;
+
+					for (i = 0; i < root.datasources.length; i++) {
+						$('#dropdown-datasources').append('<li onclick="setDatasource(' + i + ');">' + root.datasources[i].name + '</li>');
 					}
-				).fail(function(msg) {
-					var a= 0;
+					viewModel.datasource(viewModel.datasources[0]);
+					app.run('#/' + viewModel.datasource().folder + '/dashboard');
 				});
+
 			});
 		});
 	});

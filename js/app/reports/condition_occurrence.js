@@ -11,8 +11,9 @@
 				});
 
 				$('#myTab a').click(function (e) {
-					e.preventDefault()
-					$(this).tab('show')
+					e.preventDefault();
+					$(this).tab('show');
+					$(window).trigger("resize");
 				})
 
 				condition_occurrence.drilldown = function (concept_id, concept_name) {
@@ -22,21 +23,21 @@
 
 					$.ajax({
 						type: "GET",
-						url: 'data/' + datasource_folder + '/conditions/condition_' + concept_id + '.json',
+						url: 'data/' + page_vm.datasource().folder + '/conditions/condition_' + concept_id + '.json',
 						success: function (data) {
 							// age at first diagnosis visualization
 							var boxplot = new jnj_chart.boxplot();
 							bpseries = [];
-							bpdata = data.AgeAtFirstDiagnosis;
-							for (i = 0; i < bpdata.Category.length; i++) {
+							bpdata = data.AGE_AT_FIRST_DIAGNOSIS;
+							for (i = 0; i < bpdata.CATEGORY.length; i++) {
 								bpseries.push({
-									Category: bpdata.Category[i],
-									max: bpdata.MaxValue[i],
-									median: bpdata.MedianValue[i],
-									LIF: bpdata.P10Value[i],
-									q1: bpdata.P25Value[i],
-									q3: bpdata.P75Value[i],
-									UIF: bpdata.P90Value[i]
+									Category: bpdata.CATEGORY[i],
+									max: bpdata.MAX_VALUE[i],
+									median: bpdata.MEDIAN_VALUE[i],
+									LIF: bpdata.P10_VALUE[i],
+									q1: bpdata.P25_VALUE[i],
+									q3: bpdata.P75_VALUE[i],
+									UIF: bpdata.P90_VALUE[i]
 								});
 							}
 							boxplot.render(bpseries, "#ageAtFirstDiagnosis", 400, 400, {
@@ -48,11 +49,11 @@
 							var donut = new jnj_chart.donut();
 							slices = [];
 
-							for (i = 0; i < data.ConditionsByType.ConceptName.length; i++) {
+							for (i = 0; i < data.CONDITIONS_BY_TYPE.CONCEPT_NAME.length; i++) {
 								slices.push({
-									id: data.ConditionsByType.ConceptName[i],
-									label: data.ConditionsByType.ConceptName[i],
-									value: data.ConditionsByType.CountValue[i]
+									id: data.CONDITIONS_BY_TYPE.CONCEPT_NAME[i],
+									label: data.CONDITIONS_BY_TYPE.CONCEPT_NAME[i],
+									value: data.CONDITIONS_BY_TYPE.COUNT_VALUE[i]
 								})
 							}
 
@@ -76,35 +77,35 @@
 							});
 
 							// render trellis
-							trellisData = data.PrevalenceByGenderAgeYear;
+							trellisData = data.PREVALENCE_BY_GENDER_AGE_YEAR;
 
 							var allDeciles = ["00-09", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80-89", "90-99"];
 							var allSeries = ["MALE", "FEMALE"];
-							var minYear = d3.min(trellisData.XCalendarYear),
-								maxYear = d3.max(trellisData.XCalendarYear);
+							var minYear = d3.min(trellisData.X_CALENDAR_YEAR),
+								maxYear = d3.max(trellisData.X_CALENDAR_YEAR);
 
 							var seriesInitializer = function (tName, sName, x, y) {
 								return {
-									TrellisName: tName,
-									SeriesName: sName,
-									XCalendarYear: x,
-									YPrevalence1000PP: y
+									TRELLIS_NAME: tName,
+									SERIES_NAME: sName,
+									X_CALENDAR_YEAR: x,
+									Y_PREVALENCE_1000PP: y
 								};
 							}
 
 							var nestByDecile = d3.nest()
 								.key(function (d) {
-									return d.TrellisName;
+									return d.TRELLIS_NAME;
 								})
 								.key(function (d) {
-									return d.SeriesName;
+									return d.SERIES_NAME;
 								})
 								.sortValues(function (a, b) {
-									return a.XCalendarYear - b.XCalendarYear;
+									return a.X_CALENDAR_YEAR - b.X_CALENDAR_YEAR;
 								});
 
 							// map data into chartable form
-							var normalizedSeries = trellisData.TrellisName.map(function (d, i) {
+							var normalizedSeries = trellisData.TRELLIS_NAME.map(function (d, i) {
 								var item = {};
 								var container = this;
 								d3.keys(container).forEach(function (p) {
@@ -121,7 +122,7 @@
 								trellis.values.forEach(function (series) {
 									series.values = yearRange.map(function (year) {
 										yearData = series.values.filter(function (f) {
-											return f.XCalendarYear == year;
+											return f.X_CALENDAR_YEAR == year;
 										})[0] || seriesInitializer(trellis.key, series.key, year, 0);
 										yearData.date = new Date(year, 0, 1);
 										return yearData;
@@ -159,18 +160,18 @@
 						url: 'data/' + folder + '/condition_treemap.json',
 						contentType: "application/json; charset=utf-8",
 						success: function (data) {
-							table_data = data.ConceptPath.map(function (d, i) {
-								conceptDetails = this.ConceptPath[i].split('-');
+							table_data = data.CONCEPT_PATH.map(function (d, i) {
+								conceptDetails = this.CONCEPT_PATH[i].split('||');
 								return {
-									concept_id: this.concept_id[i],
+									concept_id: this.CONCEPT_ID[i],
 									soc: conceptDetails[0],
 									hlgt: conceptDetails[1],
 									hlt: conceptDetails[2],
 									pt: conceptDetails[3],
 									snomed: conceptDetails[4],
-									num_persons: format_comma(this.num_persons[i]),
-									pct_persons: format_pct(this.pct_persons[i]),
-									records_per_person: format_fixed(this.records_per_person[i])
+									num_persons: format_comma(this.NUM_PERSONS[i]),
+									percent_persons: format_pct(this.PERCENT_PERSONS[i]),
+									records_per_person: format_fixed(this.RECORDS_PER_PERSON[i])
 								}
 							}, data);
 
@@ -200,7 +201,7 @@
 										className: 'numeric'
 									},
 									{
-										data: 'pct_persons',
+										data: 'percent_persons',
 										className: 'numeric'
 									},
 									{
@@ -230,7 +231,7 @@
 								},
 								gettitle: function (node) {
 									title = '';
-									steps = node.path.split('-');
+									steps = node.path.split('||');
 									for (i = 0; i < steps.length; i++) {
 										if (i == steps.length - 1) {
 											title += '<hr class="path">';
@@ -258,12 +259,12 @@
 						"children": []
 					};
 
-					for (i = 0; i < data.pct_persons.length; i++) {
-						total += data.pct_persons[i];
+					for (i = 0; i < data.PERCENT_PERSONS.length; i++) {
+						total += data.PERCENT_PERSONS[i];
 					}
 
-					for (var i = 0; i < data.ConceptPath.length; i++) {
-						var parts = data.ConceptPath[i].split("-");
+					for (var i = 0; i < data.CONCEPT_PATH.length; i++) {
+						var parts = data.CONCEPT_PATH[i].split("||");
 						var currentNode = root;
 						for (var j = 0; j < parts.length; j++) {
 							var children = currentNode["children"];
@@ -292,17 +293,17 @@
 								// Reached the end of the path; create a leaf node.
 								childNode = {
 									"name": nodeName,
-									"num_persons": data.num_persons[i],
-									"id": data.concept_id[i],
-									"path": data.ConceptPath[i],
-									"pct_persons": data.pct_persons[i],
-									"records_per_person": data.records_per_person[i]
+									"num_persons": data.NUM_PERSONS[i],
+									"id": data.CONCEPT_ID[i],
+									"path": data.CONCEPT_PATH[i],
+									"pct_persons": data.PERCENT_PERSONS[i],
+									"records_per_person": data.RECORDS_PER_PERSON[i]
 								};
 
 								// we only include nodes with sufficient size in the treemap display
 								// sufficient size is configurable in the calculation of threshold
 								// which is a function of the number of pixels in the treemap display
-								if ((data.pct_persons[i] / total) > threshold) {
+								if ((data.PERCENT_PERSONS[i] / total) > threshold) {
 									children.push(childNode);
 								}
 							}

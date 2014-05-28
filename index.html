@@ -12,22 +12,21 @@
 	<link href="css/chart.css" rel="stylesheet">
 
 	<script>
-		// todo - place in module
-		var datasource_folder;
 		var report = 'dashboard';
+		var page_vm = {};
 
 		function updateReport(value) {
 			report = value;
 			updateRoute();
 		}
 
-		function updateDataSourceFolder(value) {
-			datasource_folder = value;
+		function setDatasource(index) {
+			page_vm.datasource(page_vm.datasources[index]);
 			updateRoute();
 		}
 
 		function updateRoute() {
-			document.location = '#/' + datasource_folder + '/' + report;
+			document.location = '#/' + page_vm.datasource().folder + '/' + report;
 		}
 	</script>
 
@@ -72,6 +71,8 @@
 			</div>
 		</div>
 	</nav>
+
+	<div id="datasourceTitle" data-bind="text:datasource().name"></div>
 
 	<div id="reportObservationPeriods" class="report">
 		<div class="reportTitle">Observation Periods</div>
@@ -238,7 +239,7 @@
 					</div>
 					<div class="panel-body">
 						<div class="col-sm-12 cdmsummary">
-							<div data-bind="template: {if: personData, name: 'attributeValueTable', data: function() { return personData().Summary}}"></div>
+							<div data-bind="template: {if: personData, name: 'attributeValueTable', data: function() { return personData().SUMMARY}}"></div>
 						</div>
 					</div>
 				</div>

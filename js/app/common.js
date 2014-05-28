@@ -5,14 +5,14 @@ define(function ()
 	{
 		var result;
 
-		if (data.CountValue instanceof Array) // multiple rows, each value of each column is in the indexed properties.
+		if (data.COUNT_VALUE instanceof Array) // multiple rows, each value of each column is in the indexed properties.
 		{
-			result = data.CountValue.map(function (d, i)
+			result = data.COUNT_VALUE.map(function (d, i)
 			{
 				var datum = {}
-				datum.id = this.ConceptId[i];
-				datum.label = this.ConceptName[i];
-				datum.value = this.CountValue[i];
+				datum.id = this.CONCEPT_ID[i];
+				datum.label = this.CONCEPT_NAME[i];
+				datum.value = this.COUNT_VALUE[i];
 				return datum;
 			}, data);
 
@@ -25,9 +25,9 @@ define(function ()
 		{
 			result = [
 			{
-				id: data.ConceptId,
-				label: data.ConceptName,
-				value: data.CountValue
+				id: data.CONCEPT_ID,
+				label: data.CONCEPT_NAME,
+				value: data.COUNT_VALUE
 			}];
 		}
 		return result;
@@ -37,37 +37,20 @@ define(function ()
 	{
 		// result is an array of arrays, each element in the array is another array containing information about each bar of the histogram.
 		var result = new Array();
-		var minValue = histogramData.min;
-		var intervalSize = histogramData.intervalSize;
+		var minValue = histogramData.MIN;
+		var intervalSize = histogramData.INTERVAL_SIZE;
 
-		for (var i = 0; i <= histogramData.intervals; i++)
+		for (var i = 0; i <= histogramData.INTERVALS; i++)
 		{
 			var target = new Object();
 			target.x = minValue + 1.0 * i * intervalSize;
 			target.dx = intervalSize;
-			target.y = histogramData.data.CountValue[histogramData.data.IntervalIndex.indexOf(i)] || 0;
+			target.y = histogramData.DATA.COUNT_VALUE[histogramData.DATA.INTERVAL_INDEX.indexOf(i)] || 0;
 			result.push(target);
 		};
 
 		return result;
 	}
-
-	function mapBarToHistogram(barData, intervalSize)
-	{
-		// result is an array of arrays, each element in the array is another array containing information about each bar of the histogram.
-		var result = new Array();
-		for (var i = 0; i < barData.category.length; i++)
-		{
-			var target = new Object();
-			target.x = barData.category[i];
-			target.dx = intervalSize;
-			target.y = barData.counts[i];
-			result.push(target);
-		};
-
-		return result;
-	}
-
 
 	function mapMonthYearDataToSeries(data, options)
 	{
@@ -149,7 +132,6 @@ define(function ()
 	var module = {
 		mapHistogram: mapHistogram,
 		mapConceptData: mapConceptData,
-		mapBarToHistogram: mapBarToHistogram,
 		mapMonthYearDataToSeries: mapMonthYearDataToSeries,
 		mapMonthYearDataToSeriesByYear: mapMonthYearDataToSeriesByYear
 	};

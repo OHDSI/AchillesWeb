@@ -1099,14 +1099,14 @@
 			var minY = d3.min(dataByTrellis, function (trellis) {
 					return d3.min(trellis.values, function (series) {
 						return d3.min(series.values, function (d) {
-							return d.YPrevalence1000PP;
+							return d.Y_PREVALENCE_1000PP;
 						});
 					});
 				}),
 				maxY = d3.max(dataByTrellis, function (trellis) {
 					return d3.max(trellis.values, function (series) {
 						return d3.max(series.values, function (d) {
-							return d.YPrevalence1000PP;
+							return d.Y_PREVALENCE_1000PP;
 						});
 					});
 				});
@@ -1182,7 +1182,7 @@
 					return seriesScale(d.date);
 				})
 				.y(function (d) {
-					return yScale(d.YPrevalence1000PP);
+					return yScale(d.Y_PREVALENCE_1000PP);
 				})
 				.interpolate(options.interpolate);
 
@@ -1222,7 +1222,7 @@
 				.attr("class", "g-value")
 				.attr("transform", function (d) {
 					var v = d.values;
-					return "translate(" + seriesScale(v[v.length - 1].date) + "," + yScale(v[v.length - 1].YPrevalence1000PP) + ")";
+					return "translate(" + seriesScale(v[v.length - 1].date) + "," + yScale(v[v.length - 1].Y_PREVALENCE_1000PP) + ")";
 				})
 				.attr("r", 2.5)
 				.style("display", "none");
@@ -1302,7 +1302,7 @@
 				gTrellis.selectAll(".g-value").attr("transform", function (d) {
 					var s = d.values,
 						v = s[bisect(s, date, 0, s.length - 1)]
-					return "translate(" + seriesScale(v.date) + "," + yScale(v.YPrevalence1000PP) + ")";
+					return "translate(" + seriesScale(v.date) + "," + yScale(v.Y_PREVALENCE_1000PP) + ")";
 				});
 			}
 
@@ -1327,9 +1327,9 @@
 
 					text.attr("dy", null).attr("y", -4);
 
-					text.text(options.yFormat(v.YPrevalence1000PP))
+					text.text(options.yFormat(v.Y_PREVALENCE_1000PP))
 						.attr("transform", "translate(" + offsetScale.range([0, trellisScale.rangeBand() - this.getComputedTextLength()])(x) + "," + (yScale(d3.max(s.slice(j, j + 12), function (d) {
-							return d.YPrevalence1000PP;
+							return d.Y_PREVALENCE_1000PP;
 						}))) + ")");
 				});
 			}
