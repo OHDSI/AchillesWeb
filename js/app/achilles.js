@@ -10,7 +10,9 @@
 			self.conditionsData = ko.observable();
 			self.personData = ko.observable();
 			self.observationPeriodsData = ko.observable();
-			self.datasource = ko.observable({name:'loading...'});
+			self.datasource = ko.observable({
+				name: 'loading...'
+			});
 			self.datasources = [];
 
 			self.formatSI = function (d, p) {
@@ -21,30 +23,30 @@
 				return d3.round(prefix.scale(d), p) + prefix.symbol;
 			}
 
-			self.load = function (filename) {
+			self.loadDashboard = function () {
 				$.ajax({
 					type: "GET",
-					url: "data/" + filename,
+					url: "data/" + self.datasource().folder + "/dashboard.json",
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result) {
 					self.summaryData(result);
 				});
 			}
 
-			self.loadObservationPeriods = function (folder) {
+			self.loadObservationPeriods = function () {
 				$.ajax({
 					type: "GET",
-					url: "data/" + folder + '/observationperiod.json',
+					url: "data/" + self.datasource().folder + '/observationperiod.json',
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result) {
 					self.observationPeriodsData(result);
 				});
 			}
 
-			self.loadPerson = function (folder) {
+			self.loadPerson = function () {
 				$.ajax({
 					type: "GET",
-					url: "data/" + folder + '/person.json',
+					url: "data/" + self.datasource().folder + '/person.json',
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result) {
 					self.personData(result);
@@ -430,38 +432,42 @@
 			var app = Sammy(function () {
 				this.get('#/:folder/dashboard', function (context) {
 					$('.report').hide();
-					// todo: change this json file to dashboard.json
-					viewModel.load(this.params['folder'] + '/dashboard.json');
+					viewModel.datasource(viewModel.datasources.filter(function (d) {
+						return d.folder == this.params['folder'];
+					}, this)[0]);
+					viewModel.loadDashboard();
 					$('#reportDashboard').show();
-
-					datasource_folder = this.params['folder'];
 					report = 'dashboard';
 				});
 
 				this.get('#/:folder/person', function (context) {
 					$('.report').hide();
-					viewModel.loadPerson(this.params['folder']);
+					viewModel.datasource(viewModel.datasources.filter(function (d) {
+						return d.folder == this.params['folder'];
+					}, this)[0]);
+					viewModel.loadPerson();
 					$('#reportPerson').show();
-
-					datasource_folder = this.params['folder'];
 					report = 'person';
 				});
 
 				this.get('#/:folder/conditions', function (context) {
 					$('.report').hide();
+					viewModel.datasource(viewModel.datasources.filter(function (d) {
+						return d.folder == this.params['folder'];
+					}, this)[0]);
+
 					reportConditionOccurrence.render(this.params['folder']);
 					$('#reportConditions').show();
-
-					datasource_folder = this.params['folder'];
 					report = 'conditions';
 				});
 
 				this.get('#/:folder/observationperiods', function (context) {
 					$('.report').hide();
-					viewModel.loadObservationPeriods(this.params['folder']);
+					viewModel.datasource(viewModel.datasources.filter(function (d) {
+						return d.folder == this.params['folder'];
+					}, this)[0]);
+					viewModel.loadObservationPeriods();
 					$('#reportObservationPeriods').show();
-
-					datasource_folder = this.params['folder'];
 					report = 'observationperiods';
 				});
 
