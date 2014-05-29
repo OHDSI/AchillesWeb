@@ -1,13 +1,13 @@
 		(function () {
 			define(["jquery", "d3", "jnj/chart", "common", "datatables"], function ($, d3, jnj_chart, common) {
-				var condition_occurrence = {};
+				var drug_exposure = {};
 				var threshold;
 
 				// bind to all matching elements upon creation
-				$(document).on('click', '#condition_table tr', function () {
+				$(document).on('click', '#drug_table tr', function () {
 					id = $($(this).children()[0]).text();
 					concept_name = $($(this).children()[5]).text();
-					condition_occurrence.drilldown(id, concept_name);
+					drug_exposure.drilldown(id, concept_name);
 				});
 
 				$('#myTab a').click(function (e) {
@@ -16,69 +16,66 @@
 					$(window).trigger("resize");
 				})
 
-				condition_occurrence.drilldown = function (concept_id, concept_name) {
+				boxplot_helper = function (data, target, xlabel, ylabel) {
+					var boxplot = new jnj_chart.boxplot();
+					bpseries = [];
+					bpdata = data;
+
+					if (Array.isArray(bpdata.CATEGORY)) {
+						for (i = 0; i < bpdata.CATEGORY.length; i++) {
+							bpseries.push({
+								Category: bpdata.CATEGORY[i],
+								max: bpdata.MAX_VALUE[i],
+								median: bpdata.MEDIAN_VALUE[i],
+								LIF: bpdata.P10_VALUE[i],
+								q1: bpdata.P25_VALUE[i],
+								q3: bpdata.P75_VALUE[i],
+								UIF: bpdata.P90_VALUE[i]
+							});
+						}
+					} else {
+							bpseries.push({
+								Category: bpdata.CATEGORY,
+								max: bpdata.MAX_VALUE,
+								median: bpdata.MEDIAN_VALUE,
+								LIF: bpdata.P10_VALUE,
+								q1: bpdata.P25_VALUE,
+								q3: bpdata.P75_VALUE,
+								UIF: bpdata.P90_VALUE
+							});
+					}
+
+					boxplot.render(bpseries, target, 200, 200, {
+						xLabel: xlabel,
+						yLabel: ylabel
+					});
+				}
+
+				drug_exposure.drilldown = function (concept_id, concept_name) {
 					$('.drilldown svg').remove();
-					$('#conditionDrilldownTitle').text(concept_name);
-					$('#reportConditionOccurrencesDrilldown').removeClass('hidden');
+					$('#drugDrilldownTitle').text(concept_name);
+					$('#reportDrugExposuresDrilldown').removeClass('hidden');
 
 					$.ajax({
 						type: "GET",
-						url: 'data/' + page_vm.datasource().folder + '/conditions/condition_' + concept_id + '.json',
+						url: 'data/' + page_vm.datasource().folder + '/drugs/drug_' + concept_id + '.json',
 						success: function (data) {
-							// age at first diagnosis visualization
-							var boxplot = new jnj_chart.boxplot();
-							bpseries = [];
-							bpdata = data.AGE_AT_FIRST_DIAGNOSIS;
-							for (i = 0; i < bpdata.CATEGORY.length; i++) {
-								bpseries.push({
-									Category: bpdata.CATEGORY[i],
-									max: bpdata.MAX_VALUE[i],
-									median: bpdata.MEDIAN_VALUE[i],
-									LIF: bpdata.P10_VALUE[i],
-									q1: bpdata.P25_VALUE[i],
-									q3: bpdata.P75_VALUE[i],
-									UIF: bpdata.P90_VALUE[i]
-								});
-							}
-							boxplot.render(bpseries, "#ageAtFirstDiagnosis", 400, 400, {
-								xLabel: 'Gender',
-								yLabel: 'Age at First Diagnosis'
-							});
 
-							// prevalence by month
-							var byMonthSeries = common.mapMonthYearDataToSeries(data.PREVALENCE_BY_MONTH, {
-								dateField: 'X_CALENDAR_MONTH',
-								yValue: 'Y_PREVALENCE_1000PP',
-								yPercent: 'Y_PREVALENCE_1000PP'
-							});
+							// boxplots
+							boxplot_helper(data.AGE_AT_FIRST_EXPOSURE, '#ageAtFirstExposure', 'Gender', 'Age at First Exposure');
+							boxplot_helper(data.DAYS_SUPPLY_DISTRIBUTION, '#daysSupplyDistribution', 'Days Supply', 'Days');
+							boxplot_helper(data.QUANTITY_DISTRIBUTION, '#quantityDistribution', 'Quantity', 'Quantity');
+							boxplot_helper(data.REFILLS_DISTRIBUTION, '#refillsDistribution', 'Refills', 'Refills');
 
-							d3.selectAll("#reportConditionOccurrences #conditionPrevalenceByMonth svg").remove();
-							var prevalenceByMonth = new jnj_chart.line();
-							prevalenceByMonth.render(byMonthSeries, "#reportConditionOccurrences #conditionPrevalenceByMonth", 900, 250, {
-								xScale: d3.time.scale().domain(d3.extent(byMonthSeries[0].values, function (d) {
-									return d.xValue;
-								})),
-								tickFormat: d3.time.format("%Y"),
-								tickPadding: 10,
-								margin: {
-									top: 5,
-									right: 25,
-									bottom: 5,
-									left: 40
-								},
-								xLabel: "Date",
-								yLabel: "Prevalence per 1000 People"
-							});
-
-							// condition type visualization
+							// drug  type visualization
 							var donut = new jnj_chart.donut();
 							slices = [];
 
-							for (i = 0; i < data.CONDITIONS_BY_TYPE.CONCEPT_NAME.length; i++) {
+							for (i = 0; i < data.DRUGS_BY_TYPE.CONCEPT_NAME.length; i++) {
 								slices.push({
-									id: data.CONDITIONS_BY_TYPE.CONCEPT_NAME[i],
-									label: data.CONDITIONS_BY_TYPE.CONCEPT_NAME[i],
-									value: data.CONDITIONS_BY_TYPE.COUNT_VALUE[i]
+									id: data.DRUGS_BY_TYPE.CONCEPT_NAME[i],
+									label: data.DRUGS_BY_TYPE.CONCEPT_NAME[i],
+									value: data.DRUGS_BY_TYPE.COUNT_VALUE[i]
 								})
 							}
 
@@ -92,13 +89,38 @@
 								return 0 //default return value (no sorting)
 							});
 
-							donut.render(slices, "#conditionsByType", 400, 400, {
+							donut.render(slices, "#drugsByType", 300, 200, {
 								margin: {
 									top: 5,
 									left: 5,
 									right: 200,
 									bottom: 5
 								}
+							});
+
+							// prevalence by month
+							var byMonthSeries = common.mapMonthYearDataToSeries(data.PREVALENCE_BY_MONTH, {
+								dateField: 'X_CALENDAR_MONTH',
+								yValue: 'Y_PREVALENCE_1000PP',
+								yPercent: 'Y_PREVALENCE_1000PP'
+							});
+
+							d3.selectAll("#reportDrugExposures #drugPrevalenceByMonth svg").remove();
+							var prevalenceByMonth = new jnj_chart.line();
+							prevalenceByMonth.render(byMonthSeries, "#reportDrugExposures #drugPrevalenceByMonth", 900, 250, {
+								xScale: d3.time.scale().domain(d3.extent(byMonthSeries[0].values, function (d) {
+									return d.xValue;
+								})),
+								tickFormat: d3.time.format("%Y"),
+								tickPadding: 10,
+								margin: {
+									top: 5,
+									right: 25,
+									bottom: 5,
+									left: 40
+								},
+								xLabel: "Date",
+								yLabel: "Prevalence per 1000 People"
 							});
 
 							// render trellis
@@ -157,7 +179,7 @@
 
 							// create svg with range bands based on the trellis names
 							var chart = new jnj_chart.trellisline();
-							chart.render(dataByDecile, "#reportConditionOccurrences #trellisLinePlot", 1000, 300, {
+							chart.render(dataByDecile, "#reportDrugExposures #trellisLinePlot", 1000, 300, {
 								trellisSet: allDeciles,
 								xLabel: "Age Decile",
 								yLabel: "Prevalence Per 1000 People",
@@ -170,12 +192,12 @@
 					});
 				}
 
-				condition_occurrence.render = function (folder) {
+				drug_exposure.render = function (folder) {
 					format_pct = d3.format('.2%');
 					format_fixed = d3.format('.2f');
 					format_comma = d3.format(',');
 
-					$('#reportConditionOccurrences svg').remove();
+					$('#reportDrugExposures svg').remove();
 
 					width = 1000;
 					height = 250;
@@ -184,7 +206,7 @@
 
 					$.ajax({
 						type: "GET",
-						url: 'data/' + folder + '/condition_treemap.json',
+						url: 'data/' + folder + '/drug_treemap.json',
 						contentType: "application/json; charset=utf-8",
 						success: function (data) {
 							table_data = data.CONCEPT_PATH.map(function (d, i) {
@@ -202,7 +224,7 @@
 								}
 							}, data);
 
-							$('#condition_table').dataTable({
+							$('#drug_table').dataTable({
 								data: table_data,
 								columns: [
 									{
@@ -242,13 +264,13 @@
 								destroy: true
 							});
 
-							$('#reportConditionOccurrences').show();
+							$('#reportDrugExposures').show();
 
 							tree = buildHierarchyFromJSON(data, threshold);
 							var treemap = new jnj_chart.treemap();
-							treemap.render(tree, '#reportConditionOccurrences #treemap_container', width, height, {
+							treemap.render(tree, '#reportDrugExposures #treemap_container', width, height, {
 								onclick: function (node) {
-									condition_occurrence.drilldown(node.id, node.name)
+									drug_exposure.drilldown(node.id, node.name)
 								},
 								getsizevalue: function (node) {
 									return node.num_persons;
@@ -338,6 +360,6 @@
 					}
 					return root;
 				};
-				return condition_occurrence;
+				return drug_exposure;
 			});
 		})();

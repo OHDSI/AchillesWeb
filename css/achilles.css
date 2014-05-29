@@ -303,7 +303,7 @@ hr.path {
 #condition_table tr {
 	cursor: pointer;
 }
-rect {
+#treemap_container rect {
 	cursor: pointer;
 }
 th {

@@ -62,10 +62,9 @@
 							<li onclick="updateReport('dashboard');">Dashboard</li>
 							<li onclick="updateReport('person');">Person</li>
 							<li onclick="updateReport('conditions');">Conditions</li>
+							<li onclick="updateReport('drugs');">Drugs</li>
 							<li onclick="updateReport('observationperiods');">Observation Periods</li>
 						</ul>
-					</li>
-					<li><a href="about">About</a>
 					</li>
 				</ul>
 			</div>
@@ -289,13 +288,13 @@
 		</div>
 	</div>
 
-	<div id="reportConditionOccurrences" class="report">
-		<div class="reportTitle">Conditions</div>
+	<div id="reportDrugExposures" class="report">
+		<div class="reportTitle">Drug Exposure Report</div>
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Condition Prevalence
+						Drug Prevalence
 					</div>
 					<div class="panel-body">
 						<div class="col-sm-12">
@@ -311,6 +310,133 @@
 									<div id="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Red = Low to High)</div>
 								</div>
 								<div class="tab-pane" id="table-panel">
+									<table id="drug_table" class="display">
+										<thead>
+											<tr>
+												<th>Concept Id</th>
+												<th>ATC 1</th>
+												<th>ATC 3</th>
+												<th>ATC 5</th>
+												<th>Ingredient</th>
+												<th>RxNorm</th>
+												<th>Person Count</th>
+												<th>Prevalence</th>
+												<th>Records per Person</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="drugDrilldownTitle" class="reportTitle"></div>
+		<div id="reportDrugExposuresDrilldown" class="hidden reportDrilldown">
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="panelDrugPrevalence" class="panel panel-default">
+						<div class="panel-heading">
+							Drug Prevalence
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="trellisLinePlot"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="panelDrugExposurePrevalenceByMonth" class="panel panel-default">
+						<div class="panel-heading">
+							Drug Exposure Prevalence by Month
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="drugPrevalenceByMonth"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-3">
+					<div id="panelAgeAtFirstDiagnosis" class="panel panel-default">
+						<div class="panel-heading">
+							Age at First Exposure
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="ageAtFirstExposure"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div id="panelDaysSupplyDistribution" class="panel panel-default">
+						<div class="panel-heading">
+							Days Supply
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="daysSupplyDistribution"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div id="panelQuantityDistribution" class="panel panel-default">
+						<div class="panel-heading">
+							Quantity
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="quantityDistribution"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div id="panelRefillsDistribution" class="panel panel-default">
+						<div class="panel-heading">
+							Refills
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="refillsDistribution"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div id="panelDrugsByType" class="panel panel-default">
+						<div class="panel-heading">
+							Drugs by Type
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="drugsByType"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="reportConditionOccurrences" class="report">
+		<div class="reportTitle">Conditions</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Condition Prevalence
+					</div>
+					<div class="panel-body">
+						<div class="col-sm-12">
+							<ul class="nav nav-tabs" id="myTab">
+								<li class="active"><a href="#condition-treemap-panel">Treemap</a>
+								</li>
+								<li><a href="#condition-table-panel">Table</a>
+								</li>
+							</ul>
+							<div id='content' class="tab-content">
+								<div class="tab-pane active" id="condition-treemap-panel">
+									<div id="treemap_container"></div>
+									<div id="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Red = Low to High)</div>
+								</div>
+								<div class="tab-pane" id="condition-table-panel">
 									<table id="condition_table" class="display">
 										<thead>
 											<tr>
@@ -347,7 +473,18 @@
 					</div>
 				</div>
 			</div>
-
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="panelConditionOccurrencePrevalenceByMonth" class="panel panel-default">
+						<div class="panel-heading">
+							Condition Prevalence by Month
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="conditionPrevalenceByMonth"></div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-sm-6">
 					<div id="panelConditionsByType" class="panel panel-default">

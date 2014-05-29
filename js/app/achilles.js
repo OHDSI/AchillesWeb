@@ -1,8 +1,13 @@
 (function () {
-	var current_folder;
-	var current_report;
-
-	curl(["jquery", "d3", "knockout", "app/reports/condition_occurrence", "bootstrap", "d3/tip"], function ($, d3, ko, reportConditionOccurrence) {
+	curl([
+		"jquery",
+		"d3",
+		"knockout",
+		"app/reports/condition_occurrence",
+		"app/reports/drug_exposure",
+		"bootstrap",
+		"d3/tip"
+	], function ($, d3, ko, reportConditionOccurrence, reportDrugExposure) {
 		function summaryViewModel() {
 			var self = this;
 
@@ -316,7 +321,7 @@
 
 				d3.selectAll("#reportObservationPeriods #oppeoplebymonthsingle svg").remove();
 				var observationByMonthSingle = new jnj_chart.line();
-				observationByMonthSingle.render(byMonthSeries, "#reportObservationPeriods #oppeoplebymonthsingle", 660, 195, {
+				observationByMonthSingle.render(byMonthSeries, "#reportObservationPeriods #oppeoplebymonthsingle", 900, 250, {
 					xScale: d3.time.scale().domain(d3.extent(byMonthSeries[0].values, function (d) {
 						return d.xValue;
 					})),
@@ -348,11 +353,11 @@
 		function updateConditions(data) {
 			var result = data;
 			curl(["jnj/chart", "common"], function (jnj_chart, common) {
-				d3.selectAll("#reportConditions svg").remove();
+				d3.selectAll("#reportConditionOccurrences svg").remove();
 
 				tree = buildHierarchyFromJSON(data);
 				var treemap = new jnj_chart.treemap();
-				treemap.render(tree, '#reportConditions .treemap', 1000, 500, {
+				treemap.render(tree, '#reportConditionOccurrences .treemap', 1000, 500, {
 					gettitle: function (node) {
 						current = node;
 						title = '';
@@ -457,7 +462,18 @@
 					}, this)[0]);
 
 					reportConditionOccurrence.render(this.params['folder']);
-					$('#reportConditions').show();
+					$('#reportConditionOccurrences').show();
+					report = 'conditions';
+				});
+
+				this.get('#/:folder/drugs', function (context) {
+					$('.report').hide();
+					viewModel.datasource(viewModel.datasources.filter(function (d) {
+						return d.folder == this.params['folder'];
+					}, this)[0]);
+
+					reportDrugExposure.render(this.params['folder']);
+					$('#reportDrugExposures').show();
 					report = 'conditions';
 				});
 
