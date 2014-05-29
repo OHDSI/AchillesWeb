@@ -34,6 +34,10 @@
 					url: "data/" + self.datasource().folder + "/dashboard.json",
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result) {
+					result.SUMMARY.ATTRIBUTE_VALUE.forEach( function (d,i,ar) {
+						if (!isNaN(d))
+							ar[i] = self.formatSI(d,2);
+					});					
 					self.dashboardData(result);
 				});
 			}
@@ -54,6 +58,12 @@
 					url: "data/" + self.datasource().folder + '/person.json',
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result) {
+					
+					result.SUMMARY.ATTRIBUTE_VALUE.forEach( function (d,i,ar) {
+						if (!isNaN(d))
+							ar[i] = self.formatSI(d,2);
+					});	
+					
 					self.personData(result);
 				});
 			}
@@ -89,7 +99,7 @@
 
 		function updateDashboard(data) {
 			var result = data;
-
+			
 			curl(["jnj/chart", "common"], function (jnj_chart, common) {
 				d3.selectAll("#reportDashboard #genderPie svg").remove();
 				genderDonut = new jnj_chart.donut();
