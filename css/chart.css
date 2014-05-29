@@ -1,6 +1,8 @@
-div.chartcontainer {
+div.chartcontainer
+{
 	line-height: 0px;
 }
+
 /* Legend Styles */
 
 .legend {
@@ -10,10 +12,11 @@ div.chartcontainer {
 /* general bar styles */
 
 .area {
-	fill: rgb(68, 68, 136);
+	fill: rgb(68, 68, 136);	
 }
+
 .bar {
-	fill: rgb(68, 68, 136);
+	fill: #1f77b4;
 }
 /* Barchart styles */
 
@@ -26,6 +29,7 @@ div.chartcontainer {
 .boxplot {
 	font: 10px arial;
 }
+
 .boxplot line,
 .boxplot rect,
 .boxplot circle {
@@ -33,18 +37,23 @@ div.chartcontainer {
 	stroke: #000;
 	stroke-width: 1px;
 }
+
 .boxplot .whisker {
 	stroke-dasharray: 3, 3;
 }
+
 .boxplot .outlier {
 	fill: none;
 	stroke: #ccc;
 }
-.lineplot .line {
+
+.lineplot .line
+{
 	fill: none;
-	stroke: rgb(68, 68, 136);
+	stroke:  #1f77b4;
 	stroke-width: 1px;
 }
+
 .g-trellis .x-guide path.domain,
 .g-trellis .y-guide path.domain {
 	fill: none;
@@ -57,32 +66,40 @@ div.chartcontainer {
 	stroke: #ccc;
 	stroke-width: .6;
 }
+
 .axis path,
 .axis line {
 	fill: none;
 	stroke: black;
 }
+
 .axis text {
 	font-family: arial;
 	font-size: 8px;
 }
-.axislabel {
+
+.axislabel
+{
 	font-family: arial;
 	font-weight: bold;
 }
+
 table.data td:first-child {
 	text-align: right;
 }
+
 table.data td {
 	padding-left: 3px;
 	padding-right: 3px;
 	white-space: nowrap;
 }
+
 .g-overlay {
-	fill: none;
-	pointer-events: all;
+  fill: none;
+  pointer-events: all;
 }
 .g-label-value,
-.g-label-year {
+.g-label-year
+{
 	font-size: 10px;
 }

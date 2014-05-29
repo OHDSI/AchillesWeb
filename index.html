@@ -258,7 +258,7 @@
 			<div class="col-sm-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						People by Gender
+						Population by Gender 
 					</div>
 					<div class="panel-body">
 						<div id="genderPie" style="text-align:center"></div>
@@ -268,7 +268,7 @@
 			<div class="col-sm-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						People by Race
+						Population by Race
 					</div>
 					<div class="panel-body">
 						<div id="raceTypePie" style="text-align: center; width: auto"></div>
@@ -278,7 +278,7 @@
 			<div class="col-sm-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						People by Ethnicity
+						Population by Ethnicity
 					</div>
 					<div class="panel-body">
 						<div id="ethnicityTypePie" style="text-align: center; width: auto"></div>
@@ -513,78 +513,75 @@
 	<div id="reportDashboard" class="report">
 		<div class="reportTitle">Dashboard</div>
 		<div class="row">
-			<div class="col-sm-6">
+			<div class="col-sm-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						CDM Summary
 					</div>
 					<div class="panel-body">
-						<div class="cdmsummary" data-bind="template: {if: summaryData, name: 'summaryHeader', data: summaryData}"></div>
+						<div class="col-sm-12 personSummary">
+							<div data-bind="template: {if: dashboardData, name: 'attributeValueTable', data: function() { return dashboardData().SUMMARY}}"></div>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-6">
+			<div class="col-sm-3">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Dwell Statistics
-					</div>
-					<div class="panel-body">
-						<div class="cdmsummary" data-bind="template: {if: summaryData, name: 'dwell', data: summaryData}"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						Gender
+						Population by Gender
 					</div>
 					<div class="panel-body">
 						<div id="genderPie" style="text-align:center"></div>
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-6">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						Visit Types
-					</div>
-					<div class="panel-body">
-						<div id="visitTypePie" style="text-align: center; width: auto"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
+			<div class="col-sm-5">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						Age at First Observation
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
-						<div id="agehist" class="chartcontainer"></div>
-						<div id="ageboxplot" class="chartcontainer"></div>
+						<div class="row">
+							<div class="col-xs-12">
+								<div id="ageatfirstobservation" class="chartcontainer"></div>
+							</div>
+						</div>
 					</div>
-					<!-- /.panel-body -->
 				</div>
-				<!-- /.panel -->
+			</div>			
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Cumulative Observation
+					</div>
+					<!-- /.panel-heading -->
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-xs-12">
+								<div id="cumulativeobservation" class="chartcontainer"></div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 			<!-- /.col-lg-6 -->
 			<div class="col-sm-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Year of First Observation
+						Persons With Continuous Observation By Month
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
-						<div id="yearhist" class="chartcontainer"></div>
-						<div id="yearboxplot" class="chartcontainer"></div>
+						<div class="row">
+							<div class="col-xs-12">
+								<div id="oppeoplebymonthsingle" class="chartcontainer"></div>
+							</div>
+						</div>
 					</div>
-					<!-- /.panel-body -->
 				</div>
-				<!-- /.panel -->
 			</div>
 			<!-- /.col-lg-6 -->
 		</div>
