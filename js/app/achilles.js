@@ -380,6 +380,11 @@
 		function updatePerson(data) {
 			var result = data;
 
+			data.SUMMARY.ATTRIBUTE_VALUE.forEach(function (d, i, a) {
+				if (!isNaN(d))
+					data.SUMMARY.ATTRIBUTE_VALUE[i] = viewModel.formatSI(d, 2);
+			});
+
 			curl(["jnj/chart", "common"], function (jnj_chart, common) {
 				d3.selectAll("#reportPerson #genderPie svg").remove();
 				genderDonut = new jnj_chart.donut();

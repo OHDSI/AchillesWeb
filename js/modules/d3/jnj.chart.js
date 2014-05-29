@@ -7,14 +7,14 @@
 		root.jnj_chart = factory(root.$, root.d3)
 	}
 }(this, function (jQuery, d3) {
-	var chart = {
+	var module = {
 		version: "0.0.1"
 	};
 	var $ = jQuery;
 	var d3 = d3;
 
-	chart.util = chart.util || {};
-	chart.util.wrap = function (text, width) {
+	module.util = module.util || {};
+	module.util.wrap = function (text, width) {
 		text.each(function () {
 			var text = d3.select(this),
 				words = text.text().split(/\s+/).reverse(),
@@ -38,7 +38,21 @@
 		});
 	}
 
-	chart.donut = function () {
+	var intFormat = d3.format("0,000");
+	
+	module.util.formatSI = function (d, p) {
+		if (d < 1) {
+			return d3.round(d, p);
+		}
+		var prefix = d3.formatPrefix(d);
+		return d3.round(prefix.scale(d), p) + prefix.symbol;
+	}
+	
+	module.util.formatInteger = function (d) {
+		return intFormat(d);
+	}	
+
+	module.donut = function () {
 
 		this.render = function (data, target, w, h, options) {
 
@@ -146,7 +160,7 @@
 		}
 	}
 
-	chart.histogram = function () {
+	module.histogram = function () {
 		var self = this;
 		self.xScale = {}; // shared xScale for histogram and boxplot
 
@@ -231,6 +245,14 @@
 				chart = d3.select(target + " svg");
 			}
 
+			var tip = d3.tip()
+				.attr('class', 'd3-tip')
+				.offset([-10, 0])
+				.html(function (d) {
+					return module.util.formatInteger(d.y);
+				})
+			chart.call(tip);
+			
 			// apply labels (if specified) and offset margins accordingly
 			if (options.xLabel) {
 				var xAxisLabel = chart.append("g")
@@ -314,7 +336,9 @@
 				.attr("class", "bar")
 				.attr("transform", function (d) {
 					return "translate(" + x(d.x) + "," + y(d.y) + ")";
-				});
+				})
+				.on('mouseover', tip.show)
+				.on('mouseout', tip.hide)
 
 			bar.append("rect")
 				.attr("x", 1)
@@ -351,7 +375,7 @@
 	}
 
 
-	chart.boxplot = function () {
+	module.boxplot = function () {
 		this.render = function (data, target, w, h, options) {
 			var defaults = {
 				margin: {
@@ -375,6 +399,16 @@
 			} else {
 				svg = d3.select(target + " svg");
 			}
+			
+			var tip = d3.tip()
+				.attr('class', 'd3-tip')
+				.offset([-10, 0])
+				.html(function (d) {
+					return "Max: " + module.util.formatSI(d.max, 3)
+						+ "<br/>Median: " +  module.util.formatSI(d.median, 3)
+						+ "<br/>Min: " + module.util.formatSI(d.min, 3);
+				})
+			svg.call(tip);			
 
 			// apply labels (if specified) and offset margins accordingly
 			if (options.xLabel) {
@@ -463,7 +497,9 @@
 					.attr("x", boxOffset)
 					.attr("y", y(d.q3))
 					.attr("width", boxWidth)
-					.attr("height", y(d.q1) - y(d.q3));
+					.attr("height", y(d.q1) - y(d.q3))
+					.on('mouseover', tip.show)
+					.on('mouseout', tip.hide);
 
 				boxplot.append("line")
 					.attr("class", "median")
@@ -528,7 +564,7 @@
 		}
 	}
 
-	chart.barchart = function () {
+	module.barchart = function () {
 		this.render = function (data, target, w, h, options) {
 			var defaults = {
 				label: 'label',
@@ -665,7 +701,7 @@
 		}
 	}
 
-	chart.areachart = function () {
+	module.areachart = function () {
 		this.render = function (data, target, w, h, options) {
 			var defaults = {
 				margin: {
@@ -752,7 +788,7 @@
 		}
 	}
 
-	chart.line = function () {
+	module.line = function () {
 		this.render = function (data, target, w, h, options) {
 			var defaults = {
 				margin: {
@@ -938,15 +974,15 @@
 		}
 	}
 
-	chart.trellisline = function () {
+	module.trellisline = function () {
 		var self = this;
 
 		self.render = function (dataByTrellis, target, w, h, options) {
 			var defaults = {
 				margin: {
-					top: 25,
+					top: 5,
 					right: 5,
-					bottom: 30,
+					bottom: 5,
 					left: 5
 
 				},
@@ -955,7 +991,8 @@
 				yFormat: d3.format('d'),
 				interpolate: "linear",
 				tickPadding: 10,
-				trellisLabelPadding: 30,
+				trellisLabelPadding: 14,
+				seriesLabelPadding: 14,
 				colors: d3.scale.category10()
 			};
 
@@ -1006,16 +1043,26 @@
 					return "translate(" + margin.left + "," + margin.top + ")";
 				});
 
-			var xAxisLabel;
-			var xAxisLabelOffset = margin.bottom;
-			if (options.xLabel) {
-				xAxisLabel = chart.append("g");
-				xAxisLabel.append("text")
+			var seriesLabel;
+			var seriesLabelOffset = h - margin.bottom;
+			if (options.seriesLabel) {
+				seriesLabel = chart.append("g");
+				seriesLabel.append("text")
 					.attr("class", "axislabel")
 					.style("text-anchor", "middle")
-					.text(options.xLabel);
-
-				margin.bottom += xAxisLabel.node().getBBox().height + 3;
+					.text(options.seriesLabel);
+				margin.bottom += seriesLabel.node().getBBox().height + 3;
+			}
+			
+			var trellisLabel;
+			var trellisLabelOffset = margin.top;
+			if (options.trellisLabel){
+				trellisLabel = chart.append("g");
+				trellisLabel.append("text")
+					.attr("class", "axislabel")
+					.style("text-anchor", "middle")
+					.text(options.trellisLabel);
+				margin.top += trellisLabel.node().getBBox().height + 3;
 			}
 
 			var yAxisLabel;
@@ -1030,7 +1077,8 @@
 			}
 
 			margin.left += options.tickPadding;
-			margin.bottom += options.trellisLabelPadding;
+			margin.top += options.trellisLabelPadding;
+			margin.bottom += options.seriesLabelPadding;
 			
 			var vis = chart.append("g")
 			.attr("transform", function (d) {
@@ -1040,8 +1088,12 @@
 			var width = w - margin.left - margin.right,
 				height = h - margin.bottom - margin.top;
 
-			if (options.xLabel) {
-				xAxisLabel.attr("transform", "translate(" + ((width / 2) + margin.left) + "," + (h - xAxisLabelOffset) + ")");
+			if (options.trellisLabel) {
+				trellisLabel.attr("transform", "translate(" + ((width / 2) + margin.left) + "," + trellisLabelOffset + ")");
+			}
+			
+			if (options.seriesLabel) {
+				seriesLabel.attr("transform", "translate(" + ((width / 2) + margin.left) + "," + seriesLabelOffset + ")");
 			}
 
 			if (options.yLabel) {
@@ -1081,6 +1133,35 @@
 					return "translate(" + trellisScale(d) + ",0)";
 				});
 
+			var yAxis = d3.svg.axis()
+				.scale(yScale)
+				.tickFormat(options.yFormat)
+				.ticks(4)
+				.orient("left");
+			
+			
+			var seriesGuideXAxis = d3.svg.axis()
+				.scale(seriesScale)
+				.tickFormat("")
+				.tickSize(-height)
+				.orient("bottom");
+						
+			var seriesGuideYAxis = d3.svg.axis()
+				.scale(yScale)
+				.tickFormat("")
+				.tickSize(-trellisScale.rangeBand())
+				.ticks(8)
+				.orient("left");
+			
+			gTrellis.append("g")
+				.attr("class", "x-guide")
+				.attr("transform", "translate(0," + height + ")")
+				.call(seriesGuideXAxis);
+
+			gTrellis.append("g")
+				.attr("class", "y-guide")
+				.call(seriesGuideYAxis);
+			
 			gSeries = gTrellis.selectAll(".g-series")
 				.data(function (trellis) {
 					var seriesData = dataByTrellis.filter(function (e) {
@@ -1141,10 +1222,10 @@
 			gTrellis.append("g")
 				.attr("class", "g-label-trellis")
 				.attr("transform", function (d) {
-					return "translate(" + (trellisScale.rangeBand() / 2) + "," + (height + 20) + ")"
+					return "translate(" + (trellisScale.rangeBand() / 2) + ",0)"
 				})
 				.append("text")
-				.attr("dy", ".71em")
+				.attr("dy", "-14")
 				.style("text-anchor", "middle")
 				.text(function (d) {
 					return d;
@@ -1159,15 +1240,9 @@
 				.on("mousemove", mousemove)
 				.on("mouseout", mouseout);
 
-
-			var yAxis = d3.svg.axis()
-				.scale(yScale)
-				.tickFormat(options.yFormat)
-				.ticks(4)
-				.orient("left");
-
 			d3.select(gTrellis[0][0]).append("g")
 				.attr("class", "y axis")
+				.attr("transform", "translate(-4,0)")			
 				.call(yAxis)
 
 
@@ -1245,7 +1320,7 @@
 		}
 	}
 
-	chart.treemap = function () {
+	module.treemap = function () {
 		var self = this;
 
 		var root,
@@ -1341,5 +1416,5 @@
 		}
 	}
 
-	return chart;
+	return module;
 }));

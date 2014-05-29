@@ -197,14 +197,14 @@ body {
 	padding: 5px;
 	width: 98%;
 }
-div.cdmsummary .row div:first-child {
+div.personSummary .row div:first-child {
 	text-align: right;
 	font-weight: bold;
 }
-div.cdmsummary .row div {
+div.personSummary .row div {
 	padding-left: 2px;
 	padding-right: 2px;
-	font-size: 12px;
+	font-size: 16px;
 }
 .report {
 	display: none;

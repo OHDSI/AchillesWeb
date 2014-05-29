@@ -25,6 +25,7 @@
 						for (i = 0; i < bpdata.CATEGORY.length; i++) {
 							bpseries.push({
 								Category: bpdata.CATEGORY[i],
+								min: bpdata.MIN_VALUE[i],
 								max: bpdata.MAX_VALUE[i],
 								median: bpdata.MEDIAN_VALUE[i],
 								LIF: bpdata.P10_VALUE[i],
@@ -36,6 +37,7 @@
 					} else {
 							bpseries.push({
 								Category: bpdata.CATEGORY,
+								min: bpdata.MIN_VALUE,
 								max: bpdata.MAX_VALUE,
 								median: bpdata.MEDIAN_VALUE,
 								LIF: bpdata.P10_VALUE,

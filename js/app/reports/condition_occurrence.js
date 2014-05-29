@@ -32,6 +32,7 @@
 							for (i = 0; i < bpdata.CATEGORY.length; i++) {
 								bpseries.push({
 									Category: bpdata.CATEGORY[i],
+									min: bpdata.MIN_VALUE[i],
 									max: bpdata.MAX_VALUE[i],
 									median: bpdata.MEDIAN_VALUE[i],
 									LIF: bpdata.P10_VALUE[i],
@@ -159,7 +160,8 @@
 							var chart = new jnj_chart.trellisline();
 							chart.render(dataByDecile, "#reportConditionOccurrences #trellisLinePlot", 1000, 300, {
 								trellisSet: allDeciles,
-								xLabel: "Age Decile",
+								trellisLabel: "Age Decile",
+								seriesLabel: "Year of Observation",
 								yLabel: "Prevalence Per 1000 People",
 								xFormat: d3.time.format("%Y"),
 								yFormat: d3.format("0.2f"),
