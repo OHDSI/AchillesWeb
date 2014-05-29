@@ -1363,7 +1363,7 @@
 
 			var color = d3.scale.linear()
 				.domain([color_range[0], color_range[1]])
-				.range(["#20425A", "#F9BA13"]);
+				.range(["#1F77B4", "#FF7F0E"]);
 
 			var tip = d3.tip()
 				.attr('class', 'd3-tip')
