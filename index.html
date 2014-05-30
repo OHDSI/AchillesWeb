@@ -63,6 +63,7 @@
 							<li onclick="updateReport('person');">Person</li>
 							<li onclick="updateReport('conditions');">Conditions</li>
 							<li onclick="updateReport('drugs');">Drugs</li>
+							<li onclick="updateReport('procedures');">Procedures</li>
 							<li onclick="updateReport('observationperiods');">Observation Periods</li>
 						</ul>
 					</li>
@@ -509,6 +510,100 @@
 			</div>
 		</div>
 	</div>
+	
+	<div id="reportProcedureOccurrences" class="report">
+		<div class="reportTitle">Procedures</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Procedure Prevalence
+					</div>
+					<div class="panel-body">
+						<div class="col-sm-12">
+							<ul class="nav nav-tabs" id="myTab">
+								<li class="active"><a href="#procedure-treemap-panel">Treemap</a>
+								</li>
+								<li><a href="#procedure-table-panel">Table</a>
+								</li>
+							</ul>
+							<div id='content' class="tab-content">
+								<div class="tab-pane active" id="procedure-treemap-panel">
+									<div id="treemap_container"></div>
+									<div id="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Orange = Low to High)</div>
+								</div>
+								<div class="tab-pane" id="procedure-table-panel">
+									<table id="procedure_table" class="display">
+										<thead>
+											<tr>
+												<th>Concept Id</th>
+												<th>Level 4</th>
+												<th>Level 3</th>
+												<th>Level 2</th>
+												<th>Procedure</th>
+												<th>Person Count</th>
+												<th>Prevalence</th>
+												<th>Records per Person</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="procedureDrilldownTitle" class="reportTitle"></div>
+		<div id="reportProcedureOccurrencesDrilldown" class="hidden reportDrilldown">
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="panelProcedurePrevalence" class="panel panel-default">
+						<div class="panel-heading">
+							Procedure Prevalence
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="trellisLinePlot"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="panelProcedureOccurrencePrevalenceByMonth" class="panel panel-default">
+						<div class="panel-heading">
+							Procedure Prevalence by Month
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="procedurePrevalenceByMonth"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div id="panelProceduresByType" class="panel panel-default">
+						<div class="panel-heading">
+							Procedures by Type
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="proceduresByType"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div id="panelAgeAtFirstOccurrence" class="panel panel-default">
+						<div class="panel-heading">
+							Age at First Occurrence
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="ageAtFirstOccurrence"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
 
 	<div id="reportDashboard" class="report">
 		<div class="reportTitle">Dashboard</div>

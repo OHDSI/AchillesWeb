@@ -216,7 +216,7 @@ div.personSummary .row div {
 /* D3 Tip Styles */
 
 .d3-tip {
-	white-space: nowrap;
+	/*white-space: nowrap;*/
 	line-height: 1;
 	font-size: 10px;
 	padding: 12px;
@@ -224,6 +224,7 @@ div.personSummary .row div {
 	color: #fff;
 	border-radius: 2px;
 	pointer-events: none;
+	max-width:400px;
 }
 /* Creates a small triangle extender for the tooltip */
 

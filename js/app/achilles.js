@@ -5,14 +5,16 @@
 		"knockout",
 		"app/reports/condition_occurrence",
 		"app/reports/drug_exposure",
+		"app/reports/procedure_occurrence",
 		"bootstrap",
 		"d3/tip"
-	], function ($, d3, ko, reportConditionOccurrence, reportDrugExposure) {
+	], function ($, d3, ko, reportConditionOccurrence, reportDrugExposure, reportProcedureOccurrence) {
 		function summaryViewModel() {
 			var self = this;
 
 			self.dashboardData = ko.observable();
 			self.conditionsData = ko.observable();
+			
 			self.personData = ko.observable();
 			self.observationPeriodsData = ko.observable();
 			self.datasource = ko.observable({
@@ -398,33 +400,6 @@
 			});
 		}
 
-		function updateConditions(data) {
-			var result = data;
-			curl(["jnj/chart", "common"], function (jnj_chart, common) {
-				d3.selectAll("#reportConditionOccurrences svg").remove();
-
-				tree = buildHierarchyFromJSON(data);
-				var treemap = new jnj_chart.treemap();
-				treemap.render(tree, '#reportConditionOccurrences .treemap', 1000, 500, {
-					gettitle: function (node) {
-						current = node;
-						title = '';
-						while (current.parent) {
-							if (current.parent.name != 'root') {
-								if (title == '') {
-									title = '<b>' + current.parent.name + '</b>';
-								}
-								title = current.parent.name + ' <br> ' + title;
-							}
-							current = current.parent;
-						}
-						return title;
-					}
-				});
-
-			});
-		}
-
 		function updatePerson(data) {
 			var result = data;
 
@@ -522,8 +497,19 @@
 
 					reportDrugExposure.render(this.params['folder']);
 					$('#reportDrugExposures').show();
-					report = 'conditions';
+					report = 'drugs';
 				});
+				
+				this.get('#/:folder/procedures', function (context) {
+					$('.report').hide();
+					viewModel.datasource(viewModel.datasources.filter(function (d) {
+						return d.folder == this.params['folder'];
+					}, this)[0]);
+
+					reportProcedureOccurrence.render(this.params['folder']);
+					$('#reportProcedureOccurrences').show();
+					report = 'procedures';
+				});								
 
 				this.get('#/:folder/observationperiods', function (context) {
 					$('.report').hide();
