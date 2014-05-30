@@ -259,6 +259,7 @@
 					.attr("transform", "translate(" + w / 2 + "," + (h - options.margin.bottom) + ")")
 
 				xAxisLabel.append("text")
+					.attr("class", "axislabel")
 					.style("text-anchor", "middle")
 					.text(options.xLabel);
 
@@ -270,6 +271,7 @@
 				var yAxisLabel = chart.append("g")
 					.attr("transform", "translate(0," + (((h - options.margin.bottom - options.margin.top) / 2) + options.margin.top) + ")");
 				yAxisLabel.append("text")
+					.attr("class", "axislabel")
 					.attr("transform", "rotate(-90)")
 					.attr("y", 0)
 					.attr("x", 0)
@@ -416,6 +418,7 @@
 					.attr("transform", "translate(" + w / 2 + "," + (h - 5) + ")")
 
 				xAxisLabel.append("text")
+					.attr("class", "axislabel")
 					.style("text-anchor", "middle")
 					.text(options.xLabel);
 
@@ -427,6 +430,7 @@
 				var yAxisLabel = svg.append("g")
 					.attr("transform", "translate(0," + (((h - options.margin.bottom - options.margin.top) / 2) + options.margin.top) + ")");
 				yAxisLabel.append("text")
+					.attr("class", "axislabel")
 					.attr("transform", "rotate(-90)")
 					.attr("y", 0)
 					.attr("x", 0)
@@ -832,6 +836,7 @@
 					.attr("transform", "translate(" + w / 2 + "," + (h - options.margin.bottom) + ")")
 
 				xAxisLabel.append("text")
+					.attr("class", "axislabel")
 					.style("text-anchor", "middle")
 					.text(options.xLabel);
 
@@ -843,6 +848,7 @@
 				var yAxisLabel = chart.append("g")
 					.attr("transform", "translate(0," + (((h - options.margin.bottom - options.margin.top) / 2) + options.margin.top) + ")");
 				yAxisLabel.append("text")
+					.attr("class", "axislabel")
 					.attr("transform", "rotate(-90)")
 					.attr("y", 0)
 					.attr("x", 0)
@@ -980,10 +986,10 @@
 		self.render = function (dataByTrellis, target, w, h, options) {
 			var defaults = {
 				margin: {
-					top: 5,
-					right: 5,
-					bottom: 5,
-					left: 5
+					top: 10,
+					right: 10,
+					bottom: 10,
+					left: 10
 
 				},
 				trellisSet: d3.keys(dataByTrellis),
@@ -1244,6 +1250,8 @@
 				.attr("class", "y axis")
 				.attr("transform", "translate(-4,0)")			
 				.call(yAxis)
+			
+			chart.call(renderLegend);
 
 
 			$(window).on("resize", {
@@ -1315,6 +1323,33 @@
 						.text(v.date.getFullYear())
 						.attr("transform", "translate(" + offsetScale.range([0, trellisScale.rangeBand() - this.getComputedTextLength()])(x) + "," + (height + 6) + ")")
 						.style("display", null);
+				});
+			}
+			
+			function renderLegend(g)
+			{
+				var offset = 0;
+				options.colors.domain().forEach(function (d){
+					var legendItem = g.append("g").attr("class","trellisLegend");					
+					
+					var legendText = legendItem.append("text")
+						.text(d);
+					
+					var textBBox = legendItem.node().getBBox();
+					
+					legendText
+						.attr("x",12)
+						.attr("y",textBBox.height);
+					
+					legendItem.append("line")
+						.attr("x1", 0)
+						.attr("y1", 10)
+						.attr("x2", 10)
+						.attr("y2", 10)
+						.style("stroke", options.colors(d));
+
+					legendItem.attr("transform","translate(" + offset + ",0)");
+					offset += legendItem.node().getBBox().width + 5;
 				});
 			}
 		}

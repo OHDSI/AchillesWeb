@@ -41,7 +41,7 @@
 									UIF: bpdata.P90_VALUE[i]
 								});
 							}
-							boxplot.render(bpseries, "#ageAtFirstDiagnosis", 400, 400, {
+							boxplot.render(bpseries, "#ageAtFirstDiagnosis", 500, 300, {
 								xLabel: 'Gender',
 								yLabel: 'Age at First Diagnosis'
 							});
@@ -55,7 +55,7 @@
 
 							d3.selectAll("#reportConditionOccurrences #conditionPrevalenceByMonth svg").remove();
 							var prevalenceByMonth = new jnj_chart.line();
-							prevalenceByMonth.render(byMonthSeries, "#reportConditionOccurrences #conditionPrevalenceByMonth", 900, 250, {
+							prevalenceByMonth.render(byMonthSeries, "#reportConditionOccurrences #conditionPrevalenceByMonth", 1000, 300, {
 								xScale: d3.time.scale().domain(d3.extent(byMonthSeries[0].values, function (d) {
 									return d.xValue;
 								})),
@@ -93,7 +93,7 @@
 								return 0 //default return value (no sorting)
 							});
 
-							donut.render(slices, "#conditionsByType", 400, 400, {
+							donut.render(slices, "#conditionsByType", 500, 300, {
 								margin: {
 									top: 5,
 									left: 5,
@@ -165,7 +165,10 @@
 								yLabel: "Prevalence Per 1000 People",
 								xFormat: d3.time.format("%Y"),
 								yFormat: d3.format("0.2f"),
-								tickPadding: 20
+								tickPadding: 20,
+								colors: d3.scale.ordinal()
+									.domain(["MALE", "FEMALE"])
+									.range(["#1f77b4", "#ff7f0e"])						
 
 							});
 						}
