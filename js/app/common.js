@@ -1,4 +1,4 @@
-define(function ()
+define(["d3"],function (d3)
 {
 
 	function mapConceptData(data)
@@ -128,12 +128,28 @@ define(function ()
 		});
 		return series;
 	}
+	
+	function dataframeToArray(dataframe)
+	{
+		// dataframes from R serialize into an obect where each column is an array of values.
+		var keys = d3.keys(dataframe);
+		var result = dataframe[keys[0]].map(function (d, i) {
+			var item = {};
+			var container = this;
+			keys.forEach(function (p) {
+				item[p] = container[p][i];
+			});
+			return item;
+		}, dataframe);
+		return result;
+	}
 
 	var module = {
 		mapHistogram: mapHistogram,
 		mapConceptData: mapConceptData,
 		mapMonthYearDataToSeries: mapMonthYearDataToSeries,
-		mapMonthYearDataToSeriesByYear: mapMonthYearDataToSeriesByYear
+		mapMonthYearDataToSeriesByYear: mapMonthYearDataToSeriesByYear,
+		dataframeToArray: dataframeToArray
 	};
 
 	return module;

@@ -60,6 +60,7 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li onclick="updateReport('dashboard');">Dashboard</li>
+							<li onclick="updateReport('datadensity');">Data Density</li>
 							<li onclick="updateReport('person');">Person</li>
 							<li onclick="updateReport('conditions');">Conditions</li>
 							<li onclick="updateReport('drugs');">Drugs</li>
@@ -681,6 +682,45 @@
 			<!-- /.col-lg-6 -->
 		</div>
 	</div>
+	
+	<div id="reportDataDensity" class="report">
+		<div class="reportTitle">Data Density</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Total Rows
+					</div>
+					<div class="panel-body">
+						<div id="totalrecords"></div>
+					</div>
+				</div>
+			</div>
+		</div>	
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Records Per Person
+					</div>
+					<div class="panel-body">
+						<div id="recordsperperson"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Concepts Per Person
+					</div>
+					<div class="panel-body">
+						<div id="conceptsperperson"></div>
+					</div>
+				</div>
+			</div>
+		</div>			
+	</div>
 </body>
-
 </html>

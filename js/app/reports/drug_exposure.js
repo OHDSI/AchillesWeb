@@ -18,6 +18,7 @@
 
 				boxplot_helper = function (data, target, xlabel, ylabel) {
 					var boxplot = new jnj_chart.boxplot();
+					var yMax = 0;
 					bpseries = [];
 					bpdata = data;
 
@@ -33,6 +34,7 @@
 								q3: bpdata.P75_VALUE[i],
 								UIF: bpdata.P90_VALUE[i]
 							});
+							yMax = Math.max(yMax, bpdata.P90_VALUE[i]);
 						}
 					} else {
 							bpseries.push({
@@ -45,9 +47,11 @@
 								q3: bpdata.P75_VALUE,
 								UIF: bpdata.P90_VALUE
 							});
+						yMax = bpdata.P90_VALUE;
 					}
 
 					boxplot.render(bpseries, target, 200, 200, {
+						yMax: yMax,
 						xLabel: xlabel,
 						yLabel: ylabel
 					});
