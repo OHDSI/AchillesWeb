@@ -498,7 +498,7 @@
 					.attr("x", boxOffset)
 					.attr("y", y(d.q3))
 					.attr("width", boxWidth)
-					.attr("height", Math.max(1,y(d.q1) - y(d.q3)))
+					.attr("height", Math.max(1, y(d.q1) - y(d.q3)))
 					.on('mouseover', tip.show)
 					.on('mouseout', tip.hide);
 
@@ -1515,7 +1515,7 @@
 					return d.id;
 				})
 				.style("fill", function (d) {
-					return color(d.records_per_person);
+					return color(options.getcolorvalue(d));
 				})
 				.on('mouseover', tip.show)
 				.on('mouseout', tip.hide)

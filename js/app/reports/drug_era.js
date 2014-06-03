@@ -1,10 +1,10 @@
 		(function () {
 			define(["jquery", "d3", "jnj/chart", "common", "datatables"], function ($, d3, jnj_chart, common) {
-				var drug_exposure = {};
+				var drug_era = {};
 				var threshold;
 
 				// bind to all matching elements upon creation
-				$(document).on('click', '#drug_table tr', function () {
+				$(document).on('click', '#drugera_table tr', function () {
 					id = $($(this).children()[0]).text();
 					concept_name = $($(this).children()[5]).text();
 					drug_exposure.drilldown(id, concept_name);
@@ -57,52 +57,19 @@
 					});
 				}
 
-				drug_exposure.drilldown = function (concept_id, concept_name) {
+				drug_era.drilldown = function (concept_id, concept_name) {
 					$('.drilldown svg').remove();
-					$('#drugDrilldownTitle').text(concept_name);
-					$('#reportDrugExposuresDrilldown').removeClass('hidden');
+					$('#drugeraDrilldownTitle').text(concept_name);
+					$('#reportDrugErasDrilldown').removeClass('hidden');
 
 					$.ajax({
 						type: "GET",
-						url: 'data/' + page_vm.datasource().folder + '/drugs/drug_' + concept_id + '.json',
+						url: 'data/' + page_vm.datasource().folder + '/drugeras/drug_' + concept_id + '.json',
 						success: function (data) {
 
 							// boxplots
-							boxplot_helper(data.AGE_AT_FIRST_EXPOSURE, '#ageAtFirstExposure', 'Gender', 'Age at First Exposure');
-							boxplot_helper(data.DAYS_SUPPLY_DISTRIBUTION, '#daysSupplyDistribution', 'Days Supply', 'Days');
-							boxplot_helper(data.QUANTITY_DISTRIBUTION, '#quantityDistribution', 'Quantity', 'Quantity');
-							boxplot_helper(data.REFILLS_DISTRIBUTION, '#refillsDistribution', 'Refills', 'Refills');
-
-							// drug  type visualization
-							var donut = new jnj_chart.donut();
-							slices = [];
-
-							for (i = 0; i < data.DRUGS_BY_TYPE.CONCEPT_NAME.length; i++) {
-								slices.push({
-									id: data.DRUGS_BY_TYPE.CONCEPT_NAME[i],
-									label: data.DRUGS_BY_TYPE.CONCEPT_NAME[i],
-									value: data.DRUGS_BY_TYPE.COUNT_VALUE[i]
-								})
-							}
-
-							slices.sort(function (a, b) {
-								var nameA = a.label.toLowerCase(),
-									nameB = b.label.toLowerCase()
-								if (nameA < nameB) //sort string ascending
-									return -1
-								if (nameA > nameB)
-									return 1
-								return 0 //default return value (no sorting)
-							});
-
-							donut.render(slices, "#drugsByType", 300, 200, {
-								margin: {
-									top: 5,
-									left: 5,
-									right: 200,
-									bottom: 5
-								}
-							});
+							boxplot_helper(data.AGE_AT_FIRST_EXPOSURE, '#drugeraAgeAtFirstExposure', '', 'Age at First Exposure');
+							boxplot_helper(data.LENGTH_OF_ERA,'#drugeraLengthOfEra', '', 'Days');
 
 							// prevalence by month
 							var byMonthSeries = common.mapMonthYearDataToSeries(data.PREVALENCE_BY_MONTH, {
@@ -111,9 +78,9 @@
 								yPercent: 'Y_PREVALENCE_1000PP'
 							});
 
-							d3.selectAll("#reportDrugExposures #drugPrevalenceByMonth svg").remove();
+							d3.selectAll("#reportDrugEras #drugPrevalenceByMonth svg").remove();
 							var prevalenceByMonth = new jnj_chart.line();
-							prevalenceByMonth.render(byMonthSeries, "#reportDrugExposures #drugPrevalenceByMonth", 900, 250, {
+							prevalenceByMonth.render(byMonthSeries, "#reportDrugEras #drugPrevalenceByMonth", 900, 250, {
 								xScale: d3.time.scale().domain(d3.extent(byMonthSeries[0].values, function (d) {
 									return d.xValue;
 								})),
@@ -185,7 +152,7 @@
 
 							// create svg with range bands based on the trellis names
 							var chart = new jnj_chart.trellisline();
-							chart.render(dataByDecile, "#reportDrugExposures #trellisLinePlot", 1000, 300, {
+							chart.render(dataByDecile, "#reportDrugEras #trellisLinePlot", 1000, 300, {
 								trellisSet: allDeciles,
 								trellisLabel: "Age Decile",
 								seriesLabel: "Year of Observation",
@@ -195,18 +162,18 @@
 								tickPadding: 20,
 								colors: d3.scale.ordinal()
 									.domain(["MALE", "FEMALE"])
-									.range(["#1f77b4", "#ff7f0e"])									
+									.range(["#1f77b4", "#ff7f0e"])
 							});
 						}
 					});
 				}
 
-				drug_exposure.render = function (folder) {
+				drug_era.render = function (folder) {
 					format_pct = d3.format('.2%');
 					format_fixed = d3.format('.2f');
 					format_comma = d3.format(',');
 
-					$('#reportDrugExposures svg').remove();
+					$('#reportDrugEras svg').remove();
 
 					width = 1000;
 					height = 250;
@@ -215,7 +182,7 @@
 
 					$.ajax({
 						type: "GET",
-						url: 'data/' + folder + '/drug_treemap.json',
+						url: 'data/' + folder + '/drugera_treemap.json',
 						contentType: "application/json; charset=utf-8",
 						success: function (data) {
 							table_data = data.CONCEPT_PATH.map(function (d, i) {
@@ -226,14 +193,13 @@
 									atc3: conceptDetails[1],
 									atc5: conceptDetails[2],
 									ingredient: conceptDetails[3],
-									rxnorm: conceptDetails[4],
 									num_persons: format_comma(this.NUM_PERSONS[i]),
 									percent_persons: format_pct(this.PERCENT_PERSONS[i]),
-									records_per_person: format_fixed(this.RECORDS_PER_PERSON[i])
+									length_of_era: format_fixed(this.LENGTH_OF_ERA[i])
 								}
 							}, data);
 
-							$('#drug_table').dataTable({
+							$('#drugera_table').dataTable({
 								data: table_data,
 								columns: [
 									{
@@ -252,9 +218,6 @@
 										data: 'ingredient'
 									},
 									{
-										data: 'rxnorm'
-									},
-									{
 										data: 'num_persons',
 										className: 'numeric'
 									},
@@ -263,7 +226,7 @@
 										className: 'numeric'
 									},
 									{
-										data: 'records_per_person',
+										data: 'length_of_era',
 										className: 'numeric'
 									}
 								],
@@ -273,19 +236,19 @@
 								destroy: true
 							});
 
-							$('#reportDrugExposures').show();
+							$('#reportDrugEras').show();
 
 							tree = buildHierarchyFromJSON(data, threshold);
 							var treemap = new jnj_chart.treemap();
-							treemap.render(tree, '#reportDrugExposures #treemap_container', width, height, {
+							treemap.render(tree, '#reportDrugEras #treemap_container', width, height, {
 								onclick: function (node) {
-									drug_exposure.drilldown(node.id, node.name)
+									drug_era.drilldown(node.id, node.name)
 								},
 								getsizevalue: function (node) {
 									return node.num_persons;
 								},
 								getcolorvalue: function (node) {
-									return node.records_per_person;
+									return node.length_of_era;
 								},
 								gettitle: function (node) {
 									title = '';
@@ -296,7 +259,7 @@
 											title += '<div class="pathleaf">' + steps[i] + '</div>';
 											title += '<div class="pathleafstat">Prevalence: ' + format_pct(node.pct_persons) + '</div>';
 											title += '<div class="pathleafstat">Number of People: ' + format_comma(node.num_persons) + '</div>';
-											title += '<div class="pathleafstat">Records per Person: ' + format_fixed(node.records_per_person) + '</div>';
+											title += '<div class="pathleafstat">Length of Era: ' + format_fixed(node.length_of_era) + '</div>';
 										} else {
 											title += ' <div class="pathstep">' + Array(i + 1).join('&nbsp;&nbsp') + steps[i] + ' </div>';
 										}
@@ -355,7 +318,7 @@
 									"id": data.CONCEPT_ID[i],
 									"path": data.CONCEPT_PATH[i],
 									"pct_persons": data.PERCENT_PERSONS[i],
-									"records_per_person": data.RECORDS_PER_PERSON[i]
+									"length_of_era": data.LENGTH_OF_ERA[i]
 								};
 
 								// we only include nodes with sufficient size in the treemap display
@@ -369,6 +332,6 @@
 					}
 					return root;
 				};
-				return drug_exposure;
+				return drug_era;
 			});
 		})();
