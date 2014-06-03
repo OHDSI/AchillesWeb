@@ -41,7 +41,7 @@
 									UIF: bpdata.P90_VALUE[i]
 								});
 							}
-							boxplot.render(bpseries, "#ageAtFirstOccurrence", 500, 300, {
+							boxplot.render(bpseries, "#reportProcedureOccurrences #ageAtFirstOccurrence", 500, 300, {
 								xLabel: 'Gender',
 								yLabel: 'Age at First Occurrence'
 							});

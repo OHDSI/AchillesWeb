@@ -7,10 +7,11 @@
 		"app/reports/drug_exposure",
 		"app/reports/procedure_occurrence",
 		"app/reports/data_density",
+		"app/reports/observation",
 		"app/reports/drug_era",
 		"bootstrap",
 		"d3/tip"
-	], function ($, d3, ko, reportConditionOccurrence, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportDrugEra) {
+	], function ($, d3, ko, reportConditionOccurrence, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra) {
 		function summaryViewModel() {
 			var self = this;
 
@@ -543,7 +544,18 @@
 					reportDataDensity.render(this.params['folder']);
 					$('#reportDataDensity').show();
 					report = 'datadensity';
-				});												
+				});
+				
+				this.get('#/:folder/observations', function (context) {
+					$('.report').hide();
+					viewModel.datasource(viewModel.datasources.filter(function (d) {
+						return d.folder == this.params['folder'];
+					}, this)[0]);
+
+					reportObservation.render(this.params['folder']);
+					$('#reportObservations').show();
+					report = 'observations';
+				});						
 
 			});
 

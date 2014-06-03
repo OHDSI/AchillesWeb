@@ -545,6 +545,9 @@
 				.attr("transform", "translate(0," + height + ")")
 				.call(xAxis);
 
+			chart.selectAll(".tick text")
+				.call(module.util.wrap, x.rangeBand());
+			
 			chart.append("g")
 				.attr("class", "y axis")
 				.attr("transform", "translate(0," + 0 + ")")
@@ -641,7 +644,7 @@
 
 			if (options.wrap) {
 				svg.selectAll(".tick text")
-					.call(chart.util.wrap, x.rangeBand());
+					.call(module.util.wrap, x.rangeBand());
 			}
 
 			svg.selectAll(".bar")

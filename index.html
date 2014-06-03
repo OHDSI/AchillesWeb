@@ -61,12 +61,13 @@
 						<ul class="dropdown-menu">
 							<li onclick="updateReport('dashboard');">Dashboard</li>
 							<li onclick="updateReport('datadensity');">Data Density</li>
+							<li onclick="updateReport('observationperiods');">Observation Periods</li>
 							<li onclick="updateReport('person');">Person</li>
 							<li onclick="updateReport('conditions');">Conditions</li>
 							<li onclick="updateReport('drugeras');">Drug Eras</li>
 							<li onclick="updateReport('drugs');">Drug Exposures</li>
 							<li onclick="updateReport('procedures');">Procedures</li>
-							<li onclick="updateReport('observationperiods');">Observation Periods</li>
+							<li onclick="updateReport('observations');">Observations</li>
 						</ul>
 					</li>
 				</ul>
@@ -701,6 +702,154 @@
 		</div>
 	</div>
 
+<div id="reportObservations" class="report">
+		<div class="reportTitle">Observations</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Observation Prevalence
+					</div>
+					<div class="panel-body">
+						<div class="col-sm-12">
+							<ul class="nav nav-tabs" id="myTab">
+								<li class="active"><a href="#observation-treemap-panel">Treemap</a>
+								</li>
+								<li><a href="#observation-table-panel">Table</a>
+								</li>
+							</ul>
+							<div id='content' class="tab-content">
+								<div class="tab-pane active" id="observation-treemap-panel">
+									<div id="treemap_container"></div>
+									<div id="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Orange = Low to High)</div>
+								</div>
+								<div class="tab-pane" id="observation-table-panel">
+									<table id="observation_table" class="display">
+										<thead>
+											<tr>
+												<th>Concept Id</th>
+												<th>Level 4</th>
+												<th>Level 3</th>
+												<th>Level 2</th>
+												<th>Observation</th>
+												<th>Person Count</th>
+												<th>Prevalence</th>
+												<th>Records per Person</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="observationDrilldownTitle" class="reportTitle"></div>
+		<div id="reportObservationDrilldown" class="hidden reportDrilldown">
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="panelObservationPrevalence" class="panel panel-default">
+						<div class="panel-heading">
+							Observation Prevalence
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="trellisLinePlot"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="panelObservationPrevalenceByMonth" class="panel panel-default">
+						<div class="panel-heading">
+							Observation Prevalence by Month
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="observationPrevalenceByMonth"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div id="panelObservationsByType" class="panel panel-default">
+						<div class="panel-heading">
+							Observations by Type
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="observationsByType"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div id="panelAgeAtFirstOccurrence" class="panel panel-default">
+						<div class="panel-heading">
+							Age at First Occurrence
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="ageAtFirstOccurrence"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div id="panelObservationsByType" class="panel panel-default">
+						<div class="panel-heading">
+							Observation Records by Unit
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="recordsByUnit"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div id="panelAgeAtFirstOccurrence" class="panel panel-default">
+						<div class="panel-heading">
+							Observation Value Distribution
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="observationValues"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<div id="panelObservationsByType" class="panel panel-default">
+						<div class="panel-heading">
+							Lower limit Distribution
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="lowerLimit"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div id="panelAgeAtFirstOccurrence" class="panel panel-default">
+						<div class="panel-heading">
+							Upper Limit Distribution
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="upperLimit"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div id="panelAgeAtFirstOccurrence" class="panel panel-default">
+						<div class="panel-heading">
+							Values Relative to Normal Range
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="relativeToNorm"></div>
+						</div>
+					</div>
+				</div>
+			</div>			
+		</div>
+	</div>
+	
 	<div id="reportDashboard" class="report">
 		<div class="reportTitle">Dashboard</div>
 		<div class="row">
