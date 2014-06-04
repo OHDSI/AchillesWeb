@@ -26,6 +26,7 @@
 		}
 
 		function updateRoute() {
+			$('.reportDrilldown').addClass('hidden');
 			document.location = '#/' + page_vm.datasource().folder + '/' + report;
 		}
 	</script>
@@ -310,8 +311,10 @@
 							</ul>
 							<div id='content' class="tab-content">
 								<div class="tab-pane active" id="drugera_treemap_panel">
-									<div id="treemap_container"></div>
-									<div id="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Orange = Low to High)</div>
+									<div id="treemap_container">
+										<div class="treemap_zoomtarget"></div>
+									</div>
+									<div class="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Orange = Low to High), Use Ctrl-Click to Zoom</div>
 								</div>
 								<div class="tab-pane" id="drugera_table_panel">
 									<table id="drugera_table" class="display">
@@ -335,8 +338,8 @@
 				</div>
 			</div>
 		</div>
-		<div id="drugeraDrilldownTitle" class="reportTitle"></div>
 		<div id="reportDrugErasDrilldown" class="hidden reportDrilldown">
+			<div id="drugeraDrilldownTitle" class="reportTitle"></div>
 			<div class="row">
 				<div class="col-sm-12">
 					<div id="panelDrugEraPrevalence" class="panel panel-default">
@@ -404,8 +407,11 @@
 							</ul>
 							<div id='content' class="tab-content">
 								<div class="tab-pane active" id="drug_treemap_panel">
-									<div id="treemap_container"></div>
-									<div id="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Orange = Low to High)</div>
+									<div id="treemap_container">
+										<div class="treemap_zoomtarget"></div>
+									</div>
+
+									<div class="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Orange = Low to High), Use Ctrl-Click to Zoom</div>
 								</div>
 								<div class="tab-pane" id="drug_table_panel">
 									<table id="drug_table" class="display">
@@ -430,8 +436,8 @@
 				</div>
 			</div>
 		</div>
-		<div id="drugDrilldownTitle" class="reportTitle"></div>
 		<div id="reportDrugExposuresDrilldown" class="hidden reportDrilldown">
+			<div id="drugDrilldownTitle" class="reportTitle"></div>
 			<div class="row">
 				<div class="col-sm-12">
 					<div id="panelDrugPrevalence" class="panel panel-default">
@@ -531,8 +537,10 @@
 							</ul>
 							<div id='content' class="tab-content">
 								<div class="tab-pane active" id="condition-treemap-panel">
-									<div id="treemap_container"></div>
-									<div id="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Orange = Low to High)</div>
+									<div id="treemap_container">
+										<div class="treemap_zoomtarget"></div>
+									</div>
+									<div class="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Orange = Low to High), Use Ctrl-Click to Zoom</div>
 								</div>
 								<div class="tab-pane" id="condition-table-panel">
 									<table id="condition_table" class="display">
@@ -557,8 +565,8 @@
 				</div>
 			</div>
 		</div>
-		<div id="conditionDrilldownTitle" class="reportTitle"></div>
 		<div id="reportConditionOccurrencesDrilldown" class="hidden reportDrilldown">
+			<div id="conditionDrilldownTitle" class="reportTitle"></div>
 			<div class="row">
 				<div class="col-sm-12">
 					<div id="panelConditionPrevalence" class="panel panel-default">
@@ -626,8 +634,10 @@
 							</ul>
 							<div id='content' class="tab-content">
 								<div class="tab-pane active" id="procedure-treemap-panel">
-									<div id="treemap_container"></div>
-									<div id="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Orange = Low to High)</div>
+									<div id="treemap_container">
+										<div class="treemap_zoomtarget"></div>
+									</div>
+									<div class="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Orange = Low to High), Use Ctrl-Click to Zoom</div>
 								</div>
 								<div class="tab-pane" id="procedure-table-panel">
 									<table id="procedure_table" class="display">
@@ -651,8 +661,8 @@
 				</div>
 			</div>
 		</div>
-		<div id="procedureDrilldownTitle" class="reportTitle"></div>
 		<div id="reportProcedureOccurrencesDrilldown" class="hidden reportDrilldown">
+			<div id="procedureDrilldownTitle" class="reportTitle"></div>
 			<div class="row">
 				<div class="col-sm-12">
 					<div id="panelProcedurePrevalence" class="panel panel-default">
@@ -702,7 +712,7 @@
 		</div>
 	</div>
 
-<div id="reportObservations" class="report">
+	<div id="reportObservations" class="report">
 		<div class="reportTitle">Observations</div>
 		<div class="row">
 			<div class="col-sm-12">
@@ -720,8 +730,10 @@
 							</ul>
 							<div id='content' class="tab-content">
 								<div class="tab-pane active" id="observation-treemap-panel">
-									<div id="treemap_container"></div>
-									<div id="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Orange = Low to High)</div>
+									<div id="treemap_container">
+										<div class="treemap_zoomtarget"></div>
+									</div>
+									<div class="treemap_legend">Box Size: Prevalence, Color: Records per Person (Blue to Orange = Low to High), Use Ctrl-Click to Zoom</div>
 								</div>
 								<div class="tab-pane" id="observation-table-panel">
 									<table id="observation_table" class="display">
@@ -745,8 +757,8 @@
 				</div>
 			</div>
 		</div>
-		<div id="observationDrilldownTitle" class="reportTitle"></div>
 		<div id="reportObservationDrilldown" class="hidden reportDrilldown">
+			<div id="observationDrilldownTitle" class="reportTitle"></div>
 			<div class="row">
 				<div class="col-sm-12">
 					<div id="panelObservationPrevalence" class="panel panel-default">
@@ -846,10 +858,10 @@
 						</div>
 					</div>
 				</div>
-			</div>			
+			</div>
 		</div>
 	</div>
-	
+
 	<div id="reportDashboard" class="report">
 		<div class="reportTitle">Dashboard</div>
 		<div class="row">

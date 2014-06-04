@@ -547,7 +547,7 @@
 
 			chart.selectAll(".tick text")
 				.call(module.util.wrap, x.rangeBand());
-			
+
 			chart.append("g")
 				.attr("class", "y axis")
 				.attr("transform", "translate(0," + 0 + ")")
@@ -1453,9 +1453,13 @@
 			svg,
 			x,
 			y,
-			currentZoomNode;
+			current_depth = 0,
+			container;
 
 		this.render = function (data, target, width, height, options) {
+			container = $(target);
+			container.find('.treemap_zoomtarget').text('');
+
 			root = data;
 			x = d3.scale.linear().range([0, width]);
 			y = d3.scale.linear().range([0, height]);
@@ -1523,8 +1527,28 @@
 				.on('mouseover', tip.show)
 				.on('mouseout', tip.hide)
 				.on('click', function (d) {
-					options.onclick(d);
+					if (d3.event.ctrlKey) {
+						var target = d;
+
+						while (target.depth != current_depth + 1) {
+							target = target.parent;
+						}
+						current_depth = target.depth;
+						if (target.children && target.children.length > 1) {
+							applyGroupers(target);
+							zoom(target);
+						} else {
+							current_depth = 0;
+							applyGroupers(root);
+							zoom(root);
+						}
+					} else {
+						options.onclick(d);
+					}
 				});
+
+			applyGroupers(root);
+			$('.grouper').show();
 
 			$(window).on("resize", {
 					container: $(target),
@@ -1536,6 +1560,78 @@
 					event.data.chart.attr("width", targetWidth);
 					event.data.chart.attr("height", Math.round(targetWidth / event.data.aspect));
 				}).trigger("resize");
+
+			function zoom(d) {
+				var kx = width / d.dx,
+					ky = height / d.dy;
+				x.domain([d.x, d.x + d.dx]);
+				y.domain([d.y, d.y + d.dy]);
+
+				if (d.name == 'root') {
+					container.find('.treemap_zoomtarget').text('');
+				} else {
+					current_zoom_caption = container.find('.treemap_zoomtarget').text()
+					container.find('.treemap_zoomtarget').text(current_zoom_caption + ' > ' + d.name);
+				}
+
+				var t = svg.selectAll("g.cell,.grouper").transition()
+					.duration(d3.event.altKey ? 3000 : 750)
+					.attr("transform", function (d) {
+						return "translate(" + x(d.x) + "," + y(d.y) + ")";
+					})
+					.each("end", function () {
+						$('.grouper').show();
+					});
+
+				// patched to prevent negative value assignment to width and height
+				t.select("rect")
+					.attr("width", function (d) {
+						return Math.max(0, kx * d.dx - 1);
+					})
+					.attr("height", function (d) {
+						return Math.max(0, ky * d.dy - 1);
+					})
+
+				node = d;
+				d3.event.stopPropagation();
+			}
+
+			function applyGroupers(target) {
+				var kx, ky;
+
+				kx = width / target.dx;
+				ky = height / target.dy;
+
+				$('.grouper').remove();
+
+				top_nodes = treemap.nodes(target)
+					.filter(function (d) {
+						return d.parent == target;
+					});
+
+				var groupers = svg.selectAll(".grouper")
+					.data(top_nodes)
+					.enter().append("svg:g")
+					.attr("class", "grouper")
+					.attr("transform", function (d) {
+						return "translate(" + (d.x + 1) + "," + (d.y + 1) + ")";
+					});
+
+				groupers.append("svg:rect")
+					.attr("width", function (d) {
+						return Math.max(0, (kx * d.dx) - 1);
+					})
+					.attr("height", function (d) {
+						return Math.max(0, (ky * d.dy) - 1);
+					})
+					.attr("title", function (d) {
+						return d.name;
+					})
+					.attr("id", function (d) {
+						return d.id;
+					});
+			}
+
 		}
 	}
 
