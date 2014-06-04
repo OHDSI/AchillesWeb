@@ -4,10 +4,10 @@
 				var threshold;
 
 				// bind to all matching elements upon creation
-				$(document).on('click', '#drugera_table tr', function () {
+				$(document).on('click', '#drugera_table tbody tr', function () {
 					id = $($(this).children()[0]).text();
-					concept_name = $($(this).children()[5]).text();
-					drug_exposure.drilldown(id, concept_name);
+					concept_name = $($(this).children()[4]).text();
+					drug_era.drilldown(id, concept_name);
 				});
 
 				$('#myTab a').click(function (e) {

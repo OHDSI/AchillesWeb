@@ -1527,7 +1527,11 @@
 				.on('mouseover', tip.show)
 				.on('mouseout', tip.hide)
 				.on('click', function (d) {
-					if (d3.event.ctrlKey) {
+					if (d3.event.altKey) {
+						zoom(root);
+						applyGroupers(root);
+					}
+					else if (d3.event.ctrlKey) {
 						var target = d;
 
 						while (target.depth != current_depth + 1) {
@@ -1575,7 +1579,7 @@
 				}
 
 				var t = svg.selectAll("g.cell,.grouper").transition()
-					.duration(d3.event.altKey ? 3000 : 750)
+					.duration(750)
 					.attr("transform", function (d) {
 						return "translate(" + x(d.x) + "," + y(d.y) + ")";
 					})

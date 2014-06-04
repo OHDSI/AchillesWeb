@@ -4,7 +4,7 @@
 				var threshold;
 
 				// bind to all matching elements upon creation
-				$(document).on('click', '#condition_table tr', function () {
+				$(document).on('click', '#condition_table tbody tr', function () {
 					id = $($(this).children()[0]).text();
 					concept_name = $($(this).children()[5]).text();
 					condition_occurrence.drilldown(id, concept_name);
