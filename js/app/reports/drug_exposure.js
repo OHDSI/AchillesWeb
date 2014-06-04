@@ -132,7 +132,7 @@
 							// render trellis
 							trellisData = data.PREVALENCE_BY_GENDER_AGE_YEAR;
 
-							var allDeciles = ["00-09", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80-89", "90-99"];
+							var allDeciles = ["0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80-89", "90-99"];
 							var allSeries = ["MALE", "FEMALE"];
 							var minYear = d3.min(trellisData.X_CALENDAR_YEAR),
 								maxYear = d3.max(trellisData.X_CALENDAR_YEAR);

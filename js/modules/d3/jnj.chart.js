@@ -546,7 +546,7 @@
 				.call(xAxis);
 
 			chart.selectAll(".tick text")
-				.call(module.util.wrap, x.rangeBand());
+				.call(module.util.wrap, x.rangeBand() || x.range());
 
 			chart.append("g")
 				.attr("class", "y axis")
@@ -1547,7 +1547,7 @@
 							zoom(root);
 						}
 					} else {
-						options.onclick(d);
+					options.onclick(d);
 					}
 				});
 
@@ -1576,7 +1576,7 @@
 				} else {
 					current_zoom_caption = container.find('.treemap_zoomtarget').text()
 					container.find('.treemap_zoomtarget').text(current_zoom_caption + ' > ' + d.name);
-				}
+		}
 
 				var t = svg.selectAll("g.cell,.grouper").transition()
 					.duration(750)
@@ -1598,7 +1598,7 @@
 
 				node = d;
 				d3.event.stopPropagation();
-			}
+	}
 
 			function applyGroupers(target) {
 				var kx, ky;
