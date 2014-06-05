@@ -1,12 +1,16 @@
 		(function () {
-			define(["jquery", "d3", "jnj/chart", "common", "datatables"], function ($, d3, jnj_chart, common) {
+			define(["jquery", "d3", "jnj/chart", "common", "datatables", "datatables-colvis"], function ($, d3, jnj_chart, common) {
 				var drug_era = {};
 				var threshold;
+				var datatable;
 
 				// bind to all matching elements upon creation
+
 				$(document).on('click', '#drugera_table tbody tr', function () {
-					id = $($(this).children()[0]).text();
-					concept_name = $($(this).children()[4]).text();
+					$('#drugera_table tbody tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+					id = datatable.data()[datatable.row(this)[0]].concept_id;
+					concept_name = datatable.data()[datatable.row(this)[0]].ingredient;
 					drug_era.drilldown(id, concept_name);
 				});
 
@@ -199,17 +203,21 @@
 								}
 							}, data);
 
-							$('#drugera_table').dataTable({
+							datatable = $('#drugera_table').DataTable({
+								order: [ 5, 'desc' ],
+								dom: 'Clfrtip',
 								data: table_data,
 								columns: [
 									{
-										data: 'concept_id'
+										data: 'concept_id',
+										visible: false
 									},
 									{
 										data: 'atc1'
 									},
 									{
-										data: 'atc3'
+										data: 'atc3',
+										visible: false
 									},
 									{
 										data: 'atc5'

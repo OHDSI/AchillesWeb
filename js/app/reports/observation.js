@@ -1,12 +1,15 @@
 		(function () {
-			define(["jquery", "d3", "jnj/chart", "common", "datatables"], function ($, d3, jnj_chart, common) {
+			define(["jquery", "d3", "jnj/chart", "common", "datatables", "datatables-colvis"], function ($, d3, jnj_chart, common) {
 				var observation_report = {};
 				var threshold;
+				var datatable;
 
 				// bind to all matching elements upon creation
 				$(document).on('click', '#observation_table tbody tr', function () {
-					id = $($(this).children()[0]).text();
-					concept_name = $($(this).children()[4]).text();
+					$('#observation_table tbody tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+					id = datatable.data()[datatable.row(this)[0]].concept_id;
+					concept_name = datatable.data()[datatable.row(this)[0]].observation_name;
 					observation_report.drilldown(id, concept_name);
 				});
 
@@ -442,17 +445,21 @@
 								}
 							}, data);
 
-							$('#observation_table').dataTable({
+							datatable = $('#observation_table').DataTable({
+								order: [ 5, 'desc' ],
+								dom: 'Clfrtip',
 								data: table_data,
 								columns: [
 									{
-										data: 'concept_id'
+										data: 'concept_id',
+										visible: false
 									},
 									{
 										data: 'level_4'
 									},
 									{
-										data: 'level_3'
+										data: 'level_3',
+										visible: false
 									},
 									{
 										data: 'level_2'

@@ -1,12 +1,15 @@
 		(function () {
-			define(["jquery", "d3", "jnj/chart", "common", "datatables"], function ($, d3, jnj_chart, common) {
+			define(["jquery", "d3", "jnj/chart", "common", "datatables", "datatables-colvis"], function ($, d3, jnj_chart, common) {
 				var condition_occurrence = {};
 				var threshold;
+				var datatable;
 
 				// bind to all matching elements upon creation
 				$(document).on('click', '#condition_table tbody tr', function () {
-					id = $($(this).children()[0]).text();
-					concept_name = $($(this).children()[5]).text();
+					$('#condition_table tbody tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+					id = datatable.data()[datatable.row(this)[0]].concept_id;
+					concept_name = datatable.data()[datatable.row(this)[0]].snomed;
 					condition_occurrence.drilldown(id, concept_name);
 				});
 
@@ -207,23 +210,28 @@
 								}
 							}, data);
 
-							$('#condition_table').dataTable({
+							datatable = $('#condition_table').DataTable({
+								order: [ 6, 'desc' ],
+								dom: 'Clfrtip',
 								data: table_data,
 								columns: [
 									{
-										data: 'concept_id'
+										data: 'concept_id',
+										visible: false
 									},
 									{
 										data: 'soc'
 									},
 									{
-										data: 'hlgt'
+										data: 'hlgt',
+										visible: false
 									},
 									{
 										data: 'hlt'
 									},
 									{
-										data: 'pt'
+										data: 'pt',
+										visible: false
 									},
 									{
 										data: 'snomed'

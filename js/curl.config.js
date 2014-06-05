@@ -12,7 +12,8 @@ curl = {
 		"d3/chart": "modules/d3/d3.chart",
 		"d3/tip": "modules/d3/d3.tip",
 		"common": "app/common",
-		"datatables": "modules/jquery/jquery.datatables"
+		"datatables": "modules/jquery/jquery.datatables",
+		"datatables-colvis": "modules/jquery/jquery.datatables.colvis.min"
 	},
 	pluginPath: "curl/plugins"
 };

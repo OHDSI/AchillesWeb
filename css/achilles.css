@@ -27,7 +27,7 @@ body {
 	}
 }
 .navbar-static-side ul li {
-	border-bottom: 1px solid #e7e7e7;
+	border-bottom: 1px solid #888;
 }
 /* Navigation */
 
@@ -120,6 +120,15 @@ body {
 }
 .panel {
 	margin-bottom: 10px;
+}
+.panel-default {
+	border-color: #888;
+}
+.panel-table {
+	min-width: 800px;
+}
+.panel-default .panel-heading {
+	background-color: #ddd;
 }
 .panel-body {
 	padding: 15px;
@@ -224,7 +233,7 @@ div.personSummary .row div {
 	color: #fff;
 	border-radius: 2px;
 	pointer-events: none;
-	max-width:400px;
+	max-width: 400px;
 }
 /* Creates a small triangle extender for the tooltip */
 
@@ -335,6 +344,47 @@ table.dataTable tbody td {
 }
 #datasourceTitle {
 	margin-top: 65px;
-	font-size:16px;
-	font-weight:bold;
+	font-size: 16px;
+	font-weight: bold;
+}
+/* datatables.colvis override */
+
+ul.ColVis_collection {
+	width: 200px;
+}
+button.ColVis_Button {
+	margin-left: 10px;
+	height: 25px;
+	-webkit-box-shadow: 1px 1px 1px #ccc;
+	-moz-box-shadow: 1px 1px 1px #ccc;
+	-ms-box-shadow: 1px 1px 1px #ccc;
+	-o-box-shadow: 1px 1px 1px #ccc;
+	box-shadow: 1px 1px 1px #ccc;
+}
+
+table.dataTable.hover tbody tr:hover.selected,
+table.dataTable.hover tbody tr.odd:hover.selected,
+table.dataTable.hover tbody tr.even:hover.selected, table.dataTable.display tbody tr:hover.selected,
+table.dataTable.display tbody tr.odd:hover.selected,
+table.dataTable.display tbody tr.even:hover.selected {
+	background-color:  rgba(89, 159, 216, 0.5);
+}
+
+table.dataTable.stripe tbody tr.odd.selected, table.dataTable.display tbody tr.odd.selected {
+	background-color:  rgba(89, 159, 216, 0.5);
+}
+
+table.dataTable tbody tr.even.selected,
+table.dataTable tbody tr.odd.selected {
+	background-color:  rgba(89, 159, 216, 0.5);
+}
+
+.sorting_1 {
+	background-color: rgba(89, 159, 216, 0.3) !important;
+}
+.sorting_2 {
+	background-color: rgba(89, 159, 216, 0.2) !important;
+}
+.sorting_3 {
+	background-color: rgba(89, 159, 216, 0.1) !important;
 }

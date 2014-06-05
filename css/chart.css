@@ -26,19 +26,26 @@ div.chartcontainer {
 .boxplot {
 	font: 10px arial;
 }
-.boxplot line,
+.boxplot .median {
+	stroke: #1f77b4;
+}
+.boxplot line {
+	stroke: #1f77b4;
+	stroke-width: 1px;
+}
 .boxplot rect,
 .boxplot circle {
-	fill: #fff;
-	stroke: #000;
+	fill: rgba(31, 119, 180, 0.2);
+	stroke: #1f77b4;
 	stroke-width: 1px;
 }
 .boxplot .whisker {
 	stroke-dasharray: 3, 3;
+	stroke: #1f77b4;
 }
 .boxplot .outlier {
 	fill: none;
-	stroke: #ccc;
+	stroke: #1f77b4;
 }
 .lineplot .line {
 	fill: none;

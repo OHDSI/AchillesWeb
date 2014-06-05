@@ -6,7 +6,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<title>Achilles</title>
-	<link href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css" rel="stylesheet" />
+	<link href="css/jquery.dataTables.css" rel="stylesheet" />
+	<link href="css/jquery.dataTables.colvis.css" rel="stylesheet" />
+	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/achilles.css" rel="stylesheet">
 	<link href="css/chart.css" rel="stylesheet">
@@ -61,14 +63,14 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li onclick="updateReport('dashboard');">Dashboard</li>
-							<li onclick="updateReport('datadensity');">Data Density</li>
-							<li onclick="updateReport('observationperiods');">Observation Periods</li>
 							<li onclick="updateReport('person');">Person</li>
+							<li onclick="updateReport('observationperiods');">Observation Periods</li>
+							<li onclick="updateReport('datadensity');">Data Density</li>
 							<li onclick="updateReport('conditions');">Conditions</li>
+							<li onclick="updateReport('observations');">Observations</li>
 							<li onclick="updateReport('drugeras');">Drug Eras</li>
 							<li onclick="updateReport('drugs');">Drug Exposures</li>
 							<li onclick="updateReport('procedures');">Procedures</li>
-							<li onclick="updateReport('observations');">Observations</li>
 						</ul>
 					</li>
 				</ul>
@@ -523,7 +525,7 @@
 		<div class="reportTitle">Conditions</div>
 		<div class="row">
 			<div class="col-sm-12">
-				<div class="panel panel-default">
+				<div class="panel panel-default panel-table">
 					<div class="panel-heading">
 						Condition Prevalence
 					</div>
