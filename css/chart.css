@@ -47,6 +47,13 @@ div.chartcontainer {
 	fill: none;
 	stroke: #1f77b4;
 }
+
+table.boxplotValues tr td
+{
+	text-align: right;
+	padding: 0px 3px;
+}
+
 .lineplot .line {
 	fill: none;
 	stroke: #1f77b4;

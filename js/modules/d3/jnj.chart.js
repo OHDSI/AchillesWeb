@@ -405,7 +405,15 @@
 				.attr('class', 'd3-tip')
 				.offset([-10, 0])
 				.html(function (d) {
-					return "Max: " + module.util.formatSI(d.max, 3) + "<br/>Median: " + module.util.formatSI(d.median, 3) + "<br/>Min: " + module.util.formatSI(d.min, 3);
+					return '<table class="boxplotValues">'
+						+ '<tr><td>Max:</td><td>' + module.util.formatSI(d.max, 3) + '</td></tr>'
+						+ '<tr><td>P90:</td><td>' + module.util.formatSI(d.UIF, 3) + '</td></tr>'
+						+ '<tr><td>P75:</td><td>' + module.util.formatSI(d.q3, 3) + '</td></tr>'
+						+ '<tr><td>Median:</td><td>' + module.util.formatSI(d.median, 3) + '</td></tr>' 
+						+ '<tr><td>P25:</td><td>' + module.util.formatSI(d.q1, 3) + '</td></tr>'
+						+ '<tr><td>P10:</td><td>' + module.util.formatSI(d.LIF, 3) + '</td></tr>' 
+						+ '<tr><td>Min:</td><td>' + module.util.formatSI(d.min, 3) + '</td></tr>'
+						+ '</table>';
 				})
 			svg.call(tip);
 
@@ -1019,7 +1027,7 @@
 			var seriesLines = series.append("path")
 				.attr("class", "line")
 				.attr("d", function (d) {
-					return line(d.values);
+					return line(d.values.sort(function (a,b) { return d3.ascending(a[options.xValue], b[options.xValue]);}));
 				});
 
 			if (options.colors) {
@@ -1274,7 +1282,7 @@
 			gSeries.append("path")
 				.attr("class", "line")
 				.attr("d", function (d) {
-					return seriesLine(d.values);
+					return seriesLine(d.values.sort(function (a,b) { return d3.ascending(a.date, b.date);}));
 				})
 				.style("stroke", function (d) {
 					return options.colors(d.key)
