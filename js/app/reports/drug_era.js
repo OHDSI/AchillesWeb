@@ -20,7 +20,7 @@
 					$(window).trigger("resize");
 				})
 
-				boxplot_helper = function (data, target, xlabel, ylabel) {
+				boxplot_helper = function (data, target, width, height, xlabel, ylabel) {
 					var boxplot = new jnj_chart.boxplot();
 					var yMax = 0;
 					bpseries = [];
@@ -54,7 +54,7 @@
 						yMax = bpdata.P90_VALUE;
 					}
 
-					boxplot.render(bpseries, target, 200, 200, {
+					boxplot.render(bpseries, target, width,height, {
 						yMax: yMax,
 						xLabel: xlabel,
 						yLabel: ylabel
@@ -72,8 +72,8 @@
 						success: function (data) {
 
 							// boxplots
-							boxplot_helper(data.AGE_AT_FIRST_EXPOSURE, '#drugeraAgeAtFirstExposure', '', 'Age at First Exposure');
-							boxplot_helper(data.LENGTH_OF_ERA,'#drugeraLengthOfEra', '', 'Days');
+							boxplot_helper(data.AGE_AT_FIRST_EXPOSURE, '#drugeraAgeAtFirstExposure', 360,200, '', 'Age at First Exposure');
+							boxplot_helper(data.LENGTH_OF_ERA,'#drugeraLengthOfEra', 360,200, '', 'Days');
 
 							// prevalence by month
 							var byMonthSeries = common.mapMonthYearDataToSeries(data.PREVALENCE_BY_MONTH, {
