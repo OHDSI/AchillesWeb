@@ -877,6 +877,7 @@
 				xFormat: d3.format(',.0f'),
 				yFormat: d3.format('s'),
 				interpolate: "linear",
+				seriesName: "SERIES_NAME",
 				xValue: "xValue",
 				yValue: "yValue",
 				cssClass: "lineplot",
@@ -891,10 +892,21 @@
 				// assumes data is just an array of values (single series)
 				data = [
 					{
-						name: 'series',
+						name: '',
 						values: data
 							}];
 			}
+
+			var focusTip = d3.tip()
+				.attr('class', 'd3-tip')
+				.offset([-10, 0])
+				.html(function(d) {
+					var tipText = "";
+					if (d[options.seriesName])
+						tipText = "Series: " + d[options.seriesName] + "</br>";
+					tipText += "Value: " + module.util.formatSI(d[options.yValue],3);
+					return tipText;
+				})
 
 			var chart = d3.select(target)
 				.append("svg:svg")
@@ -903,6 +915,8 @@
 				.attr("height", h)
 				.attr("viewBox", "0 0 " + w + " " + h);
 
+			chart.call(focusTip);
+			
 			// apply labels (if specified) and offset margins accordingly
 			if (options.xLabel) {
 				var xAxisLabel = chart.append("g")
@@ -1054,7 +1068,27 @@
 						return d.name;
 					});
 			}
-
+			
+			series.selectAll(".focus")
+				.data(function (series){
+					return series.values;
+				})
+			.enter()
+				.append("circle")
+				.attr("class","focus")
+				.attr("r", 4)
+				.attr("transform", function (d) {
+						return "translate(" + x(d[options.xValue]) + "," + y(d[options.yValue]) + ")";
+				})
+			.on('mouseover', function(d) { 
+				d3.select(this).style("opacity","1");
+				focusTip.show(d);
+			})
+      .on('mouseout', function(d) {
+				d3.select(this).style("opacity","0");
+				focusTip.hide(d);
+			});
+				
 			vis.append("g")
 				.attr("class", "x axis")
 				.attr("transform", "translate(0," + height + ")")
@@ -1063,6 +1097,8 @@
 			vis.append("g")
 				.attr("class", "y axis")
 				.call(yAxis)
+			
+			
 
 			$(window).on("resize", {
 					container: $(target),

@@ -116,3 +116,8 @@ table.data td {
 .treemap_legend {
 	font-size: 10px;
 }
+
+.focus
+{
+	opacity: 0;
+}
