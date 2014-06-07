@@ -36,6 +36,7 @@
 					xScale: d3.time.scale().domain(d3.extent(normalizedTotalRecords, function (d) {
 						return d.X_CALENDAR_MONTH;
 					})),
+					xFormat: d3.time.format("%m/%Y"),
 					tickFormat: d3.time.format("%Y"),
 					xValue: "X_CALENDAR_MONTH",
 					yValue: "Y_RECORD_COUNT",
@@ -68,6 +69,7 @@
 					xScale: d3.time.scale().domain(d3.extent(normalizedRecordsPerPerson, function (d) {
 						return d.X_CALENDAR_MONTH;
 					})),
+					xFormat: d3.time.format("%m/%Y"),
 					tickFormat: d3.time.format("%Y"),
 					xValue: "X_CALENDAR_MONTH",
 					yValue: "Y_RECORD_COUNT",

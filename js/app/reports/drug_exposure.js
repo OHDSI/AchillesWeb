@@ -19,7 +19,7 @@
 					$(window).trigger("resize");
 				})
 
-				boxplot_helper = function (data, target, xlabel, ylabel) {
+				function boxplot_helper(data, target, xlabel, ylabel) {
 					var boxplot = new jnj_chart.boxplot();
 					var yMax = 0;
 					bpseries = [];
@@ -120,6 +120,7 @@
 								xScale: d3.time.scale().domain(d3.extent(byMonthSeries[0].values, function (d) {
 									return d.xValue;
 								})),
+								xFormat: d3.time.format("%m/%Y"),
 								tickFormat: d3.time.format("%Y"),
 								tickPadding: 10,
 								margin: {

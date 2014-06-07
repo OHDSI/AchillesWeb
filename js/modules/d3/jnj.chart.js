@@ -904,7 +904,8 @@
 					var tipText = "";
 					if (d[options.seriesName])
 						tipText = "Series: " + d[options.seriesName] + "</br>";
-					tipText += "Value: " + module.util.formatSI(d[options.yValue],3);
+					tipText += (options.xLabel || "x") + ": " + options.xFormat(d[options.xValue]) + "</br>";
+					tipText += (options.yLabel || "y") + ": " + module.util.formatSI(d[options.yValue],3);
 					return tipText;
 				})
 
