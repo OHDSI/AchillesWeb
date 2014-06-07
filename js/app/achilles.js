@@ -378,6 +378,7 @@
 					xScale: d3.time.scale().domain(d3.extent(byMonthSeries[0].values, function (d) {
 						return d.xValue;
 					})),
+					xFormat: d3.time.format("%m/%Y"),
 					tickFormat: d3.time.format("%Y"),
 					tickPadding: 10,
 					margin: {
