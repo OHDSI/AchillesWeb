@@ -8,7 +8,7 @@ Getting Started
 
 There are a few configuration steps required to setup AchillesWeb. These steps assume that you have already run the Achilles R package to populate the statistics on your CDM instance.
 
-1. Download AchillesWeb (e.g by clicking "Download ZIP"), and extract to a folder accessible through a web server.
+1. Download AchillesWeb (e.g by clicking "[Download ZIP](https://github.com/OHDSI/AchillesWeb/archive/master.zip)" on the right side of this page), and extract to a folder accessible through a web server.
 
 2. Create a 'data' directory in the root of your AchillesWeb folder and run the Achilles R package exportToJSON method specifying the output path to a subdirectory for the data source that you want to view through AchillesWeb. For example:
 
