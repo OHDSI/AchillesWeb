@@ -84,69 +84,76 @@
 				.attr("height", h)
 				.attr("viewBox", "0 0 " + w + " " + h);
 
-			var vis = chart.append("g")
-				.attr("transform", "translate(" + or + "," + or + ")");
+			if (data.length > 0) {
+				var vis = chart.append("g")
+					.attr("transform", "translate(" + or + "," + or + ")");
 
-			var legend = chart.append("g")
-				.attr("transform", "translate(" + (w - options.margin.right) + ",0)")
-				.attr("class", "legend");
+				var legend = chart.append("g")
+					.attr("transform", "translate(" + (w - options.margin.right) + ",0)")
+					.attr("class", "legend");
 
-			var arc = d3.svg.arc()
-				.innerRadius(ir)
-				.outerRadius(or);
+				var arc = d3.svg.arc()
+					.innerRadius(ir)
+					.outerRadius(or);
 
-			var pie = d3.layout.pie() //this will create arc data for us given a list of values
-				.value(function (d) {
-					return d.value > 0 ? Math.max(d.value, total * .015) : 0; // we want slices to appear if they have data, so we return a minimum of 1.5% of the overall total if the datapoint has a value > 0.
-				}); //we must tell it out to access the value of each element in our data array
+				var pie = d3.layout.pie() //this will create arc data for us given a list of values
+					.value(function (d) {
+						return d.value > 0 ? Math.max(d.value, total * .015) : 0; // we want slices to appear if they have data, so we return a minimum of 1.5% of the overall total if the datapoint has a value > 0.
+					}); //we must tell it out to access the value of each element in our data array
 
-			var arcs = vis.selectAll("g.slice") //this selects all <g> elements with class slice (there aren't any yet)
-				.data(pie) //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties)
-				.enter() //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
-				.append("svg:g") //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
-				.attr("class", "slice"); //allow us to style things in the slices (like text)
+				var arcs = vis.selectAll("g.slice") //this selects all <g> elements with class slice (there aren't any yet)
+					.data(pie) //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties)
+					.enter() //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
+					.append("svg:g") //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+					.attr("class", "slice"); //allow us to style things in the slices (like text)
 
-			arcs.append("svg:path")
-				.attr("fill", function (d) {
-					return options.colors(d.data.id);
-				}) //set the color for each slice to be chosen from the color function defined above
-			.attr("stroke", "#fff")
-				.attr("stroke-width", 2)
-				.attr("title", function (d) {
-					return d.label;
-				})
-				.attr("d", arc); //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+				arcs.append("svg:path")
+					.attr("fill", function (d) {
+						return options.colors(d.data.id);
+					}) //set the color for each slice to be chosen from the color function defined above
+				.attr("stroke", "#fff")
+					.attr("stroke-width", 2)
+					.attr("title", function (d) {
+						return d.label;
+					})
+					.attr("d", arc); //this creates the actual SVG path using the associated data (pie) with the arc drawing function
 
-			legend.selectAll('rect')
-				.data(function (d) {
-					return d;
-				})
-				.enter()
-				.append("rect")
-				.attr("x", 0)
-				.attr("y", function (d, i) {
-					return i * 15;
-				})
-				.attr("width", 10)
-				.attr("height", 10)
-				.style("fill", function (d) {
-					return options.colors(d.id);
-				});
+				legend.selectAll('rect')
+					.data(function (d) {
+						return d;
+					})
+					.enter()
+					.append("rect")
+					.attr("x", 0)
+					.attr("y", function (d, i) {
+						return i * 15;
+					})
+					.attr("width", 10)
+					.attr("height", 10)
+					.style("fill", function (d) {
+						return options.colors(d.id);
+					});
 
-			legend.selectAll('text')
-				.data(function (d) {
-					return d;
-				})
-				.enter()
-				.append("text")
-				.attr("x", 12)
-				.attr("y", function (d, i) {
-					return (i * 15) + 9;
-				})
-				.text(function (d) {
-					return d.label;
-				});
-
+				legend.selectAll('text')
+					.data(function (d) {
+						return d;
+					})
+					.enter()
+					.append("text")
+					.attr("x", 12)
+					.attr("y", function (d, i) {
+						return (i * 15) + 9;
+					})
+					.text(function (d) {
+						return d.label;
+					});
+			} else {
+				chart.append("text")
+					.attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")")
+					.style("text-anchor", "middle")
+					.text("No Data");
+			}
+			
 			$(window).on("resize", {
 					container: $(target),
 					chart: $(target + " svg"),
@@ -218,6 +225,8 @@
 		}
 
 		self.render = function (data, target, w, h, options) {
+
+			data = data || []; // default to empty set if null is passed in
 			var defaults = {
 				margin: {
 					top: 10,
@@ -345,7 +354,7 @@
 			bar.append("rect")
 				.attr("x", 1)
 				.attr("width", function (d) {
-					return x(d.x + d.dx) - x(d.x) - 1;
+					return Math.max((x(d.x + d.dx) - x(d.x) - 1), .5);
 				})
 				.attr("height", function (d) {
 					return height - y(d.y);
@@ -1099,7 +1108,8 @@
 
 			} else {
 				chart.append("text")
-					.attr("transform","translate(" + (w/2) + "," + (h/2) + ")")
+					.attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")")
+					.style("text-anchor", "middle")
 					.text("No Data");
 			}
 

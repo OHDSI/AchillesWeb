@@ -44,8 +44,8 @@
 					result.SUMMARY.forEach(function (d, i, ar) {
 						if (!isNaN(d.ATTRIBUTE_VALUE))
 							d.ATTRIBUTE_VALUE = self.formatSI(d.ATTRIBUTE_VALUE, 2);
-						self.dashboardData(result);
 					});
+					self.dashboardData(result);
 				});
 			}
 
@@ -70,9 +70,7 @@
 					result.SUMMARY.forEach(function (d, i, ar) {
 						if (!isNaN(d.ATTRIBUTE_VALUE))
 							d.ATTRIBUTE_VALUE = self.formatSI(d.ATTRIBUTE_VALUE, 2);
-						self.dashboardData(result);
 					});
-					
 					self.personData(result);
 				});
 			}
