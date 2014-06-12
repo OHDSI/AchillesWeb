@@ -16,7 +16,7 @@ There are a few configuration steps required to setup AchillesWeb. These steps a
 	exportToJson(connectionDetails,"CDM_SCHEMA", "RESULTS_SCHEMA", "C:/AchillesWeb/data/SAMPLE")
 	```
 
-3. Create a file in the AchillesWeb 'data' directory named 'datasources.json' with the following structure where the name is a caption for the data source and the folder is the name of the subdirectory under data. You will have to update the datasource.json file whenever you add a new data source subfolder to the data directory.
+3. Create a file in the AchillesWeb 'data' directory named 'datasources.json' with the following structure where the name is a caption for the data source and the folder is the name of the subdirectory under data. You will have to update the datasources.json file whenever you add a new data source subfolder to the data directory.
 
 	```
 	 { "datasources":[ { "name":"My Sample Database", "folder":"SAMPLE" } ] } 
