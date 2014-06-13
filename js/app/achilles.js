@@ -11,10 +11,18 @@
 		"app/reports/data_density",
 		"app/reports/observation",
 		"app/reports/drug_era",
+<<<<<<< HEAD
 		"app/reports/achilles_heel",
 		"bootstrap",
 		"d3/tip"
 	], function ($, d3, ko, common, reportConditionOccurrence, reportConditionEra, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra, reportAchillesHeel) {
+=======
+		"app/reports/visit_occurrence",
+		"app/reports/death",
+		"bootstrap",
+		"d3/tip"
+	], function ($, d3, ko, common, reportConditionOccurrence, reportConditionEra, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra, reportVisitOccurrence, reportDeath) {
+>>>>>>> origin/master
 		function summaryViewModel() {
 			var self = this;
 
@@ -181,6 +189,7 @@
 					xScale: d3.time.scale().domain(d3.extent(byMonthSeries[0].values, function (d) {
 						return d.xValue;
 					})),
+					xFormat: d3.time.format("%m/%Y"),
 					tickFormat: d3.time.format("%Y"),
 					tickPadding: 10,
 					margin: {
@@ -589,6 +598,28 @@
 					reportObservation.render(this.params['folder']);
 					$('#reportObservations').show();
 					report = 'observations';
+				});
+
+				this.get('#/:folder/visits', function (context) {
+					$('.report').hide();
+					viewModel.datasource(viewModel.datasources.filter(function (d) {
+						return d.folder == this.params['folder'];
+					}, this)[0]);
+
+					reportVisitOccurrence.render(this.params['folder']);
+					$('#reportVisitOccurrences').show();
+					report = 'visits';
+				});
+
+				this.get('#/:folder/death', function (context) {
+					$('.report').hide();
+					viewModel.datasource(viewModel.datasources.filter(function (d) {
+						return d.folder == this.params['folder'];
+					}, this)[0]);
+
+					reportDeath.render(this.params['folder']);
+					$('#reportDeath').show();
+					report = 'death';
 				});
 
 			});
