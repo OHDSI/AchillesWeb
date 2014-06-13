@@ -11,18 +11,12 @@
 		"app/reports/data_density",
 		"app/reports/observation",
 		"app/reports/drug_era",
-<<<<<<< HEAD
 		"app/reports/achilles_heel",
-		"bootstrap",
-		"d3/tip"
-	], function ($, d3, ko, common, reportConditionOccurrence, reportConditionEra, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra, reportAchillesHeel) {
-=======
 		"app/reports/visit_occurrence",
 		"app/reports/death",
 		"bootstrap",
 		"d3/tip"
-	], function ($, d3, ko, common, reportConditionOccurrence, reportConditionEra, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra, reportVisitOccurrence, reportDeath) {
->>>>>>> origin/master
+	], function ($, d3, ko, common, reportConditionOccurrence, reportConditionEra, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra, reportAchillesHeel, reportVisitOccurrence, reportDeath) {
 		function summaryViewModel() {
 			var self = this;
 
