@@ -84,68 +84,75 @@
 				.attr("height", h)
 				.attr("viewBox", "0 0 " + w + " " + h);
 
-			var vis = chart.append("g")
-				.attr("transform", "translate(" + or + "," + or + ")");
+			if (data.length > 0) {
+				var vis = chart.append("g")
+					.attr("transform", "translate(" + or + "," + or + ")");
 
-			var legend = chart.append("g")
-				.attr("transform", "translate(" + (w - options.margin.right) + ",0)")
-				.attr("class", "legend");
+				var legend = chart.append("g")
+					.attr("transform", "translate(" + (w - options.margin.right) + ",0)")
+					.attr("class", "legend");
 
-			var arc = d3.svg.arc()
-				.innerRadius(ir)
-				.outerRadius(or);
+				var arc = d3.svg.arc()
+					.innerRadius(ir)
+					.outerRadius(or);
 
-			var pie = d3.layout.pie() //this will create arc data for us given a list of values
-				.value(function (d) {
-					return d.value > 0 ? Math.max(d.value, total * .015) : 0; // we want slices to appear if they have data, so we return a minimum of 1.5% of the overall total if the datapoint has a value > 0.
-				}); //we must tell it out to access the value of each element in our data array
+				var pie = d3.layout.pie() //this will create arc data for us given a list of values
+					.value(function (d) {
+						return d.value > 0 ? Math.max(d.value, total * .015) : 0; // we want slices to appear if they have data, so we return a minimum of 1.5% of the overall total if the datapoint has a value > 0.
+					}); //we must tell it out to access the value of each element in our data array
 
-			var arcs = vis.selectAll("g.slice") //this selects all <g> elements with class slice (there aren't any yet)
-				.data(pie) //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties)
-				.enter() //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
-				.append("svg:g") //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
-				.attr("class", "slice"); //allow us to style things in the slices (like text)
+				var arcs = vis.selectAll("g.slice") //this selects all <g> elements with class slice (there aren't any yet)
+					.data(pie) //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties)
+					.enter() //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
+					.append("svg:g") //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+					.attr("class", "slice"); //allow us to style things in the slices (like text)
 
-			arcs.append("svg:path")
-				.attr("fill", function (d) {
-					return options.colors(d.data.id);
-				}) //set the color for each slice to be chosen from the color function defined above
-			.attr("stroke", "#fff")
-				.attr("stroke-width", 2)
-				.attr("title", function (d) {
-					return d.label;
-				})
-				.attr("d", arc); //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+				arcs.append("svg:path")
+					.attr("fill", function (d) {
+						return options.colors(d.data.id);
+					}) //set the color for each slice to be chosen from the color function defined above
+				.attr("stroke", "#fff")
+					.attr("stroke-width", 2)
+					.attr("title", function (d) {
+						return d.label;
+					})
+					.attr("d", arc); //this creates the actual SVG path using the associated data (pie) with the arc drawing function
 
-			legend.selectAll('rect')
-				.data(function (d) {
-					return d;
-				})
-				.enter()
-				.append("rect")
-				.attr("x", 0)
-				.attr("y", function (d, i) {
-					return i * 15;
-				})
-				.attr("width", 10)
-				.attr("height", 10)
-				.style("fill", function (d) {
-					return options.colors(d.id);
-				});
+				legend.selectAll('rect')
+					.data(function (d) {
+						return d;
+					})
+					.enter()
+					.append("rect")
+					.attr("x", 0)
+					.attr("y", function (d, i) {
+						return i * 15;
+					})
+					.attr("width", 10)
+					.attr("height", 10)
+					.style("fill", function (d) {
+						return options.colors(d.id);
+					});
 
-			legend.selectAll('text')
-				.data(function (d) {
-					return d;
-				})
-				.enter()
-				.append("text")
-				.attr("x", 12)
-				.attr("y", function (d, i) {
-					return (i * 15) + 9;
-				})
-				.text(function (d) {
-					return d.label;
-				});
+				legend.selectAll('text')
+					.data(function (d) {
+						return d;
+					})
+					.enter()
+					.append("text")
+					.attr("x", 12)
+					.attr("y", function (d, i) {
+						return (i * 15) + 9;
+					})
+					.text(function (d) {
+						return d.label;
+					});
+			} else {
+				chart.append("text")
+					.attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")")
+					.style("text-anchor", "middle")
+					.text("No Data");
+			}
 
 			$(window).on("resize", {
 					container: $(target),
@@ -218,6 +225,8 @@
 		}
 
 		self.render = function (data, target, w, h, options) {
+
+			data = data || []; // default to empty set if null is passed in
 			var defaults = {
 				margin: {
 					top: 10,
@@ -345,7 +354,7 @@
 			bar.append("rect")
 				.attr("x", 1)
 				.attr("width", function (d) {
-					return x(d.x + d.dx) - x(d.x) - 1;
+					return Math.max((x(d.x + d.dx) - x(d.x) - 1), .5);
 				})
 				.attr("height", function (d) {
 					return height - y(d.y);
@@ -405,15 +414,7 @@
 				.attr('class', 'd3-tip')
 				.offset([-10, 0])
 				.html(function (d) {
-					return '<table class="boxplotValues">'
-						+ '<tr><td>Max:</td><td>' + module.util.formatSI(d.max, 3) + '</td></tr>'
-						+ '<tr><td>P90:</td><td>' + module.util.formatSI(d.UIF, 3) + '</td></tr>'
-						+ '<tr><td>P75:</td><td>' + module.util.formatSI(d.q3, 3) + '</td></tr>'
-						+ '<tr><td>Median:</td><td>' + module.util.formatSI(d.median, 3) + '</td></tr>' 
-						+ '<tr><td>P25:</td><td>' + module.util.formatSI(d.q1, 3) + '</td></tr>'
-						+ '<tr><td>P10:</td><td>' + module.util.formatSI(d.LIF, 3) + '</td></tr>' 
-						+ '<tr><td>Min:</td><td>' + module.util.formatSI(d.min, 3) + '</td></tr>'
-						+ '</table>';
+					return '<table class="boxplotValues">' + '<tr><td>Max:</td><td>' + module.util.formatSI(d.max, 3) + '</td></tr>' + '<tr><td>P90:</td><td>' + module.util.formatSI(d.UIF, 3) + '</td></tr>' + '<tr><td>P75:</td><td>' + module.util.formatSI(d.q3, 3) + '</td></tr>' + '<tr><td>Median:</td><td>' + module.util.formatSI(d.median, 3) + '</td></tr>' + '<tr><td>P25:</td><td>' + module.util.formatSI(d.q1, 3) + '</td></tr>' + '<tr><td>P10:</td><td>' + module.util.formatSI(d.LIF, 3) + '</td></tr>' + '<tr><td>Min:</td><td>' + module.util.formatSI(d.min, 3) + '</td></tr>' + '</table>';
 				})
 			svg.call(tip);
 
@@ -887,219 +888,230 @@
 			};
 			var options = $.extend({}, defaults, options);
 
-			// convert data to multi-series format if not already formatted
-			if (!data[0].hasOwnProperty("values")) {
-				// assumes data is just an array of values (single series)
-				data = [
-					{
-						name: '',
-						values: data
-							}];
-			}
-
-			var focusTip = d3.tip()
-				.attr('class', 'd3-tip')
-				.offset([-10, 0])
-				.html(function(d) {
-					var tipText = "";
-					if (d[options.seriesName])
-						tipText = "Series: " + d[options.seriesName] + "</br>";
-					tipText += (options.xLabel || "x") + ": " + options.xFormat(d[options.xValue]) + "</br>";
-					tipText += (options.yLabel || "y") + ": " + module.util.formatSI(d[options.yValue],3);
-					return tipText;
-				})
-
 			var chart = d3.select(target)
 				.append("svg:svg")
-				.data(data)
 				.attr("width", w)
 				.attr("height", h)
 				.attr("viewBox", "0 0 " + w + " " + h);
 
-			chart.call(focusTip);
-			
-			// apply labels (if specified) and offset margins accordingly
-			if (options.xLabel) {
-				var xAxisLabel = chart.append("g")
-					.attr("transform", "translate(" + w / 2 + "," + (h - options.margin.bottom) + ")")
+			if (data.length > 0) {
 
-				xAxisLabel.append("text")
-					.attr("class", "axislabel")
-					.style("text-anchor", "middle")
-					.text(options.xLabel);
+				// convert data to multi-series format if not already formatted
+				if (!data[0].hasOwnProperty("values")) {
+					// assumes data is just an array of values (single series)
+					data = [
+						{
+							name: '',
+							values: data
+							}];
+				}
+				chart.data(data)
 
-				var bbox = xAxisLabel.node().getBBox();
-				options.margin.bottom += bbox.height + 10;
-			}
+				var focusTip = d3.tip()
+					.attr('class', 'd3-tip')
+					.offset([-10, 0])
+					.html(function (d) {
+						var tipText = "";
+						if (d[options.seriesName])
+							tipText = "Series: " + d[options.seriesName] + "</br>";
+						tipText += (options.xLabel || "x") + ": " + options.xFormat(d[options.xValue]) + "</br>";
+						tipText += (options.yLabel || "y") + ": " + module.util.formatSI(d[options.yValue], 3);
+						return tipText;
+					})
 
-			if (options.yLabel) {
-				var yAxisLabel = chart.append("g")
-					.attr("transform", "translate(0," + (((h - options.margin.bottom - options.margin.top) / 2) + options.margin.top) + ")");
-				yAxisLabel.append("text")
-					.attr("class", "axislabel")
-					.attr("transform", "rotate(-90)")
-					.attr("y", 0)
-					.attr("x", 0)
-					.attr("dy", "1em")
-					.style("text-anchor", "middle")
-					.text(options.yLabel);
 
-				var bbox = yAxisLabel.node().getBBox();
-				options.margin.left += bbox.width;
-			}
 
-			if (options.showLegend) {
-				var legend = chart.append("g")
-					.attr("class", "legend");
+				chart.call(focusTip);
 
-				var maxWidth = 0;
+				// apply labels (if specified) and offset margins accordingly
+				if (options.xLabel) {
+					var xAxisLabel = chart.append("g")
+						.attr("transform", "translate(" + w / 2 + "," + (h - options.margin.bottom) + ")")
 
-				data.forEach(function (d, i) {
-					legend.append("rect")
+					xAxisLabel.append("text")
+						.attr("class", "axislabel")
+						.style("text-anchor", "middle")
+						.text(options.xLabel);
+
+					var bbox = xAxisLabel.node().getBBox();
+					options.margin.bottom += bbox.height + 10;
+				}
+
+				if (options.yLabel) {
+					var yAxisLabel = chart.append("g")
+						.attr("transform", "translate(0," + (((h - options.margin.bottom - options.margin.top) / 2) + options.margin.top) + ")");
+					yAxisLabel.append("text")
+						.attr("class", "axislabel")
+						.attr("transform", "rotate(-90)")
+						.attr("y", 0)
 						.attr("x", 0)
-						.attr("y", (i * 15))
-						.attr("width", 10)
-						.attr("height", 10)
-						.style("fill", options.colors(d.name));
+						.attr("dy", "1em")
+						.style("text-anchor", "middle")
+						.text(options.yLabel);
 
-					var legendItem = legend.append("text")
-						.attr("x", 12)
-						.attr("y", (i * 15) + 9)
-						.text(d.name);
-					maxWidth = Math.max(legendItem.node().getBBox().width + 12, maxWidth);
-				});
-				legend.attr("transform", "translate(" + (w - options.margin.right - maxWidth) + ",0)")
-				options.margin.right += maxWidth + 5;
-			}
+					var bbox = yAxisLabel.node().getBBox();
+					options.margin.left += bbox.width;
+				}
 
-			var width = w - options.margin.left - options.margin.right;
-			var height = h - options.margin.top - options.margin.bottom - options.tickPadding;
+				if (options.showLegend) {
+					var legend = chart.append("g")
+						.attr("class", "legend");
 
-			var x = options.xScale || d3.scale.linear()
-				.domain([d3.min(data, function (d) {
-					return d3.min(d.values, function (d) {
-						return d[options.xValue];
+					var maxWidth = 0;
+
+					data.forEach(function (d, i) {
+						legend.append("rect")
+							.attr("x", 0)
+							.attr("y", (i * 15))
+							.attr("width", 10)
+							.attr("height", 10)
+							.style("fill", options.colors(d.name));
+
+						var legendItem = legend.append("text")
+							.attr("x", 12)
+							.attr("y", (i * 15) + 9)
+							.text(d.name);
+						maxWidth = Math.max(legendItem.node().getBBox().width + 12, maxWidth);
 					});
-				}), d3.max(data, function (d) {
-					return d3.max(d.values, function (d) {
-						return d[options.xValue];
-					});
-				})]);
+					legend.attr("transform", "translate(" + (w - options.margin.right - maxWidth) + ",0)")
+					options.margin.right += maxWidth + 5;
+				}
 
-			var xAxis = d3.svg.axis()
-				.scale(x)
-				.ticks(10)
-				.orient("bottom");
+				var width = w - options.margin.left - options.margin.right;
+				var height = h - options.margin.top - options.margin.bottom - options.tickPadding;
 
-			// check for custom tick formatter
-			if (options.tickFormat) {
-				xAxis.tickFormat(options.tickFormat);
-			} else // apply standard formatter
-			{
-				xAxis.tickFormat(options.xFormat);
-			}
+				var x = options.xScale || d3.scale.linear()
+					.domain([d3.min(data, function (d) {
+						return d3.min(d.values, function (d) {
+							return d[options.xValue];
+						});
+					}), d3.max(data, function (d) {
+						return d3.max(d.values, function (d) {
+							return d[options.xValue];
+						});
+					})]);
 
-			// if x scale is ordinal, then apply rangeRoundBands, else apply standard range.
-			if (typeof x.rangePoints === 'function') {
-				x.rangePoints([0, width]);
-			} else {
-				x.range([0, width]);
-			}
+				var xAxis = d3.svg.axis()
+					.scale(x)
+					.ticks(10)
+					.orient("bottom");
 
-			var y = options.yScale || d3.scale.linear()
-				.domain([0, d3.max(data, function (d) {
-					return d3.max(d.values, function (d) {
-						return d[options.yValue];
-					});
-				})])
-				.range([height, 0]);
+				// check for custom tick formatter
+				if (options.tickFormat) {
+					xAxis.tickFormat(options.tickFormat);
+				} else // apply standard formatter
+				{
+					xAxis.tickFormat(options.xFormat);
+				}
 
-			var yAxis = d3.svg.axis()
-				.scale(y)
-				.tickFormat(options.yFormat)
-				.ticks(4)
-				.orient("left");
+				// if x scale is ordinal, then apply rangeRoundBands, else apply standard range.
+				if (typeof x.rangePoints === 'function') {
+					x.rangePoints([0, width]);
+				} else {
+					x.range([0, width]);
+				}
 
-			// create a line function that can convert data[] into x and y points
-			var line = d3.svg.line()
-				.x(function (d) {
-					return x(d[options.xValue]);
-				})
-				.y(function (d) {
-					return y(d[options.yValue]);
-				})
-				.interpolate(options.interpolate);
+				var y = options.yScale || d3.scale.linear()
+					.domain([0, d3.max(data, function (d) {
+						return d3.max(d.values, function (d) {
+							return d[options.yValue];
+						});
+					})])
+					.range([height, 0]);
 
-			var vis = chart.append("g")
-				.attr("class", options.cssClass)
-				.attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
+				var yAxis = d3.svg.axis()
+					.scale(y)
+					.tickFormat(options.yFormat)
+					.ticks(4)
+					.orient("left");
 
-			var series = vis.selectAll(".series")
-				.data(data)
-				.enter()
-				.append("g")
-
-			var seriesLines = series.append("path")
-				.attr("class", "line")
-				.attr("d", function (d) {
-					return line(d.values.sort(function (a,b) { return d3.ascending(a[options.xValue], b[options.xValue]);}));
-				});
-
-			if (options.colors) {
-				seriesLines.style("stroke", function (d) {
-					return options.colors(d.name);
-				})
-			}
-
-			if (options.showSeriesLabel) {
-				series.append("text")
-					.datum(function (d) {
-						return {
-							name: d.name,
-							value: d.values[d.values.length - 1]
-						};
+				// create a line function that can convert data[] into x and y points
+				var line = d3.svg.line()
+					.x(function (d) {
+						return x(d[options.xValue]);
 					})
+					.y(function (d) {
+						return y(d[options.yValue]);
+					})
+					.interpolate(options.interpolate);
+
+				var vis = chart.append("g")
+					.attr("class", options.cssClass)
+					.attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
+
+				var series = vis.selectAll(".series")
+					.data(data)
+					.enter()
+					.append("g")
+
+				var seriesLines = series.append("path")
+					.attr("class", "line")
+					.attr("d", function (d) {
+						return line(d.values.sort(function (a, b) {
+							return d3.ascending(a[options.xValue], b[options.xValue]);
+						}));
+					});
+
+				if (options.colors) {
+					seriesLines.style("stroke", function (d) {
+						return options.colors(d.name);
+					})
+				}
+
+				if (options.showSeriesLabel) {
+					series.append("text")
+						.datum(function (d) {
+							return {
+								name: d.name,
+								value: d.values[d.values.length - 1]
+							};
+						})
+						.attr("transform", function (d) {
+							return "translate(" + x(d.value[options.xValue]) + "," + y(d.value[options.yValue]) + ")";
+						})
+						.attr("x", 3)
+						.attr("dy", 2)
+						.style("font-size", "8px")
+						.text(function (d) {
+							return d.name;
+						});
+				}
+
+				series.selectAll(".focus")
+					.data(function (series) {
+						return series.values;
+					})
+					.enter()
+					.append("circle")
+					.attr("class", "focus")
+					.attr("r", 4)
 					.attr("transform", function (d) {
-						return "translate(" + x(d.value[options.xValue]) + "," + y(d.value[options.yValue]) + ")";
-					})
-					.attr("x", 3)
-					.attr("dy", 2)
-					.style("font-size", "8px")
-					.text(function (d) {
-						return d.name;
-					});
-			}
-			
-			series.selectAll(".focus")
-				.data(function (series){
-					return series.values;
-				})
-			.enter()
-				.append("circle")
-				.attr("class","focus")
-				.attr("r", 4)
-				.attr("transform", function (d) {
 						return "translate(" + x(d[options.xValue]) + "," + y(d[options.yValue]) + ")";
-				})
-			.on('mouseover', function(d) { 
-				d3.select(this).style("opacity","1");
-				focusTip.show(d);
-			})
-      .on('mouseout', function(d) {
-				d3.select(this).style("opacity","0");
-				focusTip.hide(d);
-			});
-				
-			vis.append("g")
-				.attr("class", "x axis")
-				.attr("transform", "translate(0," + height + ")")
-				.call(xAxis);
+					})
+					.on('mouseover', function (d) {
+						d3.select(this).style("opacity", "1");
+						focusTip.show(d);
+					})
+					.on('mouseout', function (d) {
+						d3.select(this).style("opacity", "0");
+						focusTip.hide(d);
+					});
 
-			vis.append("g")
-				.attr("class", "y axis")
-				.call(yAxis)
-			
-			
+				vis.append("g")
+					.attr("class", "x axis")
+					.attr("transform", "translate(0," + height + ")")
+					.call(xAxis);
+
+				vis.append("g")
+					.attr("class", "y axis")
+					.call(yAxis)
+
+			} else {
+				chart.append("text")
+					.attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")")
+					.style("text-anchor", "middle")
+					.text("No Data");
+			}
 
 			$(window).on("resize", {
 					container: $(target),
@@ -1319,7 +1331,9 @@
 			gSeries.append("path")
 				.attr("class", "line")
 				.attr("d", function (d) {
-					return seriesLine(d.values.sort(function (a,b) { return d3.ascending(a.date, b.date);}));
+					return seriesLine(d.values.sort(function (a, b) {
+						return d3.ascending(a.date, b.date);
+					}));
 				})
 				.style("stroke", function (d) {
 					return options.colors(d.key)
@@ -1575,8 +1589,7 @@
 					if (d3.event.altKey) {
 						zoom(root);
 						applyGroupers(root);
-					}
-					else if (d3.event.ctrlKey) {
+					} else if (d3.event.ctrlKey) {
 						var target = d;
 
 						while (target.depth != current_depth + 1) {
@@ -1592,7 +1605,7 @@
 							zoom(root);
 						}
 					} else {
-					options.onclick(d);
+						options.onclick(d);
 					}
 				});
 
@@ -1621,7 +1634,7 @@
 				} else {
 					current_zoom_caption = container.find('.treemap_zoomtarget').text()
 					container.find('.treemap_zoomtarget').text(current_zoom_caption + ' > ' + d.name);
-		}
+				}
 
 				var t = svg.selectAll("g.cell,.grouper").transition()
 					.duration(750)
@@ -1643,7 +1656,7 @@
 
 				node = d;
 				d3.event.stopPropagation();
-	}
+			}
 
 			function applyGroupers(target) {
 				var kx, ky;

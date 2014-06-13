@@ -3,6 +3,7 @@
 		"jquery",
 		"d3",
 		"knockout",
+		"common",
 		"app/reports/condition_occurrence",
 		"app/reports/condition_era",
 		"app/reports/drug_exposure",
@@ -12,13 +13,17 @@
 		"app/reports/drug_era",
 		"bootstrap",
 		"d3/tip"
+<<<<<<< HEAD
 	], function ($, d3, ko, reportConditionOccurrence, reportConditionEra, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra) {
+=======
+	], function ($, d3, ko, common, reportConditionOccurrence, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra) {
+>>>>>>> origin/master
 		function summaryViewModel() {
 			var self = this;
 
 			self.dashboardData = ko.observable();
 			self.conditionsData = ko.observable();
-			
+
 			self.personData = ko.observable();
 			self.observationPeriodsData = ko.observable();
 			self.datasource = ko.observable({
@@ -40,10 +45,11 @@
 					url: "data/" + self.datasource().folder + "/dashboard.json",
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result) {
-					result.SUMMARY.ATTRIBUTE_VALUE.forEach( function (d,i,ar) {
-						if (!isNaN(d))
-							ar[i] = self.formatSI(d,2);
-					});					
+					result.SUMMARY = common.dataframeToArray(result.SUMMARY);
+					result.SUMMARY.forEach(function (d, i, ar) {
+						if (!isNaN(d.ATTRIBUTE_VALUE))
+							d.ATTRIBUTE_VALUE = self.formatSI(d.ATTRIBUTE_VALUE, 2);
+					});
 					self.dashboardData(result);
 				});
 			}
@@ -64,12 +70,12 @@
 					url: "data/" + self.datasource().folder + '/person.json',
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result) {
-					
-					result.SUMMARY.ATTRIBUTE_VALUE.forEach( function (d,i,ar) {
-						if (!isNaN(d))
-							ar[i] = self.formatSI(d,2);
-					});	
-					
+
+					result.SUMMARY = common.dataframeToArray(result.SUMMARY);
+					result.SUMMARY.forEach(function (d, i, ar) {
+						if (!isNaN(d.ATTRIBUTE_VALUE))
+							d.ATTRIBUTE_VALUE = self.formatSI(d.ATTRIBUTE_VALUE, 2);
+					});
 					self.personData(result);
 				});
 			}
@@ -105,14 +111,14 @@
 
 		function updateDashboard(data) {
 			var result = data;
-			
+
 			curl(["jnj/chart", "common"], function (jnj_chart, common) {
 				d3.selectAll("#reportDashboard #genderPie svg").remove();
 				genderDonut = new jnj_chart.donut();
 				genderDonut.render(common.mapConceptData(result.GENDER_DATA), "#reportDashboard #genderPie", 260, 100, {
 					colors: d3.scale.ordinal()
 						.domain([8507, 8551, 8532])
-						.range(["#1f77b4"," #CCC", "#ff7f0e"]),
+						.range(["#1f77b4", " #CCC", "#ff7f0e"]),
 					margin: {
 						top: 5,
 						bottom: 10,
@@ -120,7 +126,7 @@
 						left: 10
 					}
 				});
-				
+
 				d3.selectAll("#reportDashboard #ageatfirstobservation svg").remove();
 				var ageAtFirstObservationData = common.mapHistogram(result.AGE_AT_FIRST_OBSERVATION_HISTOGRAM)
 				var ageAtFirstObservationHistogram = new jnj_chart.histogram();
@@ -129,7 +135,7 @@
 					xLabel: 'Age',
 					yLabel: 'People'
 				});
-				
+
 				d3.selectAll("#reportDashboard #cumulativeobservation svg").remove();
 				var cumulativeObservationLine = new jnj_chart.line();
 				var cumulativeData = result.CUMULATIVE_DURATION.X_LENGTH_OF_OBSERVATION
@@ -142,34 +148,36 @@
 					}, result.CUMULATIVE_DURATION);
 
 				var cumulativeObservationXLabel = 'Days';
-				if (cumulativeData.slice(-1)[0].xValue - cumulativeData[0].xValue > 1000) {
-					// convert x data to years
-					cumulativeData.forEach(function (d) {
-						d.xValue = d.xValue / 365.25;
+				if (cumulativeData.length > 0) {
+					if (cumulativeData.slice(-1)[0].xValue - cumulativeData[0].xValue > 1000) {
+						// convert x data to years
+						cumulativeData.forEach(function (d) {
+							d.xValue = d.xValue / 365.25;
+						});
+						cumulativeObservationXLabel = 'Years';
+					}
+
+					cumulativeObservationLine.render(cumulativeData, "#reportDashboard #cumulativeobservation", 550, 300, {
+						xFormat: d3.format('s'),
+						yFormat: d3.format('0%'),
+						interpolate: "step-before",
+						xLabel: cumulativeObservationXLabel,
+						yLabel: 'Percent of Population',
+						margin: {
+							top: 10,
+							left: 40,
+							right: 40,
+							bottom: 10
+						}
 					});
-					cumulativeObservationXLabel = 'Years';
 				}
 
-				cumulativeObservationLine.render(cumulativeData, "#reportDashboard #cumulativeobservation", 550, 300, {
-					xFormat: d3.format('s'),
-					yFormat: d3.format('0%'),
-					interpolate: "step-before",
-					xLabel: cumulativeObservationXLabel,
-					yLabel: 'Percent of Population',
-					margin: {
-						top: 10,
-						left: 40,
-						right: 40,
-						bottom: 10
-					}
-				});
-				
 				var byMonthSeries = common.mapMonthYearDataToSeries(result.OBSERVED_BY_MONTH, {
 					dateField: 'MONTH_YEAR',
 					yValue: 'COUNT_VALUE',
 					yPercent: 'PERCENT_VALUE'
 				});
-				
+
 				d3.selectAll("#reportDashboard #oppeoplebymonthsingle svg").remove();
 				var observationByMonthSingle = new jnj_chart.line();
 				observationByMonthSingle.render(byMonthSeries, "#reportDashboard #oppeoplebymonthsingle", 550, 300, {
@@ -187,7 +195,7 @@
 					xLabel: "Date",
 					yLabel: "People"
 				});
-				
+
 			});
 		}
 
@@ -228,18 +236,21 @@
 				d3.selectAll("#reportObservationPeriods #observationlength svg").remove();
 				var observationLengthData = common.mapHistogram(result.OBSERVATION_LENGTH_HISTOGRAM)
 				var observationLengthXLabel = 'Days';
-				if (observationLengthData[observationLengthData.length - 1].x - observationLengthData[0].x > 1000) {
-					observationLengthData.forEach(function (d) {
-						d.x = d.x / 365.25;
-						d.dx = d.dx / 365.25;
-					});
-					observationLengthXLabel = 'Years';
+				if (observationLengthData.length > 0) {
+					if (observationLengthData[observationLengthData.length - 1].x - observationLengthData[0].x > 1000) {
+						observationLengthData.forEach(function (d) {
+							d.x = d.x / 365.25;
+							d.dx = d.dx / 365.25;
+						});
+						observationLengthXLabel = 'Years';
+					}
 				}
 				var observationLengthHistogram = new jnj_chart.histogram();
 				observationLengthHistogram.render(observationLengthData, "#reportObservationPeriods #observationlength", 460, 195, {
 					xLabel: observationLengthXLabel,
 					yLabel: 'People'
 				});
+
 
 				d3.selectAll("#reportObservationPeriods #cumulativeobservation svg").remove();
 				var cumulativeObservationLine = new jnj_chart.line();
@@ -253,12 +264,14 @@
 					}, result.CUMULATIVE_DURATION);
 
 				var cumulativeObservationXLabel = 'Days';
-				if (cumulativeData.slice(-1)[0].xValue - cumulativeData[0].xValue > 1000) {
-					// convert x data to years
-					cumulativeData.forEach(function (d) {
-						d.xValue = d.xValue / 365.25;
-					});
-					cumulativeObservationXLabel = 'Years';
+				if (cumulativeData.length > 0) {
+					if (cumulativeData.slice(-1)[0].xValue - cumulativeData[0].xValue > 1000) {
+						// convert x data to years
+						cumulativeData.forEach(function (d) {
+							d.xValue = d.xValue / 365.25;
+						});
+						cumulativeObservationXLabel = 'Years';
+					}
 				}
 
 				cumulativeObservationLine.render(cumulativeData, "#reportObservationPeriods #cumulativeobservation", 360, 200, {
@@ -414,7 +427,7 @@
 				genderDonut.render(common.mapConceptData(result.GENDER_DATA), "#reportPerson #genderPie", 260, 130, {
 					colors: d3.scale.ordinal()
 						.domain([8507, 8551, 8532])
-						.range(["#1f77b4"," #CCC", "#ff7f0e"]),
+						.range(["#1f77b4", " #CCC", "#ff7f0e"]),
 					margin: {
 						top: 5,
 						bottom: 10,
@@ -515,7 +528,7 @@
 					$('#reportDrugExposures').show();
 					report = 'drugs';
 				});
-				
+
 				this.get('#/:folder/drugeras', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
@@ -536,7 +549,7 @@
 					reportProcedureOccurrence.render(this.params['folder']);
 					$('#reportProcedureOccurrences').show();
 					report = 'procedures';
-				});								
+				});
 
 				this.get('#/:folder/observationperiods', function (context) {
 					$('.report').hide();
@@ -547,7 +560,7 @@
 					$('#reportObservationPeriods').show();
 					report = 'observationperiods';
 				});
-				
+
 				this.get('#/:folder/datadensity', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
@@ -558,7 +571,7 @@
 					$('#reportDataDensity').show();
 					report = 'datadensity';
 				});
-				
+
 				this.get('#/:folder/observations', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
@@ -568,7 +581,7 @@
 					reportObservation.render(this.params['folder']);
 					$('#reportObservations').show();
 					report = 'observations';
-				});						
+				});
 
 			});
 
