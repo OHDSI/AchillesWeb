@@ -13,11 +13,7 @@
 		"app/reports/drug_era",
 		"bootstrap",
 		"d3/tip"
-<<<<<<< HEAD
-	], function ($, d3, ko, reportConditionOccurrence, reportConditionEra, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra) {
-=======
-	], function ($, d3, ko, common, reportConditionOccurrence, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra) {
->>>>>>> origin/master
+	], function ($, d3, ko, common, reportConditionOccurrence, reportConditionEra, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra) {
 		function summaryViewModel() {
 			var self = this;
 
