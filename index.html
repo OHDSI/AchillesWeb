@@ -67,6 +67,7 @@
 							<li onclick="updateReport('observationperiods');">Observation Periods</li>
 							<li onclick="updateReport('datadensity');">Data Density</li>
 							<li onclick="updateReport('conditions');">Conditions</li>
+							<li onclick="updateReport('conditioneras');">Condition Eras</li>
 							<li onclick="updateReport('observations');">Observations</li>
 							<li onclick="updateReport('drugeras');">Drug Eras</li>
 							<li onclick="updateReport('drugs');">Drug Exposures</li>
@@ -514,6 +515,103 @@
 						</div>
 						<div class="panel-body">
 							<div class="drilldown" id="drugsByType"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="reportConditionEras" class="report">
+		<div class="reportTitle">Condition Eras</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default panel-table">
+					<div class="panel-heading">
+						Condition Prevalence
+					</div>
+					<div class="panel-body">
+						<div class="col-sm-12">
+							<ul class="nav nav-tabs" id="myTab">
+								<li class="active"><a href="#conditionera-treemap-panel">Treemap</a>
+								</li>
+								<li><a href="#conditionera-table-panel">Table</a>
+								</li>
+							</ul>
+							<div id='content' class="tab-content">
+								<div class="tab-pane active" id="conditionera-treemap-panel">
+									<div id="treemap_container">
+										<div class="treemap_zoomtarget"></div>
+									</div>
+									<div class="treemap_legend">Box Size: Prevalence, Color: Length of Era (Light to Dark = Low to High), Use Ctrl-Click to Zoom, Alt-Click to Reset Zoom</div>
+								</div>
+								<div class="tab-pane" id="conditionera-table-panel">
+									<table id="conditionera_table" class="display">
+										<thead>
+											<tr>
+												<th>Concept Id</th>
+												<th>SOC</th>
+												<th>HLGT</th>
+												<th>HLT</th>
+												<th>PT</th>
+												<th>SNOMED</th>
+												<th>Person Count</th>
+												<th>Prevalence</th>
+												<th>Length of Era</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="reportConditionErasDrilldown" class="hidden reportDrilldown">
+			<div id="conditionerasDrilldownTitle" class="reportTitle"></div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="panelConditionEraPrevalence" class="panel panel-default">
+						<div class="panel-heading">
+							Condition Prevalence
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="trellisLinePlot"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="panelConditionEraPrevalenceByMonth" class="panel panel-default">
+						<div class="panel-heading">
+							Condition Prevalence by Month
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="conditioneraPrevalenceByMonth"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div id="panelAgeAtFirstDiagnosis" class="panel panel-default">
+						<div class="panel-heading">
+							Age at First Diagnosis
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="conditioneras_age_at_first_diagnosis"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div id="panelConditionEraLengthOfEra" class="panel panel-default">
+						<div class="panel-heading">
+							Length of Condition Era
+						</div>
+						<div class="panel-body">
+							<div class="drilldown" id="conditioneras_length_of_era"></div>
 						</div>
 					</div>
 				</div>
