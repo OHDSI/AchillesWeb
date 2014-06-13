@@ -12,9 +12,10 @@
 		"app/reports/observation",
 		"app/reports/drug_era",
 		"app/reports/visit_occurrence",
+		"app/reports/death",
 		"bootstrap",
 		"d3/tip"
-	], function ($, d3, ko, common, reportConditionOccurrence, reportConditionEra, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra, reportVisitOccurrence) {
+	], function ($, d3, ko, common, reportConditionOccurrence, reportConditionEra, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra, reportVisitOccurrence, reportDeath) {
 		function summaryViewModel() {
 			var self = this;
 
@@ -590,7 +591,18 @@
 					reportVisitOccurrence.render(this.params['folder']);
 					$('#reportVisitOccurrences').show();
 					report = 'visits';
-				});				
+				});			
+				
+				this.get('#/:folder/death', function (context) {
+					$('.report').hide();
+					viewModel.datasource(viewModel.datasources.filter(function (d) {
+						return d.folder == this.params['folder'];
+					}, this)[0]);
+
+					reportDeath.render(this.params['folder']);
+					$('#reportDeath').show();
+					report = 'death';
+				});					
 
 			});
 
