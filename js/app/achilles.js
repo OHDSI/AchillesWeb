@@ -11,9 +11,10 @@
 		"app/reports/data_density",
 		"app/reports/observation",
 		"app/reports/drug_era",
+		"app/reports/achilles_heel",
 		"bootstrap",
 		"d3/tip"
-	], function ($, d3, ko, common, reportConditionOccurrence, reportConditionEra, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra) {
+	], function ($, d3, ko, common, reportConditionOccurrence, reportConditionEra, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra, reportAchillesHeel) {
 		function summaryViewModel() {
 			var self = this;
 
@@ -480,6 +481,17 @@
 					viewModel.loadDashboard();
 					$('#reportDashboard').show();
 					report = 'dashboard';
+				});
+
+				this.get('#/:folder/achillesheel', function (context) {
+					$('.report').hide();
+					viewModel.datasource(viewModel.datasources.filter(function (d) {
+						return d.folder == this.params['folder'];
+					}, this)[0]);
+
+					reportAchillesHeel.render(this.params['folder']);
+					$('#reportAchillesHeel').show();
+					report = 'achillesheel';
 				});
 
 				this.get('#/:folder/person', function (context) {

@@ -63,6 +63,7 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li onclick="updateReport('dashboard');">Dashboard</li>
+							<li onclick="updateReport('achillesheel');">Achilles Heel</li>
 							<li onclick="updateReport('person');">Person</li>
 							<li onclick="updateReport('observationperiods');">Observation Periods</li>
 							<li onclick="updateReport('datadensity');">Data Density</li>
@@ -80,6 +81,31 @@
 	</nav>
 
 	<div id="datasourceTitle" data-bind="text:datasource().name"></div>
+
+	<div id="reportAchillesHeel" class="report">
+		<div class="reportTitle">Achilles Heel Report</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Data Quality Messages
+					</div>
+					<div class="panel-body">
+						<div class="col-sm-12">
+							<table id="achillesheel_table" class="display">
+								<thead>
+									<tr>
+										<th>Message Type</th>
+										<th>Message</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<div id="reportObservationPeriods" class="report">
 		<div class="reportTitle">Observation Periods</div>
