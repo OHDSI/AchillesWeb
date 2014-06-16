@@ -4,19 +4,10 @@
 		"d3",
 		"knockout",
 		"common",
-		"app/reports/condition_occurrence",
-		"app/reports/condition_era",
-		"app/reports/drug_exposure",
-		"app/reports/procedure_occurrence",
-		"app/reports/data_density",
-		"app/reports/observation",
-		"app/reports/drug_era",
-		"app/reports/achilles_heel",
-		"app/reports/visit_occurrence",
-		"app/reports/death",
+		"app/reports",
 		"bootstrap",
 		"d3/tip"
-	], function ($, d3, ko, common, reportConditionOccurrence, reportConditionEra, reportDrugExposure, reportProcedureOccurrence, reportDataDensity, reportObservation, reportDrugEra, reportAchillesHeel, reportVisitOccurrence, reportDeath) {
+	], function ($, d3, ko, common, reports) {
 		function summaryViewModel() {
 			var self = this;
 
@@ -492,7 +483,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reportAchillesHeel.render(this.params['folder']);
+					reports.AchillesHeel.render(this.params['folder']);
 					$('#reportAchillesHeel').show();
 					report = 'achillesheel';
 				});
@@ -513,7 +504,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reportConditionOccurrence.render(this.params['folder']);
+					reports.ConditionOccurrence.render(this.params['folder']);
 					$('#reportConditionOccurrences').show();
 					report = 'conditions';
 				});
@@ -524,7 +515,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reportConditionEra.render(this.params['folder']);
+					reports.ConditionEra.render(this.params['folder']);
 					$('#reportConditionEras').show();
 					report = 'conditioneras';
 				});
@@ -535,7 +526,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reportDrugExposure.render(this.params['folder']);
+					reports.DrugExposure.render(this.params['folder']);
 					$('#reportDrugExposures').show();
 					report = 'drugs';
 				});
@@ -546,7 +537,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reportDrugEra.render(this.params['folder']);
+					reports.DrugEra.render(this.params['folder']);
 					$('#reportDrugEras').show();
 					report = 'drugeras';
 				});
@@ -557,7 +548,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reportProcedureOccurrence.render(this.params['folder']);
+					reports.ProcedureOccurrence.render(this.params['folder']);
 					$('#reportProcedureOccurrences').show();
 					report = 'procedures';
 				});
@@ -578,7 +569,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reportDataDensity.render(this.params['folder']);
+					reports.DataDensity.render(this.params['folder']);
 					$('#reportDataDensity').show();
 					report = 'datadensity';
 				});
@@ -589,7 +580,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reportObservation.render(this.params['folder']);
+					reports.Observation.render(this.params['folder']);
 					$('#reportObservations').show();
 					report = 'observations';
 				});
@@ -600,7 +591,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reportVisitOccurrence.render(this.params['folder']);
+					reports.VisitOccurrence.render(this.params['folder']);
 					$('#reportVisitOccurrences').show();
 					report = 'visits';
 				});
@@ -611,7 +602,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reportDeath.render(this.params['folder']);
+					reports.Death.render(this.params['folder']);
 					$('#reportDeath').show();
 					report = 'death';
 				});
