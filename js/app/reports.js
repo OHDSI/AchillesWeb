@@ -12,7 +12,7 @@ define(function (require) {
 	var reportAchillesHeel = require("./reports/achilles_heel");
 
 	var module = {
-		ConditoinOccurrence: reportConditionOccurrence,
+		ConditionOccurrence: reportConditionOccurrence,
 		ConditionEra: reportConditionEra,
 		DrugExposure: reportDrugExposure,
 		ProcedureOccurrence: reportProcedureOccurrence,
