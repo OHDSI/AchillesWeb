@@ -67,13 +67,6 @@
 									var yearFormat = d3.time.format("%Y");
 									return (d.getMonth() == 0) ? yearFormat(d) : monthFormat(d);
 								},
-								tickPadding: 10,
-								margin: {
-									top: 5,
-									right: 25,
-									bottom: 5,
-									left: 40
-								},
 								xLabel: "Date",
 								yLabel: "Prevalence per 1000 People"
 							});

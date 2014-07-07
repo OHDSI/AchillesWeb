@@ -88,13 +88,6 @@
 								})),
 								xFormat: d3.time.format("%m/%Y"),
 								tickFormat: d3.time.format("%Y"),
-								tickPadding: 10,
-								margin: {
-									top: 5,
-									right: 25,
-									bottom: 5,
-									left: 40
-								},
 								xLabel: "Date",
 								yLabel: "Prevalence per 1000 People"
 							});
@@ -162,7 +155,6 @@
 								yLabel: "Prevalence Per 1000 People",
 								xFormat: d3.time.format("%Y"),
 								yFormat: d3.format("0.2f"),
-								tickPadding: 20,
 								colors: d3.scale.ordinal()
 									.domain(["MALE", "FEMALE"])
 									.range(["#1f77b4", "#ff7f0e"])

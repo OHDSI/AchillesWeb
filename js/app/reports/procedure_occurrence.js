@@ -63,13 +63,6 @@
 								})),
 								xFormat: d3.time.format("%m/%Y"),
 								tickFormat: d3.time.format("%Y"),
-								tickPadding: 10,
-								margin: {
-									top: 5,
-									right: 25,
-									bottom: 5,
-									left: 40
-								},
 								xLabel: "Date",
 								yLabel: "Prevalence per 1000 People"
 							});

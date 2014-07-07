@@ -152,13 +152,7 @@
 						yFormat: d3.format('0%'),
 						interpolate: "step-before",
 						xLabel: cumulativeObservationXLabel,
-						yLabel: 'Percent of Population',
-						margin: {
-							top: 10,
-							left: 40,
-							right: 40,
-							bottom: 10
-						}
+						yLabel: 'Percent of Population'
 					});
 				}
 
@@ -177,12 +171,6 @@
 					xFormat: d3.time.format("%m/%Y"),
 					tickFormat: d3.time.format("%Y"),
 					tickPadding: 10,
-					margin: {
-						top: 5,
-						right: 25,
-						bottom: 5,
-						left: 40
-					},
 					xLabel: "Date",
 					yLabel: "People"
 				});
@@ -210,7 +198,7 @@
 						};
 						return item;
 					}, result.AGE_BY_GENDER);
-				agegenderboxplot.render(agData, "#reportObservationPeriods #agebygender", 220, 210, {
+				agegenderboxplot.render(agData, "#reportObservationPeriods #agebygender", 235, 210, {
 					xLabel: "Gender",
 					yLabel: "Age"
 				});
@@ -265,18 +253,12 @@
 					}
 				}
 
-				cumulativeObservationLine.render(cumulativeData, "#reportObservationPeriods #cumulativeobservation", 360, 200, {
+				cumulativeObservationLine.render(cumulativeData, "#reportObservationPeriods #cumulativeobservation", 450, 260, {
 					xFormat: d3.format('s'),
 					yFormat: d3.format('0%'),
 					interpolate: "step-before",
 					xLabel: cumulativeObservationXLabel,
-					yLabel: 'Percent of Population',
-					margin: {
-						top: 10,
-						left: 40,
-						right: 40,
-						bottom: 10
-					}
+					yLabel: 'Percent of Population'
 				});
 
 				d3.selectAll("#reportObservationPeriods #opbygender svg").remove();
@@ -316,7 +298,7 @@
 					opgDataYlabel = 'Years';
 				}
 
-				opbygenderboxplot.render(opgData, "#reportObservationPeriods #opbygender", 220, 210, {
+				opbygenderboxplot.render(opgData, "#reportObservationPeriods #opbygender", 235, 210, {
 					xLabel: 'Gender',
 					yLabel: opgDataYlabel
 				});
@@ -358,7 +340,7 @@
 					opaDataYlabel = 'Years';
 				}
 
-				opbyageboxplot.render(opaData, "#reportObservationPeriods #opbyage", 360, 200, {
+				opbyageboxplot.render(opaData, "#reportObservationPeriods #opbyage", 450, 260, {
 					xLabel: 'Age Decile',
 					yLabel: opaDataYlabel
 				});
@@ -385,20 +367,14 @@
 					})),
 					xFormat: d3.time.format("%m/%Y"),
 					tickFormat: d3.time.format("%Y"),
-					tickPadding: 10,
-					margin: {
-						top: 5,
-						right: 25,
-						bottom: 5,
-						left: 40
-					},
+					ticks: 10,
 					xLabel: "Date",
 					yLabel: "People"
 				});
 
 				d3.selectAll("#reportObservationPeriods #opperperson svg").remove();
 				raceDonut = new jnj_chart.donut();
-				raceDonut.render(common.mapConceptData(result.PERSON_PERIODS_DATA), "#reportObservationPeriods #opperperson", 285, 235, {
+				raceDonut.render(common.mapConceptData(result.PERSON_PERIODS_DATA), "#reportObservationPeriods #opperperson", 255, 230, {
 					margin: {
 						top: 5,
 						bottom: 10,

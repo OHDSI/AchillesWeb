@@ -21,6 +21,7 @@
 				word,
 				line = [],
 				lineNumber = 0,
+				lineCount = 0,
 				lineHeight = 1.1, // ems
 				y = text.attr("y"),
 				dy = parseFloat(text.attr("dy")),
@@ -29,10 +30,13 @@
 				line.push(word);
 				tspan.text(line.join(" "));
 				if (tspan.node().getComputedTextLength() > width) {
-					line.pop();
-					tspan.text(line.join(" "));
-					line = [word];
-					tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+					if (line.length > 1) {
+						line.pop(); // remove word from line
+						words.push(word); // put the word back on the stack
+						tspan.text(line.join(" "));
+					}
+					line = [];
+					tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em");
 				}
 			}
 		});
@@ -229,14 +233,16 @@
 			data = data || []; // default to empty set if null is passed in
 			var defaults = {
 				margin: {
-					top: 10,
-					right: 10,
-					bottom: 10,
-					left: 40
+					top: 5,
+					right: 5,
+					bottom: 5,
+					left: 5
 				},
+				ticks: 10,
 				xFormat: d3.format(',.0f'),
 				yFormat: d3.format('s'),
-				tickPadding: 10
+				yScale: d3.scale.linear(),
+				boxplotHeight: 10
 			};
 
 			var options = $.extend({}, defaults, options);
@@ -262,6 +268,9 @@
 				})
 			chart.call(tip);
 
+			var xAxisLabelHeight = 0;
+			var yAxisLabelWidth = 0;
+			
 			// apply labels (if specified) and offset margins accordingly
 			if (options.xLabel) {
 				var xAxisLabel = chart.append("g")
@@ -273,12 +282,12 @@
 					.text(options.xLabel);
 
 				var bbox = xAxisLabel.node().getBBox();
-				options.margin.bottom += bbox.height + 10;
+				xAxisLabelHeight = bbox.height;
 			}
 
 			if (options.yLabel) {
 				var yAxisLabel = chart.append("g")
-					.attr("transform", "translate(0," + (((h - options.margin.bottom - options.margin.top) / 2) + options.margin.top) + ")");
+					.attr("transform", "translate(" + options.margin.left + "," + (((h - options.margin.bottom - options.margin.top) / 2) + options.margin.top) + ")");
 				yAxisLabel.append("text")
 					.attr("class", "axislabel")
 					.attr("transform", "rotate(-90)")
@@ -289,48 +298,33 @@
 					.text(options.yLabel);
 
 				var bbox = yAxisLabel.node().getBBox();
-				options.margin.left += bbox.width;
+				yAxisLabelWidth =  1.5 * bbox.width; // width is calculated as 1.5 * box height due to rotation anomolies that cause the y axis label to appear shifted.
 			}
 
+			// calculate an intial width and height that does not take into account the tick text dimensions
+			var width = w - options.margin.left - options.margin.right - yAxisLabelWidth;
+			var height = h - options.margin.top - options.margin.bottom - xAxisLabelHeight;
 
-			// we can calculate width now since the Y labels have been accounted for.
-			// height is calculated after we determine if the boxplot is rendered
-			var width = w - options.margin.left - options.margin.right;
-
-
+			// define the intial scale (range will be updated after we determine the final dimensions)
 			var x = self.xScale = d3.scale.linear()
-				.domain([d3.min(data, function (d) {
+				.domain(options.xDomain || [d3.min(data, function (d) {
 					return d.x;
 				}), d3.max(data, function (d) {
 					return d.x + d.dx;
 				})])
 				.range([0, width]);
 
-			if (options.boxplot) {
-				var boxplotG = chart.append("g")
-					.attr("class", "boxplot")
-					.attr("transform", "translate(" + options.margin.left + "," + (h - options.margin.bottom) + ")");
-
-				self.drawBoxplot(boxplotG, options.boxplot, width, 10);
-				options.margin.bottom += 10; // boxplot takes up 10 vertical space
-			}
-
-			// determine hieght of histogram
-			var height = h - options.margin.top - options.margin.bottom - options.tickPadding;
-
-			// this function asusmes data has been transfomred into a d3.layout.histogram structure
-
-			var y = d3.scale.linear()
-				.domain([0, d3.max(data, function (d) {
-					return d.y;
-				})])
-				.range([height, 0]);
-
 			var xAxis = d3.svg.axis()
 				.scale(x)
 				.orient("bottom")
-				.ticks(10)
+				.ticks(options.ticks)
 				.tickFormat(options.xFormat);
+
+			var y = options.yScale
+				.domain([0, options.yMax || d3.max(data, function (d) {
+					return d.y;
+				})])
+				.range([height, 0]);
 
 			var yAxis = d3.svg.axis()
 				.scale(y)
@@ -338,8 +332,41 @@
 				.ticks(4)
 				.tickFormat(options.yFormat);
 
+			// create temporary x axis
+			var tempXAxis = chart.append("g").attr("class", "axis");
+			tempXAxis.call(xAxis);
+			
+			// update width & height based on temp xaxis dimension and remove
+			var xAxisHeight = Math.round(tempXAxis.node().getBBox().height);
+			var xAxisWidth = Math.round(tempXAxis.node().getBBox().width);
+			height = height - xAxisHeight;
+			width = width - Math.max(0,(xAxisWidth - width)); // trim width if xAxisWidth bleeds over the allocated width.
+			tempXAxis.remove();
+			
+			
+			// create temporary y axis
+			var tempYAxis = chart.append("g").attr("class", "axis");
+			tempYAxis.call(yAxis);
+			
+			// update height based on temp xaxis dimension and remove
+			var yAxisWidth = Math.round(tempYAxis.node().getBBox().width);
+			width = width - yAxisWidth;
+			tempYAxis.remove();
+			
+			if (options.boxplot) {
+				height -= 12; // boxplot takes up 12 vertical space
+				var boxplotG = chart.append("g")
+					.attr("class", "boxplot")
+					.attr("transform", "translate(" + (options.margin.left + yAxisLabelWidth + yAxisWidth) + "," + (options.margin.top + height + xAxisHeight) + ")");
+				self.drawBoxplot(boxplotG, options.boxplot, width, 8);
+			}
+			
+			// reset axis ranges
+			x.range([0,width]);
+			y.range([height,0]);			
+			
 			var hist = chart.append("g")
-				.attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
+				.attr("transform", "translate(" + (options.margin.left + yAxisLabelWidth + yAxisWidth) + "," + options.margin.top + ")");
 
 			var bar = hist.selectAll(".bar")
 				.data(data)
@@ -873,7 +900,7 @@
 					top: 5,
 					right: 5,
 					bottom: 5,
-					left: 40
+					left: 5
 				},
 				xFormat: d3.format(',.0f'),
 				yFormat: d3.format('s'),
@@ -882,7 +909,7 @@
 				xValue: "xValue",
 				yValue: "yValue",
 				cssClass: "lineplot",
-				tickPadding: 10,
+				ticks: 10,
 				showSeriesLabel: false,
 				colorScale: null
 			};
@@ -918,11 +945,11 @@
 						tipText += (options.yLabel || "y") + ": " + module.util.formatSI(d[options.yValue], 3);
 						return tipText;
 					})
-
-
-
 				chart.call(focusTip);
 
+				var xAxisLabelHeight = 0;
+				var yAxisLabelWidth = 0;
+				
 				// apply labels (if specified) and offset margins accordingly
 				if (options.xLabel) {
 					var xAxisLabel = chart.append("g")
@@ -934,12 +961,12 @@
 						.text(options.xLabel);
 
 					var bbox = xAxisLabel.node().getBBox();
-					options.margin.bottom += bbox.height + 10;
+					xAxisLabelHeight += bbox.height;
 				}
 
 				if (options.yLabel) {
 					var yAxisLabel = chart.append("g")
-						.attr("transform", "translate(0," + (((h - options.margin.bottom - options.margin.top) / 2) + options.margin.top) + ")");
+						.attr("transform", "translate(" + options.margin.left + "," + (((h - options.margin.bottom - options.margin.top) / 2) + options.margin.top) + ")");
 					yAxisLabel.append("text")
 						.attr("class", "axislabel")
 						.attr("transform", "rotate(-90)")
@@ -950,9 +977,10 @@
 						.text(options.yLabel);
 
 					var bbox = yAxisLabel.node().getBBox();
-					options.margin.left += bbox.width;
+					yAxisLabelWidth =  1.5 * bbox.width; // width is calculated as 1.5 * box height due to rotation anomolies that cause the y axis label to appear shifted.
 				}
 
+				var legendWidth = 0;
 				if (options.showLegend) {
 					var legend = chart.append("g")
 						.attr("class", "legend");
@@ -974,12 +1002,14 @@
 						maxWidth = Math.max(legendItem.node().getBBox().width + 12, maxWidth);
 					});
 					legend.attr("transform", "translate(" + (w - options.margin.right - maxWidth) + ",0)")
-					options.margin.right += maxWidth + 5;
+					legendWidth += maxWidth + 5;
 				}
 
-				var width = w - options.margin.left - options.margin.right;
-				var height = h - options.margin.top - options.margin.bottom - options.tickPadding;
+				// calculate an intial width and height that does not take into account the tick text dimensions
+				var width = w - options.margin.left - options.margin.right - yAxisLabelWidth - legendWidth;
+				var height = h - options.margin.top - options.margin.bottom - xAxisLabelHeight;
 
+				// define the intial scale (range will be updated after we determine the final dimensions)
 				var x = options.xScale || d3.scale.linear()
 					.domain([d3.min(data, function (d) {
 						return d3.min(d.values, function (d) {
@@ -993,7 +1023,7 @@
 
 				var xAxis = d3.svg.axis()
 					.scale(x)
-					.ticks(10)
+					.ticks(options.ticks)
 					.orient("bottom");
 
 				// check for custom tick formatter
@@ -1025,6 +1055,35 @@
 					.ticks(4)
 					.orient("left");
 
+				// create temporary x axis
+				var tempXAxis = chart.append("g").attr("class", "axis");
+				tempXAxis.call(xAxis);
+				var xAxisHeight = Math.round(tempXAxis.node().getBBox().height);
+				var xAxisWidth = Math.round(tempXAxis.node().getBBox().width);
+				height = height - xAxisHeight;
+				width = width - Math.max(0,(xAxisWidth - width)); // trim width if xAxisWidth bleeds over the allocated width.
+				tempXAxis.remove();
+				
+				// create temporary y axis
+				
+				// create temporary y axis
+				var tempYAxis = chart.append("g").attr("class", "axis");
+				tempYAxis.call(yAxis);
+
+				// update height based on temp xaxis dimension and remove
+				var yAxisWidth = Math.round(tempYAxis.node().getBBox().width);
+				width = width - yAxisWidth;
+				tempYAxis.remove();				
+				
+				// reset axis ranges
+				// if x scale is ordinal, then apply rangeRoundBands, else apply standard range.
+				if (typeof x.rangePoints === 'function') {
+					x.rangePoints([0, width]);
+				} else {
+					x.range([0, width]);
+				}
+				y.range([height,0]);	
+				
 				// create a line function that can convert data[] into x and y points
 				var line = d3.svg.line()
 					.x(function (d) {
@@ -1037,7 +1096,7 @@
 
 				var vis = chart.append("g")
 					.attr("class", options.cssClass)
-					.attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
+					.attr("transform", "translate(" + (options.margin.left + yAxisLabelWidth + yAxisWidth) + "," + options.margin.top + ")");
 
 				var series = vis.selectAll(".series")
 					.data(data)
@@ -1142,9 +1201,6 @@
 				xFormat: d3.format('d'),
 				yFormat: d3.format('d'),
 				interpolate: "linear",
-				tickPadding: 10,
-				trellisLabelPadding: 14,
-				seriesLabelPadding: 14,
 				colors: d3.scale.category10()
 			};
 
@@ -1196,64 +1252,53 @@
 				});
 
 			var seriesLabel;
-			var seriesLabelOffset = h - margin.bottom;
+			var seriesLabelHeight = 0;
 			if (options.seriesLabel) {
 				seriesLabel = chart.append("g");
 				seriesLabel.append("text")
 					.attr("class", "axislabel")
 					.style("text-anchor", "middle")
+					.attr("dy",".79em")
 					.text(options.seriesLabel);
-				margin.bottom += seriesLabel.node().getBBox().height + 3;
+				seriesLabelHeight = seriesLabel.node().getBBox().height + 10;
 			}
 
 			var trellisLabel;
-			var trellisLabelOffset = margin.top;
+			var trellisLabelHeight = 0;
 			if (options.trellisLabel) {
 				trellisLabel = chart.append("g");
 				trellisLabel.append("text")
 					.attr("class", "axislabel")
 					.style("text-anchor", "middle")
+					.attr("dy",".79em")
 					.text(options.trellisLabel);
-				margin.top += trellisLabel.node().getBBox().height + 3;
+				trellisLabelHeight = trellisLabel.node().getBBox().height + 10;
 			}
+			
+			// simulate a single trellis heading 
+			var trellisHeading;
+			var trellisHeadingHeight = 0;
+			trellisHeading = chart.append("g")
+				.attr("class", "g-label-trellis");
+			trellisHeading.append("text")
+				.text(options.trellisSet.join(""));
+			trellisHeadingHeight = trellisHeading.node().getBBox().height + 10;
+			trellisHeading.remove();
 
 			var yAxisLabel;
-			var yAxisLabelOffset = margin.left;
+			var yAxisLabelWidth = 0;
 			if (options.yLabel) {
 				yAxisLabel = chart.append("g");
 				yAxisLabel.append("text")
 					.attr("class", "axislabel")
 					.style("text-anchor", "middle")
 					.text(options.yLabel);
-				margin.left += yAxisLabel.node().getBBox().height + 3;
+				yAxisLabelWidth = yAxisLabel.node().getBBox().height + 4;
 			}
-
-			margin.left += options.tickPadding;
-			margin.top += options.trellisLabelPadding;
-			margin.bottom += options.seriesLabelPadding;
-
-			var vis = chart.append("g")
-				.attr("transform", function (d) {
-					return "translate(" + margin.left + "," + margin.top + ")";
-				});
-
-			var width = w - margin.left - margin.right,
-				height = h - margin.bottom - margin.top;
-
-			if (options.trellisLabel) {
-				trellisLabel.attr("transform", "translate(" + ((width / 2) + margin.left) + "," + trellisLabelOffset + ")");
-			}
-
-			if (options.seriesLabel) {
-				seriesLabel.attr("transform", "translate(" + ((width / 2) + margin.left) + "," + seriesLabelOffset + ")");
-			}
-
-			if (options.yLabel) {
-				yAxisLabel.attr("transform", "translate(" + yAxisLabelOffset + "," + (margin.top + (height / 2)) + ")");
-				yAxisLabel.select("text")
-					.attr("transform", "rotate(-90)");
-			}
-
+			
+			// calculate an intial width and height that does not take into account the tick text dimensions
+			var width = w - options.margin.left - yAxisLabelWidth - options.margin.right ;
+			var height = h - options.margin.top - trellisLabelHeight - trellisHeadingHeight - seriesLabelHeight - options.margin.bottom;
 
 			var trellisScale = d3.scale.ordinal()
 				.domain(options.trellisSet)
@@ -1267,6 +1312,57 @@
 				.domain([minY, maxY])
 				.range([height, 0]);
 
+			var yAxis = d3.svg.axis()
+				.scale(yScale)
+				.tickFormat(options.yFormat)
+				.ticks(4)
+				.orient("left");
+
+			// create temporary x axis
+			var xAxis = d3.svg.axis()
+				.scale(seriesScale)
+				.orient("bottom");
+			
+			var tempXAxis = chart.append("g").attr("class", "axis");
+			tempXAxis.call(xAxis);
+			
+			// update width & height based on temp xaxis dimension and remove
+			var xAxisHeight = Math.round(tempXAxis.node().getBBox().height);
+			var xAxisWidth = Math.round(tempXAxis.node().getBBox().width);
+			height = height - xAxisHeight;
+			width = width - Math.max(0,(xAxisWidth - width)); // trim width if xAxisWidth bleeds over the allocated width.
+			tempXAxis.remove();
+			
+			// create temporary y axis
+			var tempYAxis = chart.append("g").attr("class", "axis");
+			tempYAxis.call(yAxis);
+			
+			// update width based on temp yaxis dimension and remove
+			var yAxisWidth = Math.round(tempYAxis.node().getBBox().width);
+			width = width - yAxisWidth;
+			tempYAxis.remove();
+			
+			// reset axis ranges
+			trellisScale.rangeBands([0, width], .25, .2);
+			seriesScale.range([0, trellisScale.rangeBand()]);
+			yScale.range([height,0]);				
+			
+			
+			if (options.trellisLabel) {
+				trellisLabel.attr("transform", "translate(" + ((width / 2) + margin.left) + ",0)");
+			}
+
+			if (options.seriesLabel) {
+				seriesLabel.attr("transform", "translate(" + ((width / 2) + margin.left) + "," + (trellisLabelHeight + height + xAxisHeight + seriesLabelHeight) + ")");
+			}
+
+			if (options.yLabel) {
+				yAxisLabel.attr("transform", "translate(" + margin.left  + "," + ((height / 2) + trellisLabelHeight + trellisHeadingHeight) + ")");
+				yAxisLabel.select("text")
+					.attr("transform", "rotate(-90)");
+			}
+			
+			
 			var seriesLine = d3.svg.line()
 				.x(function (d) {
 					return seriesScale(d.date);
@@ -1276,21 +1372,19 @@
 				})
 				.interpolate(options.interpolate);
 
+			var vis = chart.append("g")
+				.attr("transform", function (d) {
+					return "translate(" + (yAxisLabelWidth + yAxisWidth) + "," + trellisLabelHeight + ")";
+				});
+			
 			var gTrellis = vis.selectAll(".g-trellis")
 				.data(trellisScale.domain())
 				.enter()
 				.append("g")
 				.attr("class", "g-trellis")
 				.attr("transform", function (d) {
-					return "translate(" + trellisScale(d) + ",0)";
+					return "translate(" + trellisScale(d) + "," + trellisHeadingHeight + ")";
 				});
-
-			var yAxis = d3.svg.axis()
-				.scale(yScale)
-				.tickFormat(options.yFormat)
-				.ticks(4)
-				.orient("left");
-
 
 			var seriesGuideXAxis = d3.svg.axis()
 				.scale(seriesScale)
@@ -1379,7 +1473,7 @@
 					return "translate(" + (trellisScale.rangeBand() / 2) + ",0)"
 				})
 				.append("text")
-				.attr("dy", "-14")
+				.attr("dy", "-1em")
 				.style("text-anchor", "middle")
 				.text(function (d) {
 					return d;
