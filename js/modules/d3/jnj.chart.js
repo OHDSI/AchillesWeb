@@ -1464,8 +1464,8 @@
 				.attr("class", "x axis")
 				.append("line")
 				.attr("x2", trellisScale.rangeBand())
-				.attr("y1", yScale(0))
-				.attr("y2", yScale(0));
+				.attr("y1", yScale(minY))
+				.attr("y2", yScale(minY));
 
 			gTrellis.append("g")
 				.attr("class", "g-label-trellis")
