@@ -73,41 +73,7 @@
 
 							// observation type visualization
 							var observationsByType = new jnj_chart.donut();
-							dataObservationsByType = [];
-
-							if (data.OBSERVATIONS_BY_TYPE.CONCEPT_NAME instanceof Array)
-							{
-								dataObservationsByType = data.OBSERVATIONS_BY_TYPE.CONCEPT_NAME.map(function (d,i){
-									var item = 
-									{
-										id: this.CONCEPT_NAME[i],
-										label: this.CONCEPT_NAME[i],
-										value: this.COUNT_VALUE[i]
-									};
-									return item;
-								}, data.OBSERVATIONS_BY_TYPE);																						
-							}
-							else
-							{
-								dataObservationsByType.push(
-								{
-									id: data.OBSERVATIONS_BY_TYPE.CONCEPT_NAME,
-									label: data.OBSERVATIONS_BY_TYPE.CONCEPT_NAME,
-									value: data.OBSERVATIONS_BY_TYPE.COUNT_VALUE
-								});
-							}
-									
-							dataObservationsByType.sort(function (a, b) {
-								var nameA = a.label.toLowerCase(),
-									nameB = b.label.toLowerCase()
-								if (nameA < nameB) //sort string ascending
-									return -1
-								if (nameA > nameB)
-									return 1
-								return 0 //default return value (no sorting)
-							});
-
-							observationsByType.render(dataObservationsByType, "#reportObservations #observationsByType", 500, 300, {
+							observationsByType.render(common.mapConceptData(data.OBSERVATIONS_BY_TYPE), "#reportObservations #observationsByType", 500, 300, {
 								margin: {
 									top: 5,
 									left: 5,

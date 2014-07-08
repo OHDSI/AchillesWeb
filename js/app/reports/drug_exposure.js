@@ -78,27 +78,7 @@
 
 							// drug  type visualization
 							var donut = new jnj_chart.donut();
-							slices = [];
-
-							for (i = 0; i < data.DRUGS_BY_TYPE.CONCEPT_NAME.length; i++) {
-								slices.push({
-									id: data.DRUGS_BY_TYPE.CONCEPT_NAME[i],
-									label: data.DRUGS_BY_TYPE.CONCEPT_NAME[i],
-									value: data.DRUGS_BY_TYPE.COUNT_VALUE[i]
-								})
-							}
-
-							slices.sort(function (a, b) {
-								var nameA = a.label.toLowerCase(),
-									nameB = b.label.toLowerCase()
-								if (nameA < nameB) //sort string ascending
-									return -1
-								if (nameA > nameB)
-									return 1
-								return 0 //default return value (no sorting)
-							});
-
-							donut.render(slices, "#drugsByType", 300, 200, {
+							donut.render(common.mapConceptData(data.DRUGS_BY_TYPE), "#drugsByType", 300, 200, {
 								margin: {
 									top: 5,
 									left: 5,

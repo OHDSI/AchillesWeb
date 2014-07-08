@@ -70,27 +70,7 @@
 
 							// condition type visualization
 							var donut = new jnj_chart.donut();
-							slices = [];
-
-							for (i = 0; i < data.CONDITIONS_BY_TYPE.CONCEPT_NAME.length; i++) {
-								slices.push({
-									id: data.CONDITIONS_BY_TYPE.CONCEPT_NAME[i],
-									label: data.CONDITIONS_BY_TYPE.CONCEPT_NAME[i],
-									value: data.CONDITIONS_BY_TYPE.COUNT_VALUE[i]
-								})
-							}
-
-							slices.sort(function (a, b) {
-								var nameA = a.label.toLowerCase(),
-									nameB = b.label.toLowerCase()
-								if (nameA < nameB) //sort string ascending
-									return -1
-								if (nameA > nameB)
-									return 1
-								return 0 //default return value (no sorting)
-							});
-
-							donut.render(slices, "#conditionsByType", 500, 300, {
+							donut.render(common.mapConceptData(data.CONDITIONS_BY_TYPE), "#conditionsByType", 500, 300, {
 								margin: {
 									top: 5,
 									left: 5,

@@ -7,7 +7,7 @@ define(["d3"], function (d3) {
 		{
 			result = data.COUNT_VALUE.map(function (d, i) {
 				var datum = {}
-				datum.id = this.CONCEPT_ID[i];
+				datum.id = (this.CONCEPT_ID|| this.CONCEPT_NAME)[i];
 				datum.label = this.CONCEPT_NAME[i];
 				datum.value = this.COUNT_VALUE[i];
 				return datum;

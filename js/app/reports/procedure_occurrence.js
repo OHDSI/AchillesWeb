@@ -69,27 +69,7 @@
 
 							// condition type visualization
 							var donut = new jnj_chart.donut();
-							slices = [];
-
-							for (i = 0; i < data.PROCEDURES_BY_TYPE.CONCEPT_NAME.length; i++) {
-								slices.push({
-									id: data.PROCEDURES_BY_TYPE.CONCEPT_NAME[i],
-									label: data.PROCEDURES_BY_TYPE.CONCEPT_NAME[i],
-									value: data.PROCEDURES_BY_TYPE.COUNT_VALUE[i]
-								})
-							}
-
-							slices.sort(function (a, b) {
-								var nameA = a.label.toLowerCase(),
-									nameB = b.label.toLowerCase()
-								if (nameA < nameB) //sort string ascending
-									return -1
-								if (nameA > nameB)
-									return 1
-								return 0 //default return value (no sorting)
-							});
-
-							donut.render(slices, "#reportProcedureOccurrences #proceduresByType", 500, 300, {
+							donut.render(common.mapConceptData(data.PROCEDURES_BY_TYPE), "#reportProcedureOccurrences #proceduresByType", 500, 300, {
 								margin: {
 									top: 5,
 									left: 5,
