@@ -23,34 +23,20 @@
 					var boxplot = new jnj_chart.boxplot();
 					var yMax = 0;
 					bpseries = [];
-					bpdata = data;
+					bpdata = common.normalizeDataframe(data);
 
-					if (Array.isArray(bpdata.CATEGORY)) {
-						for (i = 0; i < bpdata.CATEGORY.length; i++) {
-							bpseries.push({
-								Category: bpdata.CATEGORY[i],
-								min: bpdata.MIN_VALUE[i],
-								max: bpdata.MAX_VALUE[i],
-								median: bpdata.MEDIAN_VALUE[i],
-								LIF: bpdata.P10_VALUE[i],
-								q1: bpdata.P25_VALUE[i],
-								q3: bpdata.P75_VALUE[i],
-								UIF: bpdata.P90_VALUE[i]
-							});
-							yMax = Math.max(yMax, bpdata.P90_VALUE[i]);
-						}
-					} else {
-							bpseries.push({
-								Category: bpdata.CATEGORY,
-								min: bpdata.MIN_VALUE,
-								max: bpdata.MAX_VALUE,
-								median: bpdata.MEDIAN_VALUE,
-								LIF: bpdata.P10_VALUE,
-								q1: bpdata.P25_VALUE,
-								q3: bpdata.P75_VALUE,
-								UIF: bpdata.P90_VALUE
-							});
-						yMax = bpdata.P90_VALUE;
+					for (i = 0; i < bpdata.CATEGORY.length; i++) {
+						bpseries.push({
+							Category: bpdata.CATEGORY[i],
+							min: bpdata.MIN_VALUE[i],
+							max: bpdata.MAX_VALUE[i],
+							median: bpdata.MEDIAN_VALUE[i],
+							LIF: bpdata.P10_VALUE[i],
+							q1: bpdata.P25_VALUE[i],
+							q3: bpdata.P75_VALUE[i],
+							UIF: bpdata.P90_VALUE[i]
+						});
+						yMax = Math.max(yMax, bpdata.P90_VALUE[i]);
 					}
 
 					boxplot.render(bpseries, target, 200, 200, {

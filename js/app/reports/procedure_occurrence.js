@@ -31,7 +31,7 @@
 							// age at first diagnosis visualization
 							var boxplot = new jnj_chart.boxplot();
 							bpseries = [];
-							bpdata = data.AGE_AT_FIRST_OCCURRENCE;
+							bpdata = common.normalizeDataframe(data.AGE_AT_FIRST_OCCURRENCE);
 							for (i = 0; i < bpdata.CATEGORY.length; i++) {
 								bpseries.push({
 									Category: bpdata.CATEGORY[i],

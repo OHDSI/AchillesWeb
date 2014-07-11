@@ -113,7 +113,7 @@
 				// Age At Death
 				var boxplot = new jnj_chart.boxplot();
 				bpseries = [];
-				bpdata = result.AGE_AT_DEATH;
+				bpdata = common.normalizeDataframe(result.AGE_AT_DEATH);
 				for (i = 0; i < bpdata.CATEGORY.length; i++) {
 					bpseries.push({
 						Category: bpdata.CATEGORY[i],

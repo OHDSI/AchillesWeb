@@ -31,7 +31,7 @@
 							// age at first diagnosis visualization
 							var ageAtFirstOccurrence = new jnj_chart.boxplot();
 							bpseries = [];
-							bpdata = data.AGE_AT_FIRST_OCCURRENCE;
+							bpdata = common.normalizeDataframe(data.AGE_AT_FIRST_OCCURRENCE);
 							for (i = 0; i < bpdata.CATEGORY.length; i++) {
 								bpseries.push({
 									Category: bpdata.CATEGORY[i],
@@ -200,39 +200,23 @@
 							// Observation Value Distribution
 							var observationValues = new jnj_chart.boxplot();
 							bpseries = [];
-							bpdata = data.OBSERVATION_VALUE_DISTRIBUTION;
-							if (bpdata.CATEGORY instanceof Array)
+							bpdata = common.normalizeDataframe(data.OBSERVATION_VALUE_DISTRIBUTION);
+
+							bpseries = bpdata.CATEGORY.map(function (d,i)
 							{
-								bpseries = bpdata.CATEGORY.map(function (d,i)
+								var item = 
 								{
-									var item = 
-									{
-										Category: bpdata.CATEGORY[i],
-										min: bpdata.MIN_VALUE[i],
-										max: bpdata.MAX_VALUE[i],
-										median: bpdata.MEDIAN_VALUE[i],
-										LIF: bpdata.P10_VALUE[i],
-										q1: bpdata.P25_VALUE[i],
-										q3: bpdata.P75_VALUE[i],
-										UIF: bpdata.P90_VALUE[i]									
-									};
-									return item;
-								},bpdata);
-								
-							}
-							else
-							{
-								bpseries.push({
-									Category: bpdata.CATEGORY,
-									min: bpdata.MIN_VALUE,
-									max: bpdata.MAX_VALUE,
-									median: bpdata.MEDIAN_VALUE,
-									LIF: bpdata.P10_VALUE,
-									q1: bpdata.P25_VALUE,
-									q3: bpdata.P75_VALUE,
-									UIF: bpdata.P90_VALUE
-								});								
-							}
+									Category: bpdata.CATEGORY[i],
+									min: bpdata.MIN_VALUE[i],
+									max: bpdata.MAX_VALUE[i],
+									median: bpdata.MEDIAN_VALUE[i],
+									LIF: bpdata.P10_VALUE[i],
+									q1: bpdata.P25_VALUE[i],
+									q3: bpdata.P75_VALUE[i],
+									UIF: bpdata.P90_VALUE[i]									
+								};
+								return item;
+							},bpdata);
 
 							observationValues.render(bpseries, "#reportObservations #observationValues", 500, 300, {
 								yMax: d3.max(bpdata.P90_VALUE) || bpdata.P90_VALUE, // handle when dataframe is not array of values
@@ -243,40 +227,24 @@
 							// Lower Limit Distribution
 							var lowerLimit = new jnj_chart.boxplot();
 							bpseries = [];
-							bpdata = data.LOWER_LIMIT_DISTRIBUTION;
-							if (bpdata.CATEGORY instanceof Array)
-							{
-								bpseries = bpdata.CATEGORY.map(function (d,i)
-								{
-									var item = 
-									{
-										Category: bpdata.CATEGORY[i],
-										min: bpdata.MIN_VALUE[i],
-										max: bpdata.MAX_VALUE[i],
-										median: bpdata.MEDIAN_VALUE[i],
-										LIF: bpdata.P10_VALUE[i],
-										q1: bpdata.P25_VALUE[i],
-										q3: bpdata.P75_VALUE[i],
-										UIF: bpdata.P90_VALUE[i]									
-									};
-									return item;
-								},bpdata);
-								
-							}
-							else
-							{
-								bpseries.push({
-									Category: bpdata.CATEGORY,
-									min: bpdata.MIN_VALUE,
-									max: bpdata.MAX_VALUE,
-									median: bpdata.MEDIAN_VALUE,
-									LIF: bpdata.P10_VALUE,
-									q1: bpdata.P25_VALUE,
-									q3: bpdata.P75_VALUE,
-									UIF: bpdata.P90_VALUE
-								});								
-							}
+							bpdata = common.normalizeDataframe(data.LOWER_LIMIT_DISTRIBUTION);
 
+							bpseries = bpdata.CATEGORY.map(function (d,i)
+							{
+								var item = 
+								{
+									Category: bpdata.CATEGORY[i],
+									min: bpdata.MIN_VALUE[i],
+									max: bpdata.MAX_VALUE[i],
+									median: bpdata.MEDIAN_VALUE[i],
+									LIF: bpdata.P10_VALUE[i],
+									q1: bpdata.P25_VALUE[i],
+									q3: bpdata.P75_VALUE[i],
+									UIF: bpdata.P90_VALUE[i]									
+								};
+								return item;
+							},bpdata);
+								
 							lowerLimit.render(bpseries, "#reportObservations #lowerLimit", 300, 200, {
 								yMax: d3.max(bpdata.P90_VALUE) || bpdata.P90_VALUE, // handle when dataframe is not array of values
 								xLabel: 'Unit',
@@ -286,40 +254,24 @@
 							// Upper Limit Distribution
 							var upperLimit = new jnj_chart.boxplot();
 							bpseries = [];
-							bpdata = data.UPPER_LIMIT_DISTRIBUTION;
-							if (bpdata.CATEGORY instanceof Array)
-							{
-								bpseries = bpdata.CATEGORY.map(function (d,i)
-								{
-									var item = 
-									{
-										Category: bpdata.CATEGORY[i],
-										min: bpdata.MIN_VALUE[i],
-										max: bpdata.MAX_VALUE[i],
-										median: bpdata.MEDIAN_VALUE[i],
-										LIF: bpdata.P10_VALUE[i],
-										q1: bpdata.P25_VALUE[i],
-										q3: bpdata.P75_VALUE[i],
-										UIF: bpdata.P90_VALUE[i]									
-									};
-									return item;
-								},bpdata);
-								
-							}
-							else
-							{
-								bpseries.push({
-									Category: bpdata.CATEGORY,
-									min: bpdata.MIN_VALUE,
-									max: bpdata.MAX_VALUE,
-									median: bpdata.MEDIAN_VALUE,
-									LIF: bpdata.P10_VALUE,
-									q1: bpdata.P25_VALUE,
-									q3: bpdata.P75_VALUE,
-									UIF: bpdata.P90_VALUE
-								});								
-							}
+							bpdata = common.normalizeDataframe(data.UPPER_LIMIT_DISTRIBUTION);
 
+							bpseries = bpdata.CATEGORY.map(function (d,i)
+							{
+								var item = 
+								{
+									Category: bpdata.CATEGORY[i],
+									min: bpdata.MIN_VALUE[i],
+									max: bpdata.MAX_VALUE[i],
+									median: bpdata.MEDIAN_VALUE[i],
+									LIF: bpdata.P10_VALUE[i],
+									q1: bpdata.P25_VALUE[i],
+									q3: bpdata.P75_VALUE[i],
+									UIF: bpdata.P90_VALUE[i]									
+								};
+								return item;
+							},bpdata);
+								
 							upperLimit.render(bpseries, "#reportObservations #upperLimit", 300, 200, {
 								yMax: d3.max(bpdata.P90_VALUE) || bpdata.P90_VALUE, // handle when dataframe is not array of values
 								xLabel: 'Unit',

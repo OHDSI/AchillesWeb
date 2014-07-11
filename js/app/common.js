@@ -128,13 +128,26 @@ define(["d3"], function (d3) {
 		}
 		return result;
 	}
-
+	
+	function normalizeDataframe(dataframe) {
+		// rjson serializes dataframes with 1 row as single element properties.  This function ensures fields are always arrays.
+		var keys = d3.keys(dataframe);
+		keys.forEach(function (key) {
+			if (!(dataframe[key] instanceof Array))
+			{
+				dataframe[key] = [dataframe[key]];	
+			}
+		});
+		return dataframe;
+	}
+	
 	var module = {
 		mapHistogram: mapHistogram,
 		mapConceptData: mapConceptData,
 		mapMonthYearDataToSeries: mapMonthYearDataToSeries,
 		mapMonthYearDataToSeriesByYear: mapMonthYearDataToSeriesByYear,
-		dataframeToArray: dataframeToArray
+		dataframeToArray: dataframeToArray,
+		normalizeDataframe: normalizeDataframe
 	};
 
 	return module;

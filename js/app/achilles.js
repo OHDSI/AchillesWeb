@@ -128,7 +128,7 @@
 
 				d3.selectAll("#reportDashboard #cumulativeobservation svg").remove();
 				var cumulativeObservationLine = new jnj_chart.line();
-				var cumulativeData = result.CUMULATIVE_DURATION.X_LENGTH_OF_OBSERVATION
+				var cumulativeData = common.normalizeDataframe(result.CUMULATIVE_DURATION).X_LENGTH_OF_OBSERVATION
 					.map(function (d, i) {
 						var item = {
 							xValue: this.X_LENGTH_OF_OBSERVATION[i],
@@ -213,7 +213,8 @@
 				});
 
 				d3.selectAll("#reportObservationPeriods #observationlength svg").remove();
-				var observationLengthData = common.mapHistogram(result.OBSERVATION_LENGTH_HISTOGRAM)
+				result.OBSERVATION_LENGTH_HISTOGRAM.DATA = common.normalizeDataframe(result.OBSERVATION_LENGTH_HISTOGRAM.DATA)
+				var observationLengthData = common.mapHistogram(result.OBSERVATION_LENGTH_HISTOGRAM);
 				var observationLengthXLabel = 'Days';
 				if (observationLengthData.length > 0) {
 					if (observationLengthData[observationLengthData.length - 1].x - observationLengthData[0].x > 1000) {
@@ -233,7 +234,7 @@
 
 				d3.selectAll("#reportObservationPeriods #cumulativeobservation svg").remove();
 				var cumulativeObservationLine = new jnj_chart.line();
-				var cumulativeData = result.CUMULATIVE_DURATION.X_LENGTH_OF_OBSERVATION
+				var cumulativeData = common.normalizeDataframe(result.CUMULATIVE_DURATION).X_LENGTH_OF_OBSERVATION
 					.map(function (d, i) {
 						var item = {
 							xValue: this.X_LENGTH_OF_OBSERVATION[i],

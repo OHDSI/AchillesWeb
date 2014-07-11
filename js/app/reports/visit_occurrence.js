@@ -102,7 +102,7 @@
 							// age at first diagnosis visualization
 							var boxplot = new jnj_chart.boxplot();
 							bpseries = [];
-							bpdata = data.AGE_AT_FIRST_OCCURRENCE;
+							bpdata = common.normalizeDataframe(data.AGE_AT_FIRST_OCCURRENCE);
 							for (i = 0; i < bpdata.CATEGORY.length; i++) {
 								bpseries.push({
 									Category: bpdata.CATEGORY[i],
@@ -123,30 +123,17 @@
 							// visits by type distribution visualization
 							var boxplot = new jnj_chart.boxplot();
 							bpseries = [];
-							bpdata = data.VISIT_DURATION_BY_TYPE;
-							if (bpdata.CATEGORY instanceof Array) {
-								for (i = 0; i < bpdata.CATEGORY.length; i++) {
-									bpseries.push({
-										Category: bpdata.CATEGORY[i],
-										min: bpdata.MIN_VALUE[i],
-										max: bpdata.MAX_VALUE[i],
-										median: bpdata.MEDIAN_VALUE[i],
-										LIF: bpdata.P10_VALUE[i],
-										q1: bpdata.P25_VALUE[i],
-										q3: bpdata.P75_VALUE[i],
-										UIF: bpdata.P90_VALUE[i]
-									});
-								}
-							} else {
+							bpdata = common.normalizeDataframe(data.VISIT_DURATION_BY_TYPE);
+							for (i = 0; i < bpdata.CATEGORY.length; i++) {
 								bpseries.push({
-									Category: bpdata.CATEGORY,
-									min: bpdata.MIN_VALUE,
-									max: bpdata.MAX_VALUE,
-									median: bpdata.MEDIAN_VALUE,
-									LIF: bpdata.P10_VALUE,
-									q1: bpdata.P25_VALUE,
-									q3: bpdata.P75_VALUE,
-									UIF: bpdata.P90_VALUE
+									Category: bpdata.CATEGORY[i],
+									min: bpdata.MIN_VALUE[i],
+									max: bpdata.MAX_VALUE[i],
+									median: bpdata.MEDIAN_VALUE[i],
+									LIF: bpdata.P10_VALUE[i],
+									q1: bpdata.P25_VALUE[i],
+									q3: bpdata.P75_VALUE[i],
+									UIF: bpdata.P90_VALUE[i]
 								});
 							}
 
