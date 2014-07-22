@@ -588,6 +588,7 @@
 
 			$(function () {
 				$.ajax({
+					cache: false,
 					type: "GET",
 					url: 'data/datasources.json',
 					contentType: "application/json; charset=utf-8"
