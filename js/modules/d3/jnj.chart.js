@@ -44,16 +44,32 @@
 
 	var intFormat = d3.format("0,000");
 
-	module.util.formatSI = function (d, p) {
-		if (d < 1) {
-			return d3.round(d, p);
-		}
-		var prefix = d3.formatPrefix(d);
-		return d3.round(prefix.scale(d), p) + prefix.symbol;
-	}
-
 	module.util.formatInteger = function (d) {
 		return intFormat(d);
+	}
+	
+	module.util.formatSI = function(p) {
+		p = p || 0;
+		return function(d) {
+			if (d < 1) {
+				return d3.round(d, p);
+			}
+			var prefix = d3.formatPrefix(d);
+			return d3.round(prefix.scale(d), p) + prefix.symbol;
+		}
+	}	
+	
+	function line_defaultTooltip(xLabel, xFormat, xAccessor,
+																yLabel, yFormat, yAccessor,
+																seriesAccessor) {
+		return function(d){
+			var tipText = "";
+			if (seriesAccessor(d))
+				tipText = "Series: " + seriesAccessor(d) + "</br>";
+			tipText += xLabel + ": " + xFormat(xAccessor(d)) + "</br>";
+			tipText += yLabel + ": " + yFormat(yAccessor(d));
+			return tipText;
+		}
 	}
 
 	module.donut = function () {
@@ -426,7 +442,8 @@
 			};
 
 			var options = $.extend({}, defaults, options);
-
+			var valueFormatter = module.util.formatSI(3);
+			
 			var svg;
 			if (!$(target + " svg")[0]) {
 				svg = d3.select(target).append("svg")
@@ -441,7 +458,7 @@
 				.attr('class', 'd3-tip')
 				.offset([-10, 0])
 				.html(function (d) {
-					return '<table class="boxplotValues">' + '<tr><td>Max:</td><td>' + module.util.formatSI(d.max, 3) + '</td></tr>' + '<tr><td>P90:</td><td>' + module.util.formatSI(d.UIF, 3) + '</td></tr>' + '<tr><td>P75:</td><td>' + module.util.formatSI(d.q3, 3) + '</td></tr>' + '<tr><td>Median:</td><td>' + module.util.formatSI(d.median, 3) + '</td></tr>' + '<tr><td>P25:</td><td>' + module.util.formatSI(d.q1, 3) + '</td></tr>' + '<tr><td>P10:</td><td>' + module.util.formatSI(d.LIF, 3) + '</td></tr>' + '<tr><td>Min:</td><td>' + module.util.formatSI(d.min, 3) + '</td></tr>' + '</table>';
+					return '<table class="boxplotValues">' + '<tr><td>Max:</td><td>' + valueFormatter(d.max) + '</td></tr>' + '<tr><td>P90:</td><td>' + valueFormatter(d.UIF) + '</td></tr>' + '<tr><td>P75:</td><td>' + valueFormatter(d.q3) + '</td></tr>' + '<tr><td>Median:</td><td>' + valueFormatter(d.median) + '</td></tr>' + '<tr><td>P25:</td><td>' + valueFormatter(d.q1) + '</td></tr>' + '<tr><td>P10:</td><td>' + valueFormatter(d.LIF) + '</td></tr>' + '<tr><td>Min:</td><td>' + valueFormatter(d.min) + '</td></tr>' + '</table>';
 				})
 			svg.call(tip);
 
@@ -902,8 +919,8 @@
 					bottom: 5,
 					left: 5
 				},
-				xFormat: d3.format(',.0f'),
-				yFormat: d3.format('s'),
+				xFormat: module.util.formatSI(3),
+				yFormat: module.util.formatSI(3),
 				interpolate: "linear",
 				seriesName: "SERIES_NAME",
 				xValue: "xValue",
@@ -911,9 +928,13 @@
 				cssClass: "lineplot",
 				ticks: 10,
 				showSeriesLabel: false,
-				colorScale: null
+				colorScale: null,
 			};
 			var options = $.extend({}, defaults, options);
+			
+			tooltipBuilder = line_defaultTooltip(options.xLabel || "x", options.xFormat, function(d) { return d[options.xValue];},
+																																		 options.yLabel || "y", options.yFormat, function(d) { return d[options.yValue];},
+																																		 function(d) { return d[options.seriesName];});
 
 			var chart = d3.select(target)
 				.append("svg:svg")
@@ -937,14 +958,7 @@
 				var focusTip = d3.tip()
 					.attr('class', 'd3-tip')
 					.offset([-10, 0])
-					.html(function (d) {
-						var tipText = "";
-						if (d[options.seriesName])
-							tipText = "Series: " + d[options.seriesName] + "</br>";
-						tipText += (options.xLabel || "x") + ": " + options.xFormat(d[options.xValue]) + "</br>";
-						tipText += (options.yLabel || "y") + ": " + module.util.formatSI(d[options.yValue], 3);
-						return tipText;
-					})
+					.html(tooltipBuilder);
 				chart.call(focusTip);
 
 				var xAxisLabelHeight = 0;

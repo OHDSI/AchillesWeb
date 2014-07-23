@@ -73,7 +73,6 @@
 					tickFormat: d3.time.format("%Y"),
 					xValue: "X_CALENDAR_MONTH",
 					yValue: "Y_RECORD_COUNT",
-					yFormat:  d3.format('d'),
 					xLabel: "Year",
 					yLabel: "Records Per Person",
 					showLegend: true,

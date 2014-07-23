@@ -148,7 +148,6 @@
 					}
 
 					cumulativeObservationLine.render(cumulativeData, "#reportDashboard #cumulativeobservation", 550, 300, {
-						xFormat: d3.format('s'),
 						yFormat: d3.format('0%'),
 						interpolate: "step-before",
 						xLabel: cumulativeObservationXLabel,
