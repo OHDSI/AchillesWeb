@@ -179,6 +179,7 @@
 						url: 'data/' + folder + '/visit_treemap.json',
 						contentType: "application/json; charset=utf-8",
 						success: function (data) {
+							data = common.normalizeDataframe(data);
 							table_data = data.CONCEPT_PATH.map(function (d, i) {
 								conceptDetails = this.CONCEPT_PATH[i].split('||');
 								return {
