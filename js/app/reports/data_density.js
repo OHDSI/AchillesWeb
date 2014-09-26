@@ -82,7 +82,7 @@
 				
 				var conceptsBoxplot = new jnj_chart.boxplot();
 				var conceptsSeries = [];
-				var conceptsData = result.CONCEPTS_PER_PERSON;
+				var conceptsData = common.normalizeDataframe(result.CONCEPTS_PER_PERSON);
 				for (i = 0; i < conceptsData.CATEGORY.length; i++) {
 					conceptsSeries.push({
 						Category: conceptsData.CATEGORY[i],
