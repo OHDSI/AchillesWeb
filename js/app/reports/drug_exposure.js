@@ -181,8 +181,7 @@
 						url: 'data/' + folder + '/drug_treemap.json',
 						contentType: "application/json; charset=utf-8",
 						success: function (data) {
-							var normalizedData = common.normalizeDataframe(data);
-							var table_data = normalizedData.CONCEPT_PATH.map(function (d, i) {
+							table_data = data.CONCEPT_PATH.map(function (d, i) {
 								conceptDetails = this.CONCEPT_PATH[i].split('||');
 								return {
 									concept_id: this.CONCEPT_ID[i],
@@ -256,23 +255,26 @@
 								getcolorvalue: function (node) {
 									return node.records_per_person;
 								},
+								getcontent: function (node) {
+									var result = '',
+										steps = node.path.split('||'),
+										i = steps.length - 1;
+									result += '<div class="pathleaf">' + steps[i] + '</div>';
+									result += '<div class="pathleafstat">Prevalence: ' + format_pct(node.pct_persons) + '</div>';
+									result += '<div class="pathleafstat">Number of People: ' + format_comma(node.num_persons) + '</div>';
+									result += '<div class="pathleafstat">Length of Era: ' + format_fixed(node.length_of_era) + '</div>';
+									return result;
+								},
 								gettitle: function (node) {
-									title = '';
-									steps = node.path.split('||');
-									for (i = 0; i < steps.length; i++) {
-										if (i == steps.length - 1) {
-											title += '<hr class="path">';
-											title += '<div class="pathleaf">' + steps[i] + '</div>';
-											title += '<div class="pathleafstat">Prevalence: ' + format_pct(node.pct_persons) + '</div>';
-											title += '<div class="pathleafstat">Number of People: ' + format_comma(node.num_persons) + '</div>';
-											title += '<div class="pathleafstat">Records per Person: ' + format_fixed(node.records_per_person) + '</div>';
-										} else {
-											title += ' <div class="pathstep">' + Array(i + 1).join('&nbsp;&nbsp') + steps[i] + ' </div>';
-										}
+									var title = '',
+										steps = node.path.split('||');
+									for (i = 0; i < steps.length - 1; i++) {
+										title += ' <div class="pathstep">' + Array(i + 1).join('&nbsp;&nbsp') + steps[i] + ' </div>';
 									}
 									return title;
 								}
 							});
+							$('[data-toggle="popover"]').popover();
 						}
 
 					});

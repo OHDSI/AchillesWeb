@@ -1659,14 +1659,6 @@
 				.domain([color_range[0], color_range[1]])
 				.range(["#E4FF7A", "#FC7F00"]);
 
-			var tip = d3.tip()
-				.attr('class', 'd3-tip')
-				.offset([-10, 0])
-				.html(function (d) {
-					return options.gettitle(d);
-				})
-			svg.call(tip);
-
 			var cell = svg.selectAll("g")
 				.data(nodes)
 				.enter().append("svg:g")
@@ -1682,17 +1674,23 @@
 				.attr("height", function (d) {
 					return Math.max(0, d.dy - 1);
 				})
-				.attr("title", function (d) {
-					return options.gettitle(d);
-				})
 				.attr("id", function (d) {
 					return d.id;
 				})
 				.style("fill", function (d) {
 					return color(options.getcolorvalue(d));
 				})
-				.on('mouseover', tip.show)
-				.on('mouseout', tip.hide)
+				.attr("data-container", "body")
+				.attr("data-toggle", "popover")
+				.attr("data-trigger", "hover")
+				.attr("data-placement", "top")
+				.attr("data-html", true)
+				.attr("data-title", function (d) {
+					return options.gettitle(d);
+				})
+				.attr("data-content", function (d) {
+					return options.getcontent(d);
+				})
 				.on('click', function (d) {
 					if (d3.event.altKey) {
 						zoom(root);
