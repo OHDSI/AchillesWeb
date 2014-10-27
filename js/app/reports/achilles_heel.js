@@ -17,6 +17,11 @@
 								message_type = temp.substring(0, temp.indexOf(':'));
 								message_content = temp.substring(temp.indexOf(':') + 1);
 
+								// RSD - A quick hack to put commas into large numbers.
+								// Found the regexp at:
+								// https://stackoverflow.com/questions/23104663/knockoutjs-format-numbers-with-commas
+								message_content = message_content.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
 								table_data[i] = {
 									'type': message_type,
 									'content': message_content
