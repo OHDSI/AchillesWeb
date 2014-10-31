@@ -244,7 +244,7 @@
 									result += '<div class="pathleaf">' + steps[i] + '</div>';
 									result += '<div class="pathleafstat">Prevalence: ' + format_pct(node.pct_persons) + '</div>';
 									result += '<div class="pathleafstat">Number of People: ' + format_comma(node.num_persons) + '</div>';
-									result += '<div class="pathleafstat">Length of Era: ' + format_fixed(node.length_of_era) + '</div>';
+									result += '<div class="pathleafstat">Records per Person: ' + format_fixed(node.records_per_person) + '</div>';
 									return result;
 								},
 								gettitle: function (node) {
