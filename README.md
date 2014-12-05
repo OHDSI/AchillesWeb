@@ -24,7 +24,7 @@ There are a few configuration steps required to setup AchillesWeb. These steps a
 
 3: Access the AchillesWeb 'index.html' as a web page (i.e., via http:// rather than file://) and your data should load.
 
-For more information see the [AchillesWeb wiki](https://github.com/OHDSI/AchillesWeb/wiki)
+For more information see the [Achilles wiki](http://www.ohdsi.org/web/wiki/doku.php?id=documentation:software:achilles)
 
 License
 =======
