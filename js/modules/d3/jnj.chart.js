@@ -121,6 +121,13 @@
 						return d.value > 0 ? Math.max(d.value, total * .015) : 0; // we want slices to appear if they have data, so we return a minimum of 1.5% of the overall total if the datapoint has a value > 0.
 					}); //we must tell it out to access the value of each element in our data array
 
+				var tip = d3.select("body")
+						.append("div")
+						.style("position", "absolute")
+						.style("z-index", "10")
+						.style("visibility", "hidden")
+						.text("a simple tooltip");
+
 				var arcs = vis.selectAll("g.slice") //this selects all <g> elements with class slice (there aren't any yet)
 					.data(pie) //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties)
 					.enter() //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
@@ -131,10 +138,22 @@
 					.attr("fill", function (d) {
 						return options.colors(d.data.id);
 					}) //set the color for each slice to be chosen from the color function defined above
-				.attr("stroke", "#fff")
+					.attr('class', 'arc')
+					.attr("stroke", "#fff")
 					.attr("stroke-width", 2)
 					.attr("title", function (d) {
 						return d.label;
+					})
+					.on('mouseover', function(d){
+						console.log(d)
+						tip.html('<div class="donut-tip">' + d.data.label + '<br>' + d.data.value + '</div>');
+						return tip.style("visibility", "visible");
+					})
+					.on("mousemove", function(){
+						return tip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");
+					})
+					.on("mouseout", function(){
+						return tip.style("visibility", "hidden");
 					})
 					.attr("d", arc); //this creates the actual SVG path using the associated data (pie) with the arc drawing function
 

@@ -392,3 +392,12 @@ table.dataTable tbody tr.odd.selected {
 	max-width: 800px;
 	z-index: 1040;
 }
+
+.donut-tip {
+	padding: 4px 6px;
+	border-radius: 4px;
+	background-color: rgba(0,0,0,.9);
+	font-size: 11px;
+	text-align: center;
+	color: #fff;
+}
