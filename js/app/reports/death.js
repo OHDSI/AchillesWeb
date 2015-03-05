@@ -2,13 +2,13 @@
 	define(["jquery", "d3", "jnj/chart", "common", "datatables"], function ($, d3, jnj_chart, common) {
 		var module = {};
 
-		module.render = function (folder) {
+		module.render = function (datasource) {
 
 			$('#reportDeath svg').remove();
 
 			$.ajax({
 				type: "GET",
-				url: "data/" + folder + "/death.json",
+				url:  getUrlFromData(datasource, "death"),
 				contentType: "application/json; charset=utf-8",
 			}).done(function (result) {
 

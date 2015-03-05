@@ -26,7 +26,7 @@
 
 					$.ajax({
 						type: "GET",
-						url: 'data/' + page_vm.datasource().folder + '/procedures/procedure_' + concept_id + '.json',
+						url: getUrlFromDataCollection(page_vm.datasource(), "procedures", concept_id),
 						success: function (data) {
 							// age at first diagnosis visualization
 							var boxplot = new jnj_chart.boxplot();
@@ -151,7 +151,7 @@
 					});
 				}
 
-				procedure_occurrence.render = function (folder) {
+				procedure_occurrence.render = function (datasource) {
 					format_pct = d3.format('.2%');
 					format_fixed = d3.format('.2f');
 					format_comma = d3.format(',');
@@ -165,7 +165,7 @@
 
 					$.ajax({
 						type: "GET",
-						url: 'data/' + folder + '/procedure_treemap.json',
+						url:getUrlFromData(datasource, 'procedure_treemap'),
 						contentType: "application/json; charset=utf-8",
 						success: function (data) {
 							var normalizedData = common.normalizeDataframe(data);

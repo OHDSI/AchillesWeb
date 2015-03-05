@@ -2,12 +2,12 @@
 			define(["jquery", "datatables", "datatables-colvis"], function ($) {
 				var achilles_heel = {};
 
-				achilles_heel.render = function (folder) {
+				achilles_heel.render = function (datasource) {
 					$('#reportAchillesHeel svg').remove();
-
+				
 					$.ajax({
 						type: "GET",
-						url: 'data/' + folder + '/achillesheel.json',
+						url: getUrlFromData(datasource, "achillesheel"),
 						contentType: "application/json; charset=utf-8",
 						success: function (data) {
 							table_data = [];

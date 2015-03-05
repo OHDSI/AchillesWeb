@@ -32,7 +32,7 @@
 			self.loadDashboard = function () {
 				$.ajax({
 					type: "GET",
-					url: "data/" + self.datasource().folder + "/dashboard.json",
+					url: getUrlFromData(self.datasource(), "dashboard"),
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result) {
 					result.SUMMARY = common.dataframeToArray(result.SUMMARY);
@@ -47,7 +47,7 @@
 			self.loadObservationPeriods = function () {
 				$.ajax({
 					type: "GET",
-					url: "data/" + self.datasource().folder + '/observationperiod.json',
+					url: getUrlFromData(self.datasource(), "observationperiod"),
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result) {
 					self.observationPeriodsData(result);
@@ -57,7 +57,7 @@
 			self.loadPerson = function () {
 				$.ajax({
 					type: "GET",
-					url: "data/" + self.datasource().folder + '/person.json',
+					url: getUrlFromData(self.datasource(), "person"),
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result) {
 
@@ -73,7 +73,7 @@
 			self.loadConditions = function (folder) {
 				$.ajax({
 					type: "GET",
-					url: 'data/' + folder + '/treemap_path.json',
+					url: getUrlFromData(self.datasource(), "treemap_path"),
 					contentType: "application/json; charset=utf-8",
 					success: function (data) {
 						self.conditionsData(data);
@@ -99,6 +99,9 @@
 			updateObservationPeriods(newData);
 		});
 
+
+		
+		
 		function updateDashboard(data) {
 			var result = data;
 
@@ -458,7 +461,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reports.AchillesHeel.render(this.params['folder']);
+					reports.AchillesHeel.render(viewModel.datasource());
 					$('#reportAchillesHeel').show();
 					report = 'achillesheel';
 				});
@@ -479,7 +482,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reports.ConditionOccurrence.render(this.params['folder']);
+					reports.ConditionOccurrence.render(viewModel.datasource());
 					$('#reportConditionOccurrences').show();
 					report = 'conditions';
 				});
@@ -490,7 +493,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reports.ConditionEra.render(this.params['folder']);
+					reports.ConditionEra.render(viewModel.datasource());
 					$('#reportConditionEras').show();
 					report = 'conditioneras';
 				});
@@ -501,7 +504,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reports.DrugExposure.render(this.params['folder']);
+					reports.DrugExposure.render(viewModel.datasource());
 					$('#reportDrugExposures').show();
 					report = 'drugs';
 				});
@@ -512,7 +515,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reports.DrugEra.render(this.params['folder']);
+					reports.DrugEra.render(viewModel.datasource());
 					$('#reportDrugEras').show();
 					report = 'drugeras';
 				});
@@ -523,7 +526,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reports.ProcedureOccurrence.render(this.params['folder']);
+					reports.ProcedureOccurrence.render(viewModel.datasource());
 					$('#reportProcedureOccurrences').show();
 					report = 'procedures';
 				});
@@ -544,7 +547,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reports.DataDensity.render(this.params['folder']);
+					reports.DataDensity.render(viewModel.datasource());
 					$('#reportDataDensity').show();
 					report = 'datadensity';
 				});
@@ -555,7 +558,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reports.Observation.render(this.params['folder']);
+					reports.Observation.render(viewModel.datasource());
 					$('#reportObservations').show();
 					report = 'observations';
 				});
@@ -566,7 +569,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reports.VisitOccurrence.render(this.params['folder']);
+					reports.VisitOccurrence.render(viewModel.datasource());
 					$('#reportVisitOccurrences').show();
 					report = 'visits';
 				});
@@ -577,7 +580,7 @@
 						return d.folder == this.params['folder'];
 					}, this)[0]);
 
-					reports.Death.render(this.params['folder']);
+					reports.Death.render(viewModel.datasource());
 					$('#reportDeath').show();
 					report = 'death';
 				});
@@ -604,3 +607,41 @@
 		});
 	});
 })();
+
+var	simpledata = [ "achillesheel", "condition_treemap", "conditionera_treemap", "dashboard", "datadensity", "death", "drug_treemap", "drugera_treemap", "observation_treemap", "observationperiod", "person", "procedure_treemap", "visit_treemap"];
+var collectionFormats = {
+	"conditioneras" : "condition_{id}.json",
+	"conditions" 	: "condition_{id}.json",
+	"drugeras"		: "drug_{id}.json",
+	"drugs"			: "drug_{id}.json",
+	"observations" 	: "observation_{id}.json",
+	"procedures"	: "procedure_{id}.json",
+	"visits"		: "visit_{id}.json"
+}
+
+function getUrlFromData(datasource, name){
+	console.log("DS: " + datasource.folder + "/" + datasource.name + " /name: " + name );
+	if( datasource === undefined ){ return; }
+	if ( !collectionFormats.hasOwnProperty(name) && simpledata.indexOf(name) < 0 ){ return;}
+	var pth = "";
+	if ( datasource.folder !== undefined){
+		pth += "data/" + datasource.folder + "/" + name;
+		if ( simpledata.indexOf(name) >= 0 ) pth += ".json";
+	}else{
+		return;
+	}
+	console.log(pth);
+	return pth;
+}
+
+function getUrlFromDataCollection(datasource, name, id){
+	console.log("DS: " + datasource.folder + "/" + datasource.name + " /name: " + name + " id: " + id);
+	if( datasource === undefined ) return;
+	if ( !collectionFormats.hasOwnProperty(name) ) return;
+	var pth = "";
+	if ( datasource.folder !== undefined){
+		pth += "data/" + datasource.folder + "/" + name + "/" + collectionFormats[name].replace("{id}", id);
+	}
+	console.log(pth);
+	return pth;
+}

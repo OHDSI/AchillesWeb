@@ -53,7 +53,7 @@
 
 					$.ajax({
 						type: "GET",
-						url: 'data/' + page_vm.datasource().folder + '/drugs/drug_' + concept_id + '.json',
+						url: getUrlFromDataCollection(page_vm.datasource(), "drugs", concept_id),
 						success: function (data) {
 
 							// boxplots
@@ -164,7 +164,7 @@
 					});
 				}
 
-				drug_exposure.render = function (folder) {
+				drug_exposure.render = function (datasource) {
 					format_pct = d3.format('.2%');
 					format_fixed = d3.format('.2f');
 					format_comma = d3.format(',');
@@ -178,7 +178,7 @@
 
 					$.ajax({
 						type: "GET",
-						url: 'data/' + folder + '/drug_treemap.json',
+						url: getUrlFromData(datasource, "drug_treemap"),
 						contentType: "application/json; charset=utf-8",
 						success: function (data) {
 							var normalizedData = common.normalizeDataframe(data);
