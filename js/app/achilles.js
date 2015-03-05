@@ -623,9 +623,12 @@ function getUrlFromData(datasource, name){
 	console.log("DS: " + datasource.name + " / name: " + name );
 	if( datasource === undefined ){ return; }
 	if ( !collectionFormats.hasOwnProperty(name) && simpledata.indexOf(name) < 0 ){ return;}
+	var parent = "";
+	if( datasource.parentUrl !== undefined) parent += datasource.parentUrl+"/";
 	var pth = "";
-	if( datasource.url !== undefined){
-		pth += datasource.url + "/" + name;
+	
+	if( datasource.url !== undefined){		
+		pth += parent + datasource.url + "/" + name;
 		if ( simpledata.indexOf(name) >= 0 ) pth += ".json";
 	}else if ( datasource.folder !== undefined){
 		pth += "data/" + datasource.folder + "/" + name;
@@ -641,9 +644,12 @@ function getUrlFromDataCollection(datasource, name, id){
 	console.log("DS: " + datasource.name + " / name: " + name + " id: " + id);
 	if( datasource === undefined ) return;
 	if ( !collectionFormats.hasOwnProperty(name) ) return;
+	var parent = "";
+	if( datasource.parentUrl !== undefined) parent += datasource.parentUrl+"/";
 	var pth = "";
+	
 	if( datasource.url !== undefined){
-		pth += datasource.url + "/" + name + "/" + collectionFormats[name].replace("{id}", id);
+		pth += parent+ datasource.url + "/" + name + "/" + collectionFormats[name].replace("{id}", id);
 		if ( simpledata.indexOf(name) >= 0 ) pth += ".json";
 	}else if ( datasource.folder !== undefined){
 		pth += "data/" + datasource.folder + "/" + name + "/" + collectionFormats[name].replace("{id}", id);
