@@ -591,7 +591,7 @@
 				$.ajax({
 					cache: false,
 					type: "GET",
-					url: 'data/datasources.json',
+					url: datasourcepath,
 					contentType: "application/json; charset=utf-8"
 				}).done(function (root) {
 					viewModel.datasources = root.datasources;
@@ -620,14 +620,31 @@ var collectionFormats = {
 }
 
 function getUrlFromData(datasource, name){
-	console.log("DS: " + datasource.name + " / name: " + name );
+	
 	if( datasource === undefined ){ return; }
 	if ( !collectionFormats.hasOwnProperty(name) && simpledata.indexOf(name) < 0 ){ return;}
 	var parent = "";
 	if( datasource.parentUrl !== undefined) parent += datasource.parentUrl+"/";
 	var pth = "";
 	
-	if( datasource.url !== undefined){		
+	if( datasource.map !== undefined){
+		if(datasource.map[name] !== undefined){
+			if(datasource.map[name].type !== undefined){
+				switch(datasource.map[name].type){
+					case 'folder':
+					case 'collection':
+						if(!collectionFormats.hasOwnProperty(name)){ return; }
+						pth += parent + datasource.map[name].url;
+						break;									
+					case 'service':
+					case 'file':
+						if(simpledata.indexOf(name) < 0){ return; }
+						pth += parent + datasource.map[name].url;
+						break;
+				}
+			}
+		}	
+	}else if( datasource.url !== undefined){		
 		pth += parent + datasource.url + "/" + name;
 		if ( simpledata.indexOf(name) >= 0 ) pth += ".json";
 	}else if ( datasource.folder !== undefined){
@@ -636,25 +653,32 @@ function getUrlFromData(datasource, name){
 	}else{
 		return;
 	}
-	console.log(pth);
+	
 	return pth;
 }
 
 function getUrlFromDataCollection(datasource, name, id){
-	console.log("DS: " + datasource.name + " / name: " + name + " id: " + id);
+	
 	if( datasource === undefined ) return;
 	if ( !collectionFormats.hasOwnProperty(name) ) return;
 	var parent = "";
 	if( datasource.parentUrl !== undefined) parent += datasource.parentUrl+"/";
 	var pth = "";
 	
-	if( datasource.url !== undefined){
+	if( datasource.map !== undefined){
+		if(datasource.map[name] !== undefined){
+			if(datasource.map[name].type !== undefined && (datasource.map[name].type === 'folder' || datasource.map[name].type === 'collection') ){
+				if(!collectionFormats.hasOwnProperty(name)){ return; }
+				pth += parent + datasource.map[name].url.replace("{id}", id);
+			}
+		}	
+	}else if( datasource.url !== undefined){
 		pth += parent+ datasource.url + "/" + name + "/" + collectionFormats[name].replace("{id}", id);
 		if ( simpledata.indexOf(name) >= 0 ) pth += ".json";
 	}else if ( datasource.folder !== undefined){
 		pth += "data/" + datasource.folder + "/" + name + "/" + collectionFormats[name].replace("{id}", id);
 	}
-	console.log(pth);
+	
 	return pth;
 }
 
