@@ -43,6 +43,8 @@
 	}
 
 	var intFormat = d3.format("0,000");
+	var commaseparated = d3.format(',');
+	var formatpercent = d3.format('.1%');
 
 	module.util.formatInteger = function (d) {
 		return intFormat(d);
@@ -58,7 +60,7 @@
 			return d3.round(prefix.scale(d), p) + prefix.symbol;
 		}
 	}	
-	
+
 	function line_defaultTooltip(xLabel, xFormat, xAccessor,
 																yLabel, yFormat, yAccessor,
 																seriesAccessor) {
@@ -70,6 +72,12 @@
 			tipText += yLabel + ": " + yFormat(yAccessor(d));
 			return tipText;
 		}
+	}
+
+	function donut_defaultTooltip(labelAccessor, valueAccessor, percentageAccessor) {
+	    return function (d) {
+	        return labelAccessor(d) + ": " + valueAccessor(d) + " (" + percentageAccessor(d) + ")";
+	    }
 	}
 
 	module.donut = function () {
@@ -97,12 +105,21 @@
 				total += +d.value;
 			});
 
+			tooltipBuilder = donut_defaultTooltip(function (d) { return d.data.label; }, function (d) { return intFormat(d.data.value); }, function (d) { return formatpercent(total != 0 ? d.data.value / total : 0.0); });
+
 			var chart = d3.select(target)
 				.append("svg:svg")
 				.data([data])
 				.attr("width", w)
 				.attr("height", h)
 				.attr("viewBox", "0 0 " + w + " " + h);
+
+			var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .direction('s')
+                .offset([3, 0])
+		        .html(tooltipBuilder);
+			chart.call(tip);
 
 			if (data.length > 0) {
 				var vis = chart.append("g")
@@ -136,7 +153,10 @@
 					.attr("title", function (d) {
 						return d.label;
 					})
+				    .on('mouseover', tip.show)
+                    .on('mouseout', tip.hide)
 					.attr("d", arc); //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+
 
 				legend.selectAll('rect')
 					.data(function (d) {
@@ -651,9 +671,6 @@
 				},
 				width = w - margin.left - margin.right,
 				height = h - margin.top - margin.bottom;
-
-			var commaseparated = d3.format(',');
-			var formatpercent = d3.format('.1%');
 
 			var x = d3.scale.ordinal()
 				.rangeRoundBands([0, width], (1.0 / data.length));
