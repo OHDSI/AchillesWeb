@@ -49,7 +49,7 @@
 	module.util.formatInteger = function (d) {
 		return intFormat(d);
 	}
-	
+
 	module.util.formatSI = function(p) {
 		p = p || 0;
 		return function(d) {
@@ -59,7 +59,7 @@
 			var prefix = d3.formatPrefix(d);
 			return d3.round(prefix.scale(d), p) + prefix.symbol;
 		}
-	}	
+	}
 
 	function line_defaultTooltip(xLabel, xFormat, xAccessor,
 																yLabel, yFormat, yAccessor,
@@ -306,7 +306,7 @@
 
 			var xAxisLabelHeight = 0;
 			var yAxisLabelWidth = 0;
-			
+
 			// apply labels (if specified) and offset margins accordingly
 			if (options.xLabel) {
 				var xAxisLabel = chart.append("g")
@@ -371,24 +371,24 @@
 			// create temporary x axis
 			var tempXAxis = chart.append("g").attr("class", "axis");
 			tempXAxis.call(xAxis);
-			
+
 			// update width & height based on temp xaxis dimension and remove
 			var xAxisHeight = Math.round(tempXAxis.node().getBBox().height);
 			var xAxisWidth = Math.round(tempXAxis.node().getBBox().width);
 			height = height - xAxisHeight;
 			width = width - Math.max(0,(xAxisWidth - width)); // trim width if xAxisWidth bleeds over the allocated width.
 			tempXAxis.remove();
-			
-			
+
+
 			// create temporary y axis
 			var tempYAxis = chart.append("g").attr("class", "axis");
 			tempYAxis.call(yAxis);
-			
+
 			// update height based on temp xaxis dimension and remove
 			var yAxisWidth = Math.round(tempYAxis.node().getBBox().width);
 			width = width - yAxisWidth;
 			tempYAxis.remove();
-			
+
 			if (options.boxplot) {
 				height -= 12; // boxplot takes up 12 vertical space
 				var boxplotG = chart.append("g")
@@ -396,11 +396,11 @@
 					.attr("transform", "translate(" + (options.margin.left + yAxisLabelWidth + yAxisWidth) + "," + (options.margin.top + height + xAxisHeight) + ")");
 				self.drawBoxplot(boxplotG, options.boxplot, width, 8);
 			}
-			
+
 			// reset axis ranges
 			x.range([0,width]);
-			y.range([height,0]);			
-			
+			y.range([height,0]);
+
 			var hist = chart.append("g")
 				.attr("transform", "translate(" + (options.margin.left + yAxisLabelWidth + yAxisWidth) + "," + options.margin.top + ")");
 
@@ -463,7 +463,7 @@
 
 			var options = $.extend({}, defaults, options);
 			var valueFormatter = module.util.formatSI(3);
-			
+
 			var svg;
 			if (!$(target + " svg")[0]) {
 				svg = d3.select(target).append("svg")
@@ -948,7 +948,7 @@
 				colorScale: null,
 			};
 			var options = $.extend({}, defaults, options);
-			
+
 			tooltipBuilder = line_defaultTooltip(options.xLabel || "x", options.xFormat, function(d) { return d[options.xValue];},
 																																		 options.yLabel || "y", options.yFormat, function(d) { return d[options.yValue];},
 																																		 function(d) { return d[options.seriesName];});
@@ -980,7 +980,7 @@
 
 				var xAxisLabelHeight = 0;
 				var yAxisLabelWidth = 0;
-				
+
 				// apply labels (if specified) and offset margins accordingly
 				if (options.xLabel) {
 					var xAxisLabel = chart.append("g")
@@ -1094,9 +1094,9 @@
 				height = height - xAxisHeight;
 				width = width - Math.max(0,(xAxisWidth - width)); // trim width if xAxisWidth bleeds over the allocated width.
 				tempXAxis.remove();
-				
+
 				// create temporary y axis
-				
+
 				// create temporary y axis
 				var tempYAxis = chart.append("g").attr("class", "axis");
 				tempYAxis.call(yAxis);
@@ -1104,8 +1104,8 @@
 				// update height based on temp xaxis dimension and remove
 				var yAxisWidth = Math.round(tempYAxis.node().getBBox().width);
 				width = width - yAxisWidth;
-				tempYAxis.remove();				
-				
+				tempYAxis.remove();
+
 				// reset axis ranges
 				// if x scale is ordinal, then apply rangeRoundBands, else apply standard range.
 				if (typeof x.rangePoints === 'function') {
@@ -1113,8 +1113,8 @@
 				} else {
 					x.range([0, width]);
 				}
-				y.range([height,0]);	
-				
+				y.range([height,0]);
+
 				// create a line function that can convert data[] into x and y points
 				var line = d3.svg.line()
 					.x(function (d) {
@@ -1305,8 +1305,8 @@
 					.text(options.trellisLabel);
 				trellisLabelHeight = trellisLabel.node().getBBox().height + 10;
 			}
-			
-			// simulate a single trellis heading 
+
+			// simulate a single trellis heading
 			var trellisHeading;
 			var trellisHeadingHeight = 0;
 			trellisHeading = chart.append("g")
@@ -1326,7 +1326,7 @@
 					.text(options.yLabel);
 				yAxisLabelWidth = yAxisLabel.node().getBBox().height + 4;
 			}
-			
+
 			// calculate an intial width and height that does not take into account the tick text dimensions
 			var width = w - options.margin.left - yAxisLabelWidth - options.margin.right ;
 			var height = h - options.margin.top - trellisLabelHeight - trellisHeadingHeight - seriesLabelHeight - options.margin.bottom;
@@ -1353,32 +1353,32 @@
 			var xAxis = d3.svg.axis()
 				.scale(seriesScale)
 				.orient("bottom");
-			
+
 			var tempXAxis = chart.append("g").attr("class", "axis");
 			tempXAxis.call(xAxis);
-			
+
 			// update width & height based on temp xaxis dimension and remove
 			var xAxisHeight = Math.round(tempXAxis.node().getBBox().height);
 			var xAxisWidth = Math.round(tempXAxis.node().getBBox().width);
 			height = height - xAxisHeight;
 			width = width - Math.max(0,(xAxisWidth - width)); // trim width if xAxisWidth bleeds over the allocated width.
 			tempXAxis.remove();
-			
+
 			// create temporary y axis
 			var tempYAxis = chart.append("g").attr("class", "axis");
 			tempYAxis.call(yAxis);
-			
+
 			// update width based on temp yaxis dimension and remove
 			var yAxisWidth = Math.round(tempYAxis.node().getBBox().width);
 			width = width - yAxisWidth;
 			tempYAxis.remove();
-			
+
 			// reset axis ranges
 			trellisScale.rangeBands([0, width], .25, .2);
 			seriesScale.range([0, trellisScale.rangeBand()]);
-			yScale.range([height,0]);				
-			
-			
+			yScale.range([height,0]);
+
+
 			if (options.trellisLabel) {
 				trellisLabel.attr("transform", "translate(" + ((width / 2) + margin.left) + ",0)");
 			}
@@ -1392,8 +1392,8 @@
 				yAxisLabel.select("text")
 					.attr("transform", "rotate(-90)");
 			}
-			
-			
+
+
 			var seriesLine = d3.svg.line()
 				.x(function (d) {
 					return seriesScale(d.date);
@@ -1407,7 +1407,7 @@
 				.attr("transform", function (d) {
 					return "translate(" + (yAxisLabelWidth + yAxisWidth) + "," + trellisLabelHeight + ")";
 				});
-			
+
 			var gTrellis = vis.selectAll(".g-trellis")
 				.data(trellisScale.domain())
 				.enter()
@@ -1585,7 +1585,7 @@
 
 			function yearLabel(text, date) {
 				var offsetScale = d3.scale.linear().domain(seriesScale.range());
-				// derive the x vale by using the first trellis/series set of values.  
+				// derive the x vale by using the first trellis/series set of values.
 				// All series are assumed to contain the same domain of X values.
 				var s = dataByTrellis[0].values[0].values,
 					v = s[bisect(s, date, 0, s.length - 1)],

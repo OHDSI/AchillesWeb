@@ -1,5 +1,5 @@
 		(function () {
-			define(["jquery", "datatables", "datatables-colvis"], function ($) {
+			define(["jquery", "datatables", "datatables-tabletools", "datatables-colvis"], function ($) {
 				var achilles_heel = {};
 
 				achilles_heel.render = function (folder) {
@@ -29,7 +29,10 @@
 							}
 
 							datatable = $('#achillesheel_table').DataTable({
-								dom: 'Clfrtip',
+								dom: 'lfrt<"row"<"col-sm-4" i ><"col-sm-4" T ><"col-sm-4" p >>',
+								tableTools: {
+            			"sSwfPath": "js/swf/copy_csv_xls_pdf.swf"
+        				},
 								data: table_data,
 								columns: [
 									{
