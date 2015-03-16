@@ -31,7 +31,7 @@ Datasource Structure
 
 In order to improve usability with other applications and file structures, `var datasourcepath` can be changed in `index.html` to the location of the file. Default is `data/datasource.json` but it can be changed to anything (including REST service) as long as it returns a json with a valid structure.
 
-Datasource file structure also allows configurations with different parameters like `url` and `map`.
+Datasource file structure also allows configurations with different parameters like `url` and `map` (and `parentUrl`).
 
 ####Example
 ```JSON
