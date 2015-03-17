@@ -134,7 +134,7 @@ Different datasources behave differently but the expected json always follow the
 |parentUrl | url | becames|
 |---|---|---|
 | | `http://my-url.com/data` | `http://my-url.com/data/achillesheel.json` |
-|`http://my-url.com` | 'data2' | `http://my-url.com/data2/achillesheel.json` |
+|`http://my-url.com` | data2 | `http://my-url.com/data2/achillesheel.json` |
  
  - `map`attribute allows the definition of different paths to different locations, including REST services.
     - each object in `map` has the location of each resource needed to build each report.
