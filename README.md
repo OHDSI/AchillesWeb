@@ -144,8 +144,8 @@ Different datasources behave differently but the expected json always follow the
 
 #####Example:
 
-|parentUrl |type|url|becames|
-|---|---|---|
+|parentUrl|type|url|becames|
+|---|---|---|---|
 |`http://my-url.com/data`|file|`achillesheel.json`| `http://my-url.com/data/achillesheel.json` |
 |`http://my-url.com/rest`|service| `person/` | `http://my-url.com/rest/person/`|
 |`http://my-url.com/data`|folder| `condition_{id}.json` | `http://my-url.com/data/condition_123.json`|
