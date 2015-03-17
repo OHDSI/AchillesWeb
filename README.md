@@ -125,7 +125,29 @@ Datasource file structure also allows configurations with different parameters l
 	}
 ]} 
 ```
+Different datasources behave differently but the expected json always follow the same structure.
+- `url` and `folder` behave similarly but `url` allows the file structure not to be available on the `data/` directory, allowing more flexibility.
+- `parentUrl` is always prepended to `url` and `map` datasources. (Along with trailing `/` ). 
+#####Example:
 
+|parentUrl | url | becames|
+|---|---|---|
+ | | `http://my-url.com/data` | `http://my-url.com/data/achillesheel.json` |
+ |`http://my-url.com` | 'data2' | `http://my-url.com/data2/achillesheel.json` |
+ 
+ - `map`attribute allows the definition of different paths to different locations, including REST services.
+    - each object in `map` has the location of each resource needed to build each report.
+    - each object in `map` has two attributes, `type` and `url`:
+        - `type` can be one of `folder`, `collection`, `service` or `file`
+        - `url` allows patterns in `folder` or `collection` like `{id}` that will be replaced `id` of the each sample.
+        #####Example:
+
+|parentUrl |type|url|becames|
+|---|---|---|
+|`http://my-url.com/data`|file|`achillesheel.json`| `http://my-url.com/data/achillesheel.json` |
+|`http://my-url.com/rest`|service| `person/` | `http://my-url.com/rest/person/`|
+|`http://my-url.com/data`|folder| `condition_{id}.json` | `http://my-url.com/data/condition_123.json`|
+|`http://my-url.com/rest`|collection| `drugs/{id}/` | `http://my-url.com/rest/drugs/123`|
 
 License
 =======
