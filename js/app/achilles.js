@@ -1,4 +1,4 @@
-(function () {
+var achillesWeb = function () {
 	curl([
 		"jquery",
 		"d3",
@@ -606,7 +606,7 @@
 			});
 		});
 	});
-})();
+};
 
 var	simpledata = [ "achillesheel", "condition_treemap", "conditionera_treemap", "dashboard", "datadensity", "death", "drug_treemap", "drugera_treemap", "observation_treemap", "observationperiod", "person", "procedure_treemap", "visit_treemap"];
 var collectionFormats = {
