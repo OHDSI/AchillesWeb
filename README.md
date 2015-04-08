@@ -31,15 +31,15 @@ Datasource Structure
 
 In order to improve usability with other applications and file structures, `var datasourcepath` can be changed in `index.html` to the location of the file. Default is `data/datasource.json` but it can be changed to anything (including REST service) as long as it returns a json with a valid structure.
 
-Datasource file structure also allows configurations with different parameters like `url` and `map` (and `parentUrl`).
+Datasource file structure also allows configurations with different parameters like `url` and `map` (and `rootUrl`).
 
 ####Example
 ```JSON
 { 	"datasources":	[ 
     { "name":"My Sample Folder", "folder":"SAMPLE" },
     { "name":"My Sample URL", "url":"http://my-sample-server.com/SAMPLE" },
-    { "name":"My Sample Parent URL","parentUrl":"http://my-sample-server.com", "url":"SAMPLE" },
-    { "name":"My Sample Map", "parentUrl":"http://my-sample-server.com/rest",
+    { "name":"My Sample Root URL","rootUrl":"http://my-sample-server.com", "url":"SAMPLE" },
+    { "name":"My Sample Map", "rootUrl":"http://my-sample-server.com/rest",
 	    "map": {
 		    "achillesheel" : {
 			    "type"	: "service",
@@ -127,11 +127,11 @@ Datasource file structure also allows configurations with different parameters l
 ```
 Different datasources behave differently but the expected json always follow the same structure.
 - `url` and `folder` behave similarly but `url` allows the file structure not to be available on the `data/` directory, allowing more flexibility.
-- `parentUrl` is always prepended to `url` and `map` datasources. (Along with trailing `/` ). 
+- `rootUrl` is always prepended to `url` and `map` datasources. (Along with trailing `/` ).
 
 #####Example:
 
-|parentUrl | url | becames|
+|rootUrl | url | becames|
 |---|---|---|
 | | `http://my-url.com/data` | `http://my-url.com/data/achillesheel.json` |
 |`http://my-url.com` | data2 | `http://my-url.com/data2/achillesheel.json` |
@@ -144,7 +144,7 @@ Different datasources behave differently but the expected json always follow the
 
 #####Example:
 
-|parentUrl|type|url|becames|
+|rootUrl|type|url|becames|
 |---|---|---|---|
 |`http://my-url.com/data`|file|`achillesheel.json`| `http://my-url.com/data/achillesheel.json` |
 |`http://my-url.com/rest`|service| `person/` | `http://my-url.com/rest/person/`|

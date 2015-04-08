@@ -624,7 +624,7 @@ function getUrlFromData(datasource, name){
 	if( datasource === undefined ){ return; }
 	if ( !collectionFormats.hasOwnProperty(name) && simpledata.indexOf(name) < 0 ){ return;}
 	var parent = "";
-	if( datasource.parentUrl !== undefined) parent += datasource.parentUrl+"/";
+	if( datasource.rootUrl !== undefined) parent += datasource.rootUrl+"/";
 	var pth = "";
 	
 	if( datasource.map !== undefined){
@@ -662,7 +662,7 @@ function getUrlFromDataCollection(datasource, name, id){
 	if( datasource === undefined ) return;
 	if ( !collectionFormats.hasOwnProperty(name) ) return;
 	var parent = "";
-	if( datasource.parentUrl !== undefined) parent += datasource.parentUrl+"/";
+	if( datasource.rootUrl !== undefined) parent += datasource.rootUrl+"/";
 	var pth = "";
 	
 	if( datasource.map !== undefined){
