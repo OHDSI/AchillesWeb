@@ -28,10 +28,14 @@ For more information see the [Achilles wiki](http://www.ohdsi.org/web/wiki/doku.
 
 Datasource Structure
 ====================
+The data sources are described in a file that by default are located in `data/datasource.json`. 
+It can be changed to anything (including REST service) as long as it returns a json with a valid structure.
 
-In order to improve usability with other applications and file structures, `var datasourcepath` can be changed in `index.html` to the location of the file. Default is `data/datasource.json` but it can be changed to anything (including REST service) as long as it returns a json with a valid structure.
+Datasource file structure also allows configurations with different parameters like `url` and `map` (and `rootUrl`). 
+You can have directory with the JSON files inside, or served by an URL, or even from a REST API in different ways.
+It is possible to customize the URL.
 
-Datasource file structure also allows configurations with different parameters like `url` and `map` (and `rootUrl`).
+
 
 ####Example
 ```JSON
@@ -150,6 +154,7 @@ Different datasources behave differently but the expected json always follow the
 |`http://my-url.com/rest`|service| `person/` | `http://my-url.com/rest/person/`|
 |`http://my-url.com/data`|folder| `condition_{id}.json` | `http://my-url.com/data/condition_123.json`|
 |`http://my-url.com/rest`|collection| `drugs/{id}/` | `http://my-url.com/rest/drugs/123`|
+
 
 License
 =======
