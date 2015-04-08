@@ -1,5 +1,5 @@
 		(function () {
-			define(["jquery", "datatables", "datatables-colvis"], function ($) {
+			define(["jquery", "datatables", "datatables-tabletools", "datatables-colvis"], function ($) {
 				var achilles_heel = {};
 
 				achilles_heel.render = function (datasource) {
@@ -17,6 +17,11 @@
 								message_type = temp.substring(0, temp.indexOf(':'));
 								message_content = temp.substring(temp.indexOf(':') + 1);
 
+								// RSD - A quick hack to put commas into large numbers.
+								// Found the regexp at:
+								// https://stackoverflow.com/questions/23104663/knockoutjs-format-numbers-with-commas
+								message_content = message_content.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
 								table_data[i] = {
 									'type': message_type,
 									'content': message_content
@@ -24,7 +29,10 @@
 							}
 
 							datatable = $('#achillesheel_table').DataTable({
-								dom: 'Clfrtip',
+								dom: 'lfrt<"row"<"col-sm-4" i ><"col-sm-4" T ><"col-sm-4" p >>',
+								tableTools: {
+            			"sSwfPath": "js/swf/copy_csv_xls_pdf.swf"
+        				},
 								data: table_data,
 								columns: [
 									{

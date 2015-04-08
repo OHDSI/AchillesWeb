@@ -206,7 +206,7 @@ var achillesWeb = function () {
 				});
 
 				d3.selectAll("#reportObservationPeriods #ageatfirstobservation svg").remove();
-				var ageAtFirstObservationData = common.mapHistogram(result.AGE_AT_FIRST_OBSERVATION_HISTOGRAM)
+				var ageAtFirstObservationData = common.mapHistogram(result.AGE_AT_FIRST_OBSERVATION_HISTOGRAM);
 				var ageAtFirstObservationHistogram = new jnj_chart.histogram();
 				ageAtFirstObservationHistogram.render(ageAtFirstObservationData, "#reportObservationPeriods #ageatfirstobservation", 460, 195, {
 					xFormat: d3.format('d'),
@@ -265,6 +265,7 @@ var achillesWeb = function () {
 
 				d3.selectAll("#reportObservationPeriods #opbygender svg").remove();
 				var opbygenderboxplot = new jnj_chart.boxplot();
+				result.OBSERVATION_PERIOD_LENGTH_BY_GENDER = common.normalizeDataframe(result.OBSERVATION_PERIOD_LENGTH_BY_GENDER);
 				var opgData = result.OBSERVATION_PERIOD_LENGTH_BY_GENDER.CATEGORY
 					.map(function (d, i) {
 						var item = {
@@ -307,6 +308,7 @@ var achillesWeb = function () {
 
 				d3.selectAll("#reportObservationPeriods #opbyage svg").remove();
 				var opbyageboxplot = new jnj_chart.boxplot();
+				result.OBSERVATION_PERIOD_LENGTH_BY_AGE = common.normalizeDataframe(result.OBSERVATION_PERIOD_LENGTH_BY_AGE);
 				var opaData = result.OBSERVATION_PERIOD_LENGTH_BY_AGE.CATEGORY
 					.map(function (d, i) {
 						var item = {

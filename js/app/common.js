@@ -34,6 +34,7 @@ define(["d3"], function (d3) {
 		var minValue = histogramData.MIN;
 		var intervalSize = histogramData.INTERVAL_SIZE;
 
+		histogramData.DATA = normalizeDataframe(histogramData.DATA);
 		for (var i = 0; i <= histogramData.INTERVALS; i++) {
 			var target = new Object();
 			target.x = minValue + 1.0 * i * intervalSize;
