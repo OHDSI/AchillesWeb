@@ -1,19 +1,13 @@
-(function () {
+var achillesWeb = function () {
 	curl([
 		"jquery",
 		"d3",
 		"knockout",
 		"common",
 		"app/reports",
-		"achillesWrapper",
 		"bootstrap",
 		"d3/tip"
-	], function ($, d3, ko, common, reports, wrap) {
-	//	if(datasourcepath === undefined) var datasourcepath = 'data/datasources.json';
-	//	if(containerName === undefined) var containerName = "#achillesContainer";
-	//	if(achillespath === undefined) var achillespath = "achilles.html";
-		
-		wrap.render( datasourcepath, containerName, achillespath);
+	], function ($, d3, ko, common, reports) {
 		function summaryViewModel() {
 			var self = this;
 
@@ -614,7 +608,7 @@
 			});
 		});
 	});
-})()
+};
 
 var	simpledata = [ "achillesheel", "condition_treemap", "conditionera_treemap", "dashboard", "datadensity", "death", "drug_treemap", "drugera_treemap", "observation_treemap", "observationperiod", "person", "procedure_treemap", "visit_treemap"];
 var collectionFormats = {
@@ -632,10 +626,9 @@ function getUrlFromData(datasource, name){
 	if( datasource === undefined ){ return; }
 	if ( !collectionFormats.hasOwnProperty(name) && simpledata.indexOf(name) < 0 ){ return;}
 	var parent = "";
-	
 	if( datasource.rootUrl !== undefined) parent += datasource.rootUrl+"/";
 	var pth = "";
-
+	
 	if( datasource.map !== undefined){
 		if(datasource.map[name] !== undefined){
 			if(datasource.map[name].type !== undefined){

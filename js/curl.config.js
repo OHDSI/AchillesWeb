@@ -14,8 +14,7 @@ curl = {
 		"common": "app/common",
 		"datatables": "modules/jquery/jquery.datatables",
 		"datatables-tabletools": "modules/jquery/dataTables.tableTools.min",
-		"datatables-colvis": "modules/jquery/jquery.datatables.colvis.min",
-		"achillesWrapper" : "app/achillesWrapper.js"
+		"datatables-colvis": "modules/jquery/jquery.datatables.colvis.min"
 	},
 	pluginPath: "curl/plugins"
 };

@@ -16,30 +16,15 @@
 
 	<script src="js/curl.config.js"></script>
 	<script src="js/curl.js"></script>
-	
-	
+	<script src="js/jquery-1.10.2.js"></script>
+	<script src="js/app/achilles.js"></script>
+	<script src="js/app/achillesWrapper.js"></script>	
 	<script>
 		var datasourcepath = 'data/datasources.json'
 		var containerName = "#achillesContainer";
 		var achillespath = "achilles.html";
-		var page_vm =  {};
-		var report = 'dashboard';
-		function updateReport(value) {
-			report = value;
-			updateRoute();
-		}
-
-		function setDatasource(index) {
-			page_vm.datasource(page_vm.datasources[index]);
-			updateRoute();
-		}
-
-		function updateRoute() {
-			$('.reportDrilldown').addClass('hidden');
-			document.location = '#/' + page_vm.datasource().name + '/' + report;
-		}
+		var a = new Achilles( datasourcepath, containerName, achillespath, achillesWeb);
 	</script>	
-	<script src="js/app/achilles.js"></script>
 	
 </head>
 
