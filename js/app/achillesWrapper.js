@@ -1,15 +1,19 @@
+
 	var page_vm =  {};
 	var report = 'dashboard';
-	
-	function Achilles(datasourceURL, containerName , urlDom, callback){
+
+	function Achilles(datasourceURL, containerName , urlDom){
 		this.datasource = datasourceURL;
 		$.ajax(urlDom).done(function(data){
-			$(containerName).append(data);
-			callback();
-		});	
+				$(containerName).append(data);
+				curl( ["achilles"], function(callback){
+					callback();
+				});
+			});	
+		
 		
 	}
-	
+
 	function updateReport(value) {
 		report = value;
 		updateRoute();
@@ -24,5 +28,5 @@
 		$('.reportDrilldown').addClass('hidden');
 		document.location = '#/' + page_vm.datasource().name + '/' + report;
 	}
-	
+
 	
