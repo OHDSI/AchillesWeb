@@ -6,7 +6,7 @@
 		data_density.render = function (datasource) {
 
 			$('#reportDataDensity svg').remove();
-			console.log("DD: " + datasource.folder + "/" + datasource.name);
+			
 			$.ajax({
 				type: "GET",
 				url:  getUrlFromData(datasource, 'datadensity'),
