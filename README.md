@@ -26,6 +26,136 @@ There are a few configuration steps required to setup AchillesWeb. These steps a
 
 For more information see the [Achilles wiki](http://www.ohdsi.org/web/wiki/doku.php?id=documentation:software:achilles)
 
+Datasource Structure
+====================
+The data sources are described in a file that by default are located in `data/datasource.json`. 
+It can be changed to anything (including REST service) as long as it returns a json with a valid structure.
+
+Datasource file structure also allows configurations with different parameters like `url` and `map` (and `rootUrl`). 
+You can have directory with the JSON files inside, or served by an URL, or even from a REST API in different ways.
+It is possible to customize the URL.
+
+
+
+####Example
+```JSON
+{ 	"datasources":	[ 
+    { "name":"My Sample Folder", "folder":"SAMPLE" },
+    { "name":"My Sample URL", "url":"http://my-sample-server.com/SAMPLE" },
+    { "name":"My Sample Root URL","rootUrl":"http://my-sample-server.com", "url":"SAMPLE" },
+    { "name":"My Sample Map", "rootUrl":"http://my-sample-server.com/rest",
+	    "map": {
+		    "achillesheel" : {
+			    "type"	: "service",
+				"url"	: "achillesheel/"
+					},
+			"condition_treemap" : {
+				"type"	: "service",
+				"url"	: "condition_treemap/"
+			},
+			"conditionera_treemap" : {
+				"type"	: "service",
+				"url"	: "conditionera_treemap/"
+			},
+			"drug_treemap" : {
+				"type"	: "service",
+	    		"url"	: "drug_treemap/"
+			},
+			"drugera_treemap" : {
+				"type"	: "service",
+				"url"	: "drugera_treemap/"
+			},
+			"observation_treemap" : {
+				"type"	: "service",
+				"url"	: "observation_treemap/"
+			},
+			"visit_treemap" : {
+				"type"	: "service",
+	    		"url"	: "visit_treemap/"
+			},
+			"procedure_treemap" : {
+				"type"	: "service",
+	    		"url"	: "procedure_treemap/"
+			},
+			"dashboard" : {
+				"type"	: "service",
+				"url"	: "dashboard/"
+			},
+	    	"datadensity" : {
+				"type"	: "service",
+				"url"	: "datadensity/"
+			},
+			"death" : {
+				"type"	: "service",
+				"url"	: "death/"
+			},
+			"person" : {
+				"type"	: "service",
+	    		"url"	: "person/"
+			},
+			"observationperiod" : {
+				"type"	: "service",
+				"url"	: "observationperiod/"
+			},
+    		"conditioneras" : {
+				"type"	: "collection",
+				"url"	: "conditioneras/{id}/"
+			},
+			"conditions" 	: {
+				"type"	: "collection",
+				"url"	: "conditions/{id}/"
+			},
+			"drugeras"		: {
+	    		"type"	: "collection",
+    			"url"	: "drugeras/{id}/"
+			},
+			"drugs"			: {
+				"type"	: "collection",
+				"url"	: "drugs/{id}/"
+			},
+			"observations" 	: {
+				"type"	: "collection",
+				"url"	: "observations/{id}/"
+			},
+			"procedures"	: {
+				"type"	: "collection",
+				"url"	: "procedures/{id}/"
+			},
+			"visits"		: {
+				"type"	: "collection",
+				"url"	: "visits/{id}/"
+			}
+		}
+	}
+]} 
+```
+Different datasources behave differently but the expected json always follow the same structure.
+- `url` and `folder` behave similarly but `url` allows the file structure not to be available on the `data/` directory, allowing more flexibility.
+- `rootUrl` is always prepended to `url` and `map` datasources. (Along with trailing `/` ).
+
+#####Example:
+
+|rootUrl | url | becames|
+|---|---|---|
+| | `http://my-url.com/data` | `http://my-url.com/data/achillesheel.json` |
+|`http://my-url.com` | data2 | `http://my-url.com/data2/achillesheel.json` |
+ 
+ - `map`attribute allows the definition of different paths to different locations, including REST services.
+    - each object in `map` has the location of each resource needed to build each report.
+    - each object in `map` has two attributes, `type` and `url`:
+        - `type` can be one of `folder`, `collection`, `service` or `file`
+        - `url` allows patterns in `folder` or `collection` like `{id}` that will be replaced `id` of the each sample.
+
+#####Example:
+
+|rootUrl|type|url|becames|
+|---|---|---|---|
+|`http://my-url.com/data`|file|`achillesheel.json`| `http://my-url.com/data/achillesheel.json` |
+|`http://my-url.com/rest`|service| `person/` | `http://my-url.com/rest/person/`|
+|`http://my-url.com/data`|folder| `condition_{id}.json` | `http://my-url.com/data/condition_123.json`|
+|`http://my-url.com/rest`|collection| `drugs/{id}/` | `http://my-url.com/rest/drugs/123`|
+
+
 License
 =======
 Achilles is licensed under Apache License 2.0

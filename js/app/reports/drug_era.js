@@ -55,7 +55,7 @@
 
 					$.ajax({
 						type: "GET",
-						url: 'data/' + page_vm.datasource().folder + '/drugeras/drug_' + concept_id + '.json',
+						url:  getUrlFromDataCollection(page_vm.datasource(), "drugeras", concept_id),
 						success: function (data) {
 
 							// boxplots
@@ -153,7 +153,7 @@
 					});
 				}
 
-				drug_era.render = function (folder) {
+				drug_era.render = function (datasource) {
 					format_pct = d3.format('.2%');
 					format_fixed = d3.format('.2f');
 					format_comma = d3.format(',');
@@ -167,7 +167,7 @@
 
 					$.ajax({
 						type: "GET",
-						url: 'data/' + folder + '/drugera_treemap.json',
+						url: getUrlFromData(datasource, "drugera_treemap"),
 						contentType: "application/json; charset=utf-8",
 						success: function (data) {
 							var normalizedData = common.normalizeDataframe(data);
