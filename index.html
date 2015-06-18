@@ -17,6 +17,7 @@
 	<script>
 		var report = 'dashboard';
 		var page_vm = {};
+		var datasourcepath = 'data/datasources.json'
 
 		function updateReport(value) {
 			report = value;
@@ -30,13 +31,13 @@
 
 		function updateRoute() {
 			$('.reportDrilldown').addClass('hidden');
-			document.location = '#/' + page_vm.datasource().folder + '/' + report;
+			document.location = '#/' + page_vm.datasource().name + '/' + report;
 		}
 	</script>
 
 	<script src="js/curl.config.js"></script>
 	<script src="js/curl.js"></script>
-	<script src="js/app/achilles.js"></script>
+	<script src="js/app/achilles.js"></script>	
 </head>
 
 <body>

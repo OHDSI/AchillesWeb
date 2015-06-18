@@ -3,13 +3,13 @@
 		var data_density = {};
 		var threshold;
 
-		data_density.render = function (folder) {
+		data_density.render = function (datasource) {
 
 			$('#reportDataDensity svg').remove();
-
+			console.log("DD: " + datasource.folder + "/" + datasource.name);
 			$.ajax({
 				type: "GET",
-				url: "data/" + folder + "/datadensity.json",
+				url:  getUrlFromData(datasource, 'datadensity'),
 				contentType: "application/json; charset=utf-8",
 			}).done(function (result) {
 				

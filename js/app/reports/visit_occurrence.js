@@ -26,7 +26,7 @@
 
 					$.ajax({
 						type: "GET",
-						url: 'data/' + page_vm.datasource().folder + '/visits/visit_' + concept_id + '.json',
+						url: getUrlFromDataCollection(page_vm.datasource(), "visits", concept_id),
 						success: function (data) {
 
 							// render trellis
@@ -162,7 +162,7 @@
 					});
 				}
 
-				visit_occurrence.render = function (folder) {
+				visit_occurrence.render = function (datasource) {
 					format_pct = d3.format('.2%');
 					format_fixed = d3.format('.2f');
 					format_comma = d3.format(',');
@@ -176,7 +176,7 @@
 
 					$.ajax({
 						type: "GET",
-						url: 'data/' + folder + '/visit_treemap.json',
+						url: getUrlFromData(datasource, 'visit_treemap'),
 						contentType: "application/json; charset=utf-8",
 						success: function (data) {
 							data = common.normalizeDataframe(data);

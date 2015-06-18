@@ -32,7 +32,7 @@
 			self.loadDashboard = function () {
 				$.ajax({
 					type: "GET",
-					url: "data/" + self.datasource().folder + "/dashboard.json",
+					url: getUrlFromData(self.datasource(), "dashboard"),
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result) {
 					result.SUMMARY = common.dataframeToArray(result.SUMMARY);
@@ -47,7 +47,7 @@
 			self.loadObservationPeriods = function () {
 				$.ajax({
 					type: "GET",
-					url: "data/" + self.datasource().folder + '/observationperiod.json',
+					url: getUrlFromData(self.datasource(), "observationperiod"),
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result) {
 					self.observationPeriodsData(result);
@@ -57,7 +57,7 @@
 			self.loadPerson = function () {
 				$.ajax({
 					type: "GET",
-					url: "data/" + self.datasource().folder + '/person.json',
+					url: getUrlFromData(self.datasource(), "person"),
 					contentType: "application/json; charset=utf-8",
 				}).done(function (result) {
 
@@ -73,7 +73,7 @@
 			self.loadConditions = function (folder) {
 				$.ajax({
 					type: "GET",
-					url: 'data/' + folder + '/treemap_path.json',
+					url: getUrlFromData(self.datasource(), "treemap_path"),
 					contentType: "application/json; charset=utf-8",
 					success: function (data) {
 						self.conditionsData(data);
@@ -99,6 +99,9 @@
 			updateObservationPeriods(newData);
 		});
 
+
+		
+		
 		function updateDashboard(data) {
 			var result = data;
 
@@ -444,142 +447,142 @@
 
 		curl(["sammy"], function (Sammy) {
 			var app = Sammy(function () {
-				this.get('#/:folder/dashboard', function (context) {
+				this.get('#/:name/dashboard', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
-						return d.folder == this.params['folder'];
+						return d.name == this.params['name'];
 					}, this)[0]);
 					viewModel.loadDashboard();
 					$('#reportDashboard').show();
 					report = 'dashboard';
 				});
 
-				this.get('#/:folder/achillesheel', function (context) {
+				this.get('#/:name/achillesheel', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
-						return d.folder == this.params['folder'];
+						return d.name == this.params['name'];
 					}, this)[0]);
 
-					reports.AchillesHeel.render(this.params['folder']);
+					reports.AchillesHeel.render(viewModel.datasource());
 					$('#reportAchillesHeel').show();
 					report = 'achillesheel';
 				});
 
-				this.get('#/:folder/person', function (context) {
+				this.get('#/:name/person', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
-						return d.folder == this.params['folder'];
+						return d.name == this.params['name'];
 					}, this)[0]);
 					viewModel.loadPerson();
 					$('#reportPerson').show();
 					report = 'person';
 				});
 
-				this.get('#/:folder/conditions', function (context) {
+				this.get('#/:name/conditions', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
-						return d.folder == this.params['folder'];
+						return d.name == this.params['name'];
 					}, this)[0]);
 
-					reports.ConditionOccurrence.render(this.params['folder']);
+					reports.ConditionOccurrence.render(viewModel.datasource());
 					$('#reportConditionOccurrences').show();
 					report = 'conditions';
 				});
 
-				this.get('#/:folder/conditioneras', function (context) {
+				this.get('#/:name/conditioneras', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
-						return d.folder == this.params['folder'];
+						return d.name == this.params['name'];
 					}, this)[0]);
 
-					reports.ConditionEra.render(this.params['folder']);
+					reports.ConditionEra.render(viewModel.datasource());
 					$('#reportConditionEras').show();
 					report = 'conditioneras';
 				});
 
-				this.get('#/:folder/drugs', function (context) {
+				this.get('#/:name/drugs', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
-						return d.folder == this.params['folder'];
+						return d.name == this.params['name'];
 					}, this)[0]);
 
-					reports.DrugExposure.render(this.params['folder']);
+					reports.DrugExposure.render(viewModel.datasource());
 					$('#reportDrugExposures').show();
 					report = 'drugs';
 				});
 
-				this.get('#/:folder/drugeras', function (context) {
+				this.get('#/:name/drugeras', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
-						return d.folder == this.params['folder'];
+						return d.name == this.params['name'];
 					}, this)[0]);
 
-					reports.DrugEra.render(this.params['folder']);
+					reports.DrugEra.render(viewModel.datasource());
 					$('#reportDrugEras').show();
 					report = 'drugeras';
 				});
 
-				this.get('#/:folder/procedures', function (context) {
+				this.get('#/:name/procedures', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
-						return d.folder == this.params['folder'];
+						return d.name == this.params['name'];
 					}, this)[0]);
 
-					reports.ProcedureOccurrence.render(this.params['folder']);
+					reports.ProcedureOccurrence.render(viewModel.datasource());
 					$('#reportProcedureOccurrences').show();
 					report = 'procedures';
 				});
 
-				this.get('#/:folder/observationperiods', function (context) {
+				this.get('#/:name/observationperiods', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
-						return d.folder == this.params['folder'];
+						return d.name == this.params['name'];
 					}, this)[0]);
 					viewModel.loadObservationPeriods();
 					$('#reportObservationPeriods').show();
 					report = 'observationperiods';
 				});
 
-				this.get('#/:folder/datadensity', function (context) {
+				this.get('#/:name/datadensity', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
-						return d.folder == this.params['folder'];
+						return d.name == this.params['name'];
 					}, this)[0]);
 
-					reports.DataDensity.render(this.params['folder']);
+					reports.DataDensity.render(viewModel.datasource());
 					$('#reportDataDensity').show();
 					report = 'datadensity';
 				});
 
-				this.get('#/:folder/observations', function (context) {
+				this.get('#/:name/observations', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
-						return d.folder == this.params['folder'];
+						return d.name == this.params['name'];
 					}, this)[0]);
 
-					reports.Observation.render(this.params['folder']);
+					reports.Observation.render(viewModel.datasource());
 					$('#reportObservations').show();
 					report = 'observations';
 				});
 
-				this.get('#/:folder/visits', function (context) {
+				this.get('#/:name/visits', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
-						return d.folder == this.params['folder'];
+						return d.name == this.params['name'];
 					}, this)[0]);
 
-					reports.VisitOccurrence.render(this.params['folder']);
+					reports.VisitOccurrence.render(viewModel.datasource());
 					$('#reportVisitOccurrences').show();
 					report = 'visits';
 				});
 
-				this.get('#/:folder/death', function (context) {
+				this.get('#/:name/death', function (context) {
 					$('.report').hide();
 					viewModel.datasource(viewModel.datasources.filter(function (d) {
-						return d.folder == this.params['folder'];
+						return d.name == this.params['name'];
 					}, this)[0]);
 
-					reports.Death.render(this.params['folder']);
+					reports.Death.render(viewModel.datasource());
 					$('#reportDeath').show();
 					report = 'death';
 				});
@@ -590,7 +593,7 @@
 				$.ajax({
 					cache: false,
 					type: "GET",
-					url: 'data/datasources.json',
+					url: datasourcepath,
 					contentType: "application/json; charset=utf-8"
 				}).done(function (root) {
 					viewModel.datasources = root.datasources;
@@ -599,10 +602,87 @@
 						$('#dropdown-datasources').append('<li onclick="setDatasource(' + i + ');">' + root.datasources[i].name + '</li>');
 					}
 					viewModel.datasource(viewModel.datasources[0]);
-					app.run('#/' + viewModel.datasource().folder + '/dashboard');
+					app.run('#/' + viewModel.datasource().name + '/dashboard');
 				});
 
 			});
 		});
 	});
 })();
+
+var	simpledata = [ "achillesheel", "condition_treemap", "conditionera_treemap", "dashboard", "datadensity", "death", "drug_treemap", "drugera_treemap", "observation_treemap", "observationperiod", "person", "procedure_treemap", "visit_treemap"];
+var collectionFormats = {
+	"conditioneras" : "condition_{id}.json",
+	"conditions" 	: "condition_{id}.json",
+	"drugeras"		: "drug_{id}.json",
+	"drugs"			: "drug_{id}.json",
+	"observations" 	: "observation_{id}.json",
+	"procedures"	: "procedure_{id}.json",
+	"visits"		: "visit_{id}.json"
+}
+
+function getUrlFromData(datasource, name){
+	
+	if( datasource === undefined ){ return; }
+	if ( !collectionFormats.hasOwnProperty(name) && simpledata.indexOf(name) < 0 ){ return;}
+	var parent = "";
+	if( datasource.parentUrl !== undefined) parent += datasource.parentUrl+"/";
+	var pth = "";
+	
+	if( datasource.map !== undefined){
+		if(datasource.map[name] !== undefined){
+			if(datasource.map[name].type !== undefined){
+				switch(datasource.map[name].type){
+					case 'folder':
+					case 'collection':
+						if(!collectionFormats.hasOwnProperty(name)){ return; }
+						pth += parent + datasource.map[name].url;
+						break;									
+					case 'service':
+					case 'file':
+						if(simpledata.indexOf(name) < 0){ return; }
+						pth += parent + datasource.map[name].url;
+						break;
+				}
+			}
+		}	
+	}else if( datasource.url !== undefined){		
+		pth += parent + datasource.url + "/" + name;
+		if ( simpledata.indexOf(name) >= 0 ) pth += ".json";
+	}else if ( datasource.folder !== undefined){
+		pth += "data/" + datasource.folder + "/" + name;
+		if ( simpledata.indexOf(name) >= 0 ) pth += ".json";
+	}else{
+		return;
+	}
+	
+	return pth;
+}
+
+function getUrlFromDataCollection(datasource, name, id){
+	
+	if( datasource === undefined ) return;
+	if ( !collectionFormats.hasOwnProperty(name) ) return;
+	var parent = "";
+	if( datasource.parentUrl !== undefined) parent += datasource.parentUrl+"/";
+	var pth = "";
+	
+	if( datasource.map !== undefined){
+		if(datasource.map[name] !== undefined){
+			if(datasource.map[name].type !== undefined && (datasource.map[name].type === 'folder' || datasource.map[name].type === 'collection') ){
+				if(!collectionFormats.hasOwnProperty(name)){ return; }
+				pth += parent + datasource.map[name].url.replace("{id}", id);
+			}
+		}	
+	}else if( datasource.url !== undefined){
+		pth += parent+ datasource.url + "/" + name + "/" + collectionFormats[name].replace("{id}", id);
+		if ( simpledata.indexOf(name) >= 0 ) pth += ".json";
+	}else if ( datasource.folder !== undefined){
+		pth += "data/" + datasource.folder + "/" + name + "/" + collectionFormats[name].replace("{id}", id);
+	}
+	
+	return pth;
+}
+
+
+
