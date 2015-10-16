@@ -587,6 +587,17 @@
 					report = 'death';
 				});
 
+				this.get('#/:name/measurement', function (context) {
+					$('.report').hide();
+					viewModel.datasource(viewModel.datasources.filter(function (d) {
+						return d.name == this.params['name'];
+					}, this)[0]);
+
+					reports.Measurement.render(viewModel.datasource());
+					$('#reportMeasurement').show();
+					report = 'measurement';
+				});				
+
 			});
 
 			$(function () {
@@ -610,12 +621,13 @@
 	});
 })();
 
-var	simpledata = [ "achillesheel", "condition_treemap", "conditionera_treemap", "dashboard", "datadensity", "death", "drug_treemap", "drugera_treemap", "observation_treemap", "observationperiod", "person", "procedure_treemap", "visit_treemap"];
+var	simpledata = [ "achillesheel", "condition_treemap", "conditionera_treemap", "dashboard", "datadensity", "death", "drug_treemap", "drugera_treemap", "measurement_treemap", "observation_treemap", "observationperiod", "person", "procedure_treemap", "visit_treemap"];
 var collectionFormats = {
 	"conditioneras" : "condition_{id}.json",
 	"conditions" 	: "condition_{id}.json",
 	"drugeras"		: "drug_{id}.json",
 	"drugs"			: "drug_{id}.json",
+	"measurements" : "measurement_{id}.json",
 	"observations" 	: "observation_{id}.json",
 	"procedures"	: "procedure_{id}.json",
 	"visits"		: "visit_{id}.json"
@@ -623,8 +635,14 @@ var collectionFormats = {
 
 function getUrlFromData(datasource, name){
 	
-	if( datasource === undefined ){ return; }
-	if ( !collectionFormats.hasOwnProperty(name) && simpledata.indexOf(name) < 0 ){ return;}
+	if( datasource === undefined ){ 
+		console.error("datasource is undefined.");
+		return; 
+	}
+	if ( !collectionFormats.hasOwnProperty(name) && simpledata.indexOf(name) < 0 ){ 
+		console.error("'" + name + "' not found in collectionFormats or simpledata.");
+		return;
+	}
 	var parent = "";
 	if( datasource.parentUrl !== undefined) parent += datasource.parentUrl+"/";
 	var pth = "";
@@ -653,6 +671,7 @@ function getUrlFromData(datasource, name){
 		pth += "data/" + datasource.folder + "/" + name;
 		if ( simpledata.indexOf(name) >= 0 ) pth += ".json";
 	}else{
+		console.error("Could not construct path from map, datasource.url or datasource.folder");
 		return;
 	}
 	

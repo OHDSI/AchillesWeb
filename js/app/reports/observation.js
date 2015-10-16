@@ -19,7 +19,7 @@
 					$(window).trigger("resize");
 				})
 
-				observation_report.drilldown = function (concept_id, concept_name) {
+				observation_report.drilldown = function (concept_id, concept_name, cdmVersion) {
 					$('.drilldown svg').remove();
 					$('#observationDrilldownTitle').text(concept_name);
 					$('#reportObservationDrilldown').removeClass('hidden');
@@ -152,52 +152,54 @@
 
 							});
 							
-							// Records by Unit
-							var recordsByUnit = new jnj_chart.donut();
-							datdaRecordsByUnit = [];
+							if (cdmVersion == 4)
+							{
+								// Records by Unit
+								var recordsByUnit = new jnj_chart.donut();
+								datdaRecordsByUnit = [];
 
-							if (data.RECORDS_BY_UNIT.CONCEPT_NAME instanceof Array)
-							{
-								datdaRecordsByUnit = data.RECORDS_BY_UNIT.CONCEPT_NAME.map(function (d,i){
-									var item = 
-									{
-										id: this.CONCEPT_NAME[i],
-										label: this.CONCEPT_NAME[i],
-										value: this.COUNT_VALUE[i]
-									};
-									return item;
-								}, data.RECORDS_BY_UNIT);																						
-							}
-							else
-							{
-								datdaRecordsByUnit.push(
+								if (data.RECORDS_BY_UNIT.CONCEPT_NAME instanceof Array)
 								{
-									id: data.RECORDS_BY_UNIT.CONCEPT_NAME,
-									label: data.RECORDS_BY_UNIT.CONCEPT_NAME,
-									value: data.RECORDS_BY_UNIT.COUNT_VALUE
-								});
-							}
-									
-							datdaRecordsByUnit.sort(function (a, b) {
-								var nameA = a.label.toLowerCase(),
-									nameB = b.label.toLowerCase()
-								if (nameA < nameB) //sort string ascending
-									return -1
-								if (nameA > nameB)
-									return 1
-								return 0 //default return value (no sorting)
-							});
-
-							recordsByUnit.render(datdaRecordsByUnit, "#reportObservations #recordsByUnit", 500, 300, {
-								margin: {
-									top: 5,
-									left: 5,
-									right: 200,
-									bottom: 5
+									datdaRecordsByUnit = data.RECORDS_BY_UNIT.CONCEPT_NAME.map(function (d,i){
+										var item = 
+										{
+											id: this.CONCEPT_NAME[i],
+											label: this.CONCEPT_NAME[i],
+											value: this.COUNT_VALUE[i]
+										};
+										return item;
+									}, data.RECORDS_BY_UNIT);																						
 								}
-							});
-							
-							// Observation Value Distribution
+								else
+								{
+									datdaRecordsByUnit.push(
+									{
+										id: data.RECORDS_BY_UNIT.CONCEPT_NAME,
+										label: data.RECORDS_BY_UNIT.CONCEPT_NAME,
+										value: data.RECORDS_BY_UNIT.COUNT_VALUE
+									});
+								}
+
+								datdaRecordsByUnit.sort(function (a, b) {
+									var nameA = a.label.toLowerCase(),
+										nameB = b.label.toLowerCase()
+									if (nameA < nameB) //sort string ascending
+										return -1
+									if (nameA > nameB)
+										return 1
+									return 0 //default return value (no sorting)
+								});
+
+								recordsByUnit.render(datdaRecordsByUnit, "#reportObservations #recordsByUnit", 500, 300, {
+									margin: {
+										top: 5,
+										left: 5,
+										right: 200,
+										bottom: 5
+									}
+								});
+
+								// Observation Value Distribution
 							var observationValues = new jnj_chart.boxplot();
 							bpseries = [];
 							bpdata = common.normalizeDataframe(data.OBSERVATION_VALUE_DISTRIBUTION);
@@ -323,6 +325,7 @@
 								}
 							});							
 						}
+						}
 					});
 				}
 
@@ -405,7 +408,7 @@
 							var treemap = new jnj_chart.treemap();
 							treemap.render(tree, '#reportObservations #treemap_container', width, height, {
 								onclick: function (node) {
-									observation_report.drilldown(node.id, node.name)
+									observation_report.drilldown(node.id, node.name, datasource.cdmVersion || 4)
 								},
 								getsizevalue: function (node) {
 									return node.num_persons;
