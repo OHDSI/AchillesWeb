@@ -16,10 +16,10 @@ There are a few configuration steps required to setup AchillesWeb. These steps a
 	exportToJson(connectionDetails,"CDM_SCHEMA", "RESULTS_SCHEMA", "C:/AchillesWeb/data/SAMPLE")
 	```
 
-3. Create a file in the AchillesWeb 'data' directory named 'datasources.json' with the following structure where the name is a caption for the data source and the folder is the name of the subdirectory under data. You will have to update the datasources.json file whenever you add a new data source subfolder to the data directory.
+3. Create a file in the AchillesWeb 'data' directory named 'datasources.json' with the following structure where the name is a caption for the data source and the folder is the name of the subdirectory under data. You will have to update the datasources.json file whenever you add a new data source subfolder to the data directory.  Note: cdmVersion property should be set to the version of the CDM datasource from the Achilles analysis. Valid values are 4 and 5.  If the value is not found, it assumes cdmVersion = 4.
 
 	```
-	 { "datasources":[ { "name":"My Sample Database", "folder":"SAMPLE" } ] } 
+	 { "datasources":[ { "name":"My Sample Database", "folder":"SAMPLE", "cdmVersion": 5 } ] } 
 	```
 
 3: Access the AchillesWeb 'index.html' as a web page (i.e., via http:// rather than file://) and your data should load.
@@ -36,8 +36,8 @@ Datasource file structure also allows configurations with different parameters l
 ####Example
 ```JSON
 { 	"datasources":	[ 
-    { "name":"My Sample Folder", "folder":"SAMPLE" },
-    { "name":"My Sample URL", "url":"http://my-sample-server.com/SAMPLE" },
+    { "name":"My Sample Folder", "folder":"SAMPLE", "cdmVersion": 4 },
+    { "name":"My Sample URL", "url":"http://my-sample-server.com/SAMPLE", "cdmVersion": 5 },
     { "name":"My Sample Parent URL","parentUrl":"http://my-sample-server.com", "url":"SAMPLE" },
     { "name":"My Sample Map", "parentUrl":"http://my-sample-server.com/rest",
 	    "map": {
