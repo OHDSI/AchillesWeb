@@ -63,53 +63,40 @@
 			});
 		});
 	</script>
-	<script src="js/app/achilles.js"></script>	
+	<script src="js/app/achilles.js"></script>
 </head>
 
 <body>
-	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<nav role="navigation">
 		<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse-menu">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a href class="navbar-brand">
-					<img src="images/ohdsi_logo.png" alt="OHDSI">Achilles</a>
-			</div>
-
-			<div class="collapse navbar-collapse" id="collapse-menu">
-				<ul class="nav navbar-nav navbar-right">
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Data Sources <b class="caret"></b></a>
-						<ul id="dropdown-datasources" class="dropdown-menu">
-						</ul>
-					</li>
-					<li>
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li onclick="updateReport('dashboard');">Dashboard</li>
-							<li onclick="updateReport('achillesheel');">Achilles Heel</li>
-							<li onclick="updateReport('person');">Person</li>
-							<li onclick="updateReport('observationperiods');">Observation Periods</li>
-							<li onclick="updateReport('datadensity');">Data Density</li>
-							<li onclick="updateReport('conditions');">Conditions</li>
-							<li onclick="updateReport('conditioneras');">Condition Eras</li>
-							<!-- ko if: (datasource() && datasource().cdmVersion) == 5 -->
-							<li onclick="updateReport('measurement');">Measurement</li>
-							<!-- /ko -->
-							<li onclick="updateReport('observations');">Observations</li>
-							<li onclick="updateReport('drugeras');">Drug Eras</li>
-							<li onclick="updateReport('drugs');">Drug Exposures</li>
-							<li onclick="updateReport('procedures');">Procedures</li>
-							<li onclick="updateReport('visits');">Visits</li>
-							<li onclick="updateReport('death');">Death</li>
-						</ul>
-					</li>
-				</ul>
-			</div>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Data Sources <b class="caret"></b></a>
+					<ul id="dropdown-datasources" class="dropdown-menu">
+					</ul>
+				</li>
+				<li>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li onclick="updateReport('dashboard');">Dashboard</li>
+						<li onclick="updateReport('achillesheel');">Achilles Heel</li>
+						<li onclick="updateReport('person');">Person</li>
+						<li onclick="updateReport('observationperiods');">Observation Periods</li>
+						<li onclick="updateReport('datadensity');">Data Density</li>
+						<li onclick="updateReport('conditions');">Conditions</li>
+						<li onclick="updateReport('conditioneras');">Condition Eras</li>
+						<!-- ko if: (datasource() && datasource().cdmVersion) == 5 -->
+						<li onclick="updateReport('measurement');">Measurement</li>
+						<!-- /ko -->
+						<li onclick="updateReport('observations');">Observations</li>
+						<li onclick="updateReport('drugeras');">Drug Eras</li>
+						<li onclick="updateReport('drugs');">Drug Exposures</li>
+						<li onclick="updateReport('procedures');">Procedures</li>
+						<li onclick="updateReport('visits');">Visits</li>
+						<li onclick="updateReport('death');">Death</li>
+					</ul>
+				</li>
+			</ul>
 		</div>
 	</nav>
 
