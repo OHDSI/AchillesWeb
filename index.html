@@ -43,6 +43,26 @@
 
 	<script src="js/curl.config.js"></script>
 	<script src="js/curl.js"></script>
+	<script>
+		curl(["jquery"], function ($) {
+			var authToken = localStorage["ngStorage-authToken"];
+
+			if (!authToken) {
+				var cookieVal = "; " + document.cookie;
+				var parts = cookieVal.split("; Evalytica=");
+				var parsed = JSON.parse(decodeURIComponent(parts[1]));
+				authToken = parsed.authToken;
+			} else {
+				authToken = JSON.parse(authToken);
+			}
+
+			$.ajaxSetup({
+				headers: {
+					'x-sap-authToken': authToken
+				}
+			});
+		});
+	</script>
 	<script src="js/app/achilles.js"></script>	
 </head>
 
