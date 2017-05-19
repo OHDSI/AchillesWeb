@@ -29,6 +29,21 @@
 				return d3.round(prefix.scale(d), p) + prefix.symbol;
 			}
 
+			self.formatDate = function (d) {
+				if (d) {
+					var parts = d.split("-");
+					var month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+					return parts[2] + " " + month[parseFloat(parts[1]) - 1] + " " + parts[0];
+				}
+			}
+
+			self.addCommas = function (n) {
+				if (!isNaN(n)) {
+                    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            }
+
 			self.loadDashboard = function () {
 				$.ajax({
 					type: "GET",
@@ -38,7 +53,7 @@
 					result.SUMMARY = common.dataframeToArray(result.SUMMARY);
 					result.SUMMARY.forEach(function (d, i, ar) {
 						if (!isNaN(d.ATTRIBUTE_VALUE))
-							d.ATTRIBUTE_VALUE = self.formatSI(d.ATTRIBUTE_VALUE, 2);
+							d.ATTRIBUTE_VALUE = self.addCommas(d.ATTRIBUTE_VALUE);
 					});
 					self.dashboardData(result);
 				});
@@ -84,6 +99,7 @@
 		}
 
 		var viewModel = new summaryViewModel();
+
 		page_vm = viewModel;
 
 		viewModel.dashboardData.subscribe(function (newData) {

@@ -64,6 +64,11 @@
 		});
 	</script>
 	<script src="js/app/achilles.js"></script>
+	<style>
+		body {
+			height: auto;
+		}
+	</style>
 </head>
 
 <body>
@@ -97,6 +102,54 @@
 	</nav>
 
 	<div id="datasourceTitle" data-bind="text:datasource().name"></div>
+
+	<!-- ko if: (datasource()) -->
+	<div class="dbMetadata">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Summary
+					</div>
+					<div class="panel-body">
+						<div class="row vertical-align">
+							<div class="col-sm-6">
+								<dl>
+									<dt>Evalytica Activation Date</dt><dd data-bind="text:formatDate(datasource().activation_date)"></dd>
+									<dt>OHDSI Vocabulary Release</dt><dd data-bind="text:datasource().ohdsi_release_num"></dd>
+								</dl>
+							</div>
+
+							<div class="col-sm-6">
+								<table class="table">
+									<thead>
+									<tr>
+										<th></th>
+										<th>Start</th>
+										<th>End</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>Dates Covered</td>
+										<td data-bind="text:formatDate(datasource().observation_start_date)"></td>
+										<td data-bind="text:formatDate(datasource().observation_end_date)"></td>
+									</tr>
+									<tr>
+										<td>Number of Persons with Observation</td>
+										<td data-bind="text:addCommas(datasource().observation_start_persons)"></td>
+										<td data-bind="text:addCommas(datasource().observation_end_persons)"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /ko -->
 
 	<div id="reportAchillesHeel" class="report">
 		<div class="reportTitle">Achilles Heel Report</div>
