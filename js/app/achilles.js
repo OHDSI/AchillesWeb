@@ -186,7 +186,7 @@
 			curl(["jnj/chart", "common"], function (jnj_chart, common) {
 				d3.selectAll("#reportObservationPeriods #agebygender svg").remove();
 				var agegenderboxplot = new jnj_chart.boxplot();
-				var agData = result.AGE_BY_GENDER.CATEGORY
+				var agData = common.normalizeDataframe(result.AGE_BY_GENDER).CATEGORY
 					.map(function (d, i) {
 						var item = {
 							Category: this.CATEGORY[i],
