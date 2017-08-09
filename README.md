@@ -26,12 +26,25 @@ There are a few configuration steps required to setup AchillesWeb. These steps a
 
 For more information see the [Achilles wiki](http://www.ohdsi.org/web/wiki/doku.php?id=documentation:software:achilles)
 
+Achilles Heel Annotations
+=========================
+
+Annotation statuses (e.g. 'Non-issue', 'Issue') and messages (e.g. 'Death data not available') can now be embedded into the AchillesHeel.JSON file and displayed in the Achilles Heel report. Add JSON arrays of "ANNOTATION_STATUS" and "ANNOTATION_MESSAGE" that correspond to the "ATTRIBUTENAME" and "ATTRIBUTEVALUE" arrays to enable this functionality.
+
+CDM Domain Meta
+===============
+
+If CDM Domain Metadata JSON file is present (having been created in the Achilles exportToJson function), domain metadata blurbs will appear in select domain reports.
+
+
 Datasource Structure
 ====================
 
 In order to improve usability with other applications and file structures, `var datasourcepath` can be changed in `index.html` to the location of the file. Default is `data/datasource.json` but it can be changed to anything (including REST service) as long as it returns a json with a valid structure.
 
 Datasource file structure also allows configurations with different parameters like `url` and `map` (and `parentUrl`).
+
+AchillesWeb will auto-sort the sources alphabetically by source name.
 
 #### Example
 ```JSON
