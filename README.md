@@ -13,10 +13,8 @@ There are a few configuration steps required to setup AchillesWeb. These steps a
 2. Create a 'data' directory in the root of your AchillesWeb folder and run the Achilles R package exportToJSON method specifying the output path to a subdirectory for the data source that you want to view through AchillesWeb. For example:
 
 	```r
-	exportToJson(connectionDetails,"CDM_SCHEMA", "RESULTS_SCHEMA", "C:/AchillesWeb/data/SAMPLE", cdmVersion = "cdm version")
+	exportToJson(connectionDetails,"CDM_SCHEMA", "RESULTS_SCHEMA", "C:/AchillesWeb/data/SAMPLE")
 	```
-The "cdm version" can either be 4 or 5.
-The exportToJSON method will take a very long time if you haven't added the minimum recommended set of indexes to your cdm.
 
 3. Create a file in the AchillesWeb 'data' directory named 'datasources.json' with the following structure where the name is a caption for the data source and the folder is the name of the subdirectory under data. You will have to update the datasources.json file whenever you add a new data source subfolder to the data directory.  Note: cdmVersion property should be set to the version of the CDM datasource from the Achilles analysis. Valid values are 4 and 5.  If the value is not found, it assumes cdmVersion = 4.
 
