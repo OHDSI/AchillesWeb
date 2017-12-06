@@ -33,7 +33,7 @@ In order to improve usability with other applications and file structures, `var 
 
 Datasource file structure also allows configurations with different parameters like `url` and `map` (and `parentUrl`).
 
-####Example
+#### Example
 ```JSON
 { 	"datasources":	[ 
     { "name":"My Sample Folder", "folder":"SAMPLE", "cdmVersion": 4 },
@@ -129,7 +129,7 @@ Different datasources behave differently but the expected json always follow the
 - `url` and `folder` behave similarly but `url` allows the file structure not to be available on the `data/` directory, allowing more flexibility.
 - `parentUrl` is always prepended to `url` and `map` datasources. (Along with trailing `/` ). 
 
-#####Example:
+##### Example:
 
 |parentUrl | url | becames|
 |---|---|---|
@@ -142,7 +142,7 @@ Different datasources behave differently but the expected json always follow the
         - `type` can be one of `folder`, `collection`, `service` or `file`
         - `url` allows patterns in `folder` or `collection` like `{id}` that will be replaced `id` of the each sample.
 
-#####Example:
+##### Example:
 
 |parentUrl|type|url|becames|
 |---|---|---|---|
