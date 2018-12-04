@@ -13,17 +13,12 @@
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/achilles.css" rel="stylesheet">
 	<link href="css/chart.css" rel="stylesheet">
-
-	<!-- build:css /src/app/styles/app.css -->
-	<!-- inject:css -->
-	<link rel="stylesheet" href="/.tmp/app.css">
-	<!-- endinject -->
-	<!-- endbuild -->
+	<!-- evi-inject-css -->
 
 	<script>
 		var report = 'dashboard';
 		var page_vm = {};
-		var datasourcepath = 'http://localhost:5000/sap/db_characterization/datasources'
+		var datasourcepath = 'http://localhost:5000/sap/db_characterization/datasources';
 
 		function updateReport(value) {
 			report = value;
