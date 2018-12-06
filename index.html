@@ -13,12 +13,11 @@
 	<link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/achilles.css" rel="stylesheet">
 	<link href="css/chart.css" rel="stylesheet">
-	<!-- evi-inject-css -->
 
 	<script>
 		var report = 'dashboard';
 		var page_vm = {};
-		var datasourcepath = 'http://localhost:5000/sap/db_characterization/datasources';
+		var datasourcepath = '<%= htmlWebpackPlugin.options.serverPath%>';
 
 		function updateReport(value) {
 			report = value;
