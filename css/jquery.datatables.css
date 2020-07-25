@@ -226,7 +226,8 @@ table.dataTable td {
   zoom: 1;
 }
 .dataTables_wrapper .dataTables_length {
-  float: left;
+  float: right;
+  padding:0px 10px 0px 10px;
 }
 .dataTables_wrapper .dataTables_filter {
   float: right;

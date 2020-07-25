@@ -359,7 +359,7 @@ define(["jquery", "d3", "jnj/chart", "common", "datatables", "datatables-colvis"
 
 				datatable = $('#measurement_table').DataTable({
 					order: [ 5, 'desc' ],
-					dom: 'Clfrtip',
+					dom: 'C<lf>rtip',
 					data: table_data,
 					columns: [
 						{
@@ -392,8 +392,8 @@ define(["jquery", "d3", "jnj/chart", "common", "datatables", "datatables-colvis"
 							className: 'numeric'
 						}
 					],
-					pageLength: 5,
-					lengthChange: false,
+					pageLength: 10,
+					lengthChange: true,
 					deferRender: true,
 					destroy: true
 				});

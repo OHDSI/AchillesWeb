@@ -187,7 +187,7 @@
 
 							datatable = $('#drugera_table').DataTable({
 								order: [ 5, 'desc' ],
-								dom: 'Clfrtip',
+								dom: 'C<lf>rtip',
 								data: table_data,
 								columns: [
 									{
@@ -220,8 +220,8 @@
 										className: 'numeric'
 									}
 								],
-								pageLength: 5,
-								lengthChange: false,
+								pageLength: 10,
+								lengthChange: true,
 								deferRender: true,
 								destroy: true
 							});
