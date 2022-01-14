@@ -1,3 +1,7 @@
+**AchillesWeb is now deprecated and no longer supported.**
+
+For full study design tools, please switch to [OHDSI/ATLAS](https://github.com/OHDSI/Atlas). For an approach more consistent with AchillesWeb, try out [OHDSI/ARES](https://github.com/OHDSI/Ares)
+
 AchillesWeb
 ===========
 
